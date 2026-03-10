@@ -1,0 +1,29 @@
+/* * Importação principal do motor Tailwind v4.
+ * Substitui as antigas diretivas @tailwind base, components e utilities.
+ */
+@import 'tailwindcss';
+
+/* * Configuração nativa do Tema.
+ * O Tailwind v4 lê estas variáveis CSS e gera utilitários automaticamente.
+ * Exemplo: --color-inova-blue-500 gera a classe bg-inova-blue-500 e text-inova-blue-500.
+ */
+@theme {
+  --color-inova-blue-500: #3b82f6;
+  --color-inova-blue-900: #1e3a8a;
+}
+
+/* * Reset e configurações globais de base (Chassi da Aplicação)
+ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  /* Utilização de fontes do sistema para máxima performance e legibilidade */
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  /* Fundo ligeiramente cinzento (Slate 50) para reduzir o cansaço visual em ambiente industrial */
+  background-color: #f8fafc;
+}
