@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
-import { OrcamentoComponent } from './features/orcamento/orcamento.component';
+import { FormularioRequisicaoComponent } from './features/orcamento/components/formulario-requisicao/formulario-requisicao.component';
+import { AuditoriaOrcamentoComponent } from './features/orcamento/components/auditoria-orcamento/auditoria-orcamento.component';
 
 export const routes: Routes = [
-  { path: 'orcamento', component: OrcamentoComponent },
-  { path: '', redirectTo: 'orcamento', pathMatch: 'full' }
+  { path: 'orcamento/novo', component: FormularioRequisicaoComponent },
+  { path: 'orcamentos/auditoria/:id', component: AuditoriaOrcamentoComponent },
+  { path: '', redirectTo: 'orcamento/novo', pathMatch: 'full' }
 ];
