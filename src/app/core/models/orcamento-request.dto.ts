@@ -20,8 +20,7 @@ export interface OrcamentoRequestDTO {
   // Fase 2: Physical Variables (DC)
   tempoArcoMinutos: number;
   massaEstimadaKg: number;
-  arameId: number;
-  gasId: number;
+  arameId: string;
 
   // Fase 3: Intentions (AC)
   requerProjetoCAD: boolean;

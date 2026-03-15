@@ -1,10 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { ProblemDetail } from '../../../../core/models/problem-detail';
 import { OrcamentoResponseDTO } from '../../../../core/models/orcamento-response.dto';
+import { OrcamentoRequestDTO } from '../../../../core/models/orcamento-request.dto';
 
 @Component({
   selector: 'app-formulario-requisicao',
@@ -13,35 +15,34 @@ import { OrcamentoResponseDTO } from '../../../../core/models/orcamento-response
   templateUrl: './formulario-requisicao.component.html'
 })
 export class FormularioRequisicaoComponent {
-  private fb = inject(FormBuilder);
+  private fb = inject(NonNullableFormBuilder);
   private orcamentoService = inject(OrcamentoService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef); // Gerenciamento automático de assinaturas (Angular 16+)
 
-  // Progressive Disclosure via Strict Typings
-  orcamentoForm: FormGroup = this.fb.group({
-    // ID do Projeto
+  // Strict Typed Reactive Form + NonNullable
+  orcamentoForm = this.fb.group({
+    // Dados Descritivos
     identificacaoPeca: ['', Validators.required],
     quantidadeRequerida: [1, [Validators.required, Validators.min(1)]],
     aplicacaoComponente: [''],
 
-    // Requisitos Mecânicos (Apenas Física)
-    solicitacaoMecanicaServico: ['', Validators.required],
-    solicitacaoAmbientalOperacional: [''],
-    toleranciaDimensionalExigidaMm: ['', Validators.required],
-    acabamentoSuperficialMm: [''],
+    // Variáveis Físicas Mínimas (Phase 1 e 2)
+    tempoPreparacaoMinutos: [0, [Validators.required, Validators.min(0.1)]],
+    tempoRemocaoMinutos: [0, [Validators.required, Validators.min(0.1)]],
+    tempoArcoMinutos: [0, [Validators.required, Validators.min(0.1)]],
+    massaEstimadaKg: [0, [Validators.required, Validators.min(0.1)]],
+    arameId: ['', Validators.required], // UUID Obrigatório (Init vazio para forçar select)
 
-    // Escopo de Serviços Adicionais (Intenções)
+    // Intenções (Phase 3 AC)
     requerProjetoCAD: [false],
     requerUsinagemFinal: [false],
-    tempoUsinagemMinutos: [{ value: 0, disabled: true }],
-
-    // Entradas Ocultas (Simuladas pelo Arquiteto para o Teste - Seriam do CAD)
-    tempoPreparacaoMinutos: [120],
-    tempoRemocaoMinutos: [30],
-    tempoArcoMinutos: [450],
-    massaEstimadaKg: [12.5],
-    arameId: [1], // Mock DB
-    gasId: [1]    // Mock DB
+    
+    // Campo condicional (disabled by default)
+    tempoUsinagemMinutos: this.fb.control(
+      { value: 0, disabled: true }, 
+      { validators: [Validators.min(0.1)] }
+    )
   });
 
   erroApi: ProblemDetail | null = null;
@@ -51,19 +52,21 @@ export class FormularioRequisicaoComponent {
     this.monitorarMudancasServicos();
   }
 
-  // Ativa inputs colaterais dinamicamente.
   private monitorarMudancasServicos() {
-    this.orcamentoForm.get('requerUsinagemFinal')?.valueChanges.subscribe(ativo => {
-      const field = this.orcamentoForm.get('tempoUsinagemMinutos');
-      if (ativo) {
-        field?.enable();
-        field?.setValidators([Validators.required, Validators.min(1)]);
-      } else {
-        field?.disable();
-        field?.clearValidators();
-      }
-      field?.updateValueAndValidity();
-    });
+    this.orcamentoForm.controls.requerUsinagemFinal.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((ativo) => {
+        const field = this.orcamentoForm.controls.tempoUsinagemMinutos;
+        if (ativo) {
+          field.enable();
+          field.setValidators([Validators.required, Validators.min(0.1)]);
+        } else {
+          field.disable();
+          field.clearValidators();
+          field.setValue(0);
+        }
+        field.updateValueAndValidity();
+      });
   }
 
   onSubmit() {
@@ -75,20 +78,22 @@ export class FormularioRequisicaoComponent {
     this.isSubmitting = true;
     this.erroApi = null;
 
-    const payload = this.orcamentoForm.getRawValue(); // Pega inclusive desabilitados (tempos Mocks)
+    // Extrai o DTO validado
+    const payload: OrcamentoRequestDTO = this.orcamentoForm.getRawValue() as unknown as OrcamentoRequestDTO;
 
-    this.orcamentoService.submeterOrcamento(payload).subscribe({
-      next: (response: OrcamentoResponseDTO) => {
-        console.log('Orçamento Gerado com Sucesso', response.id);
-        this.isSubmitting = false;
-        // Navega para a tela de Drill-Down do Orçamento Gerado
-        this.router.navigate(['/orcamentos/auditoria', response.id]);
-      },
-      error: (err: ProblemDetail) => {
-        console.error('Falha de Regra de Negócio (RFC 7807):', err);
-        this.erroApi = err;
-        this.isSubmitting = false;
-      }
-    });
+    this.orcamentoService.submeterOrcamento(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: OrcamentoResponseDTO) => {
+          console.log('Orçamento Gerado com Sucesso', response.id);
+          this.isSubmitting = false;
+          this.router.navigate(['/orcamentos/auditoria', response.id]);
+        },
+        error: (err: ProblemDetail) => {
+          console.error('Falha de Regra de Negócio (RFC 7807):', err);
+          this.erroApi = err;
+          this.isSubmitting = false;
+        }
+      });
   }
 }

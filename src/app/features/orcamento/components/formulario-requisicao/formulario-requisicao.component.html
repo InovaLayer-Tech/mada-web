@@ -14,8 +14,11 @@
         (click)="onSubmit()"
         [disabled]="orcamentoForm.invalid || isSubmitting" 
         class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2">
-        <i class="pi pi-cloud-upload" *ngIf="!isSubmitting"></i>
-        <i class="pi pi-spin pi-spinner" *ngIf="isSubmitting"></i>
+        @if (!isSubmitting) {
+          <i class="pi pi-cloud-upload"></i>
+        } @else {
+          <i class="pi pi-spin pi-spinner"></i>
+        }
         <span>SUBMETER À INOVALAYER</span>
       </button>
     </div>
@@ -36,26 +39,32 @@
       <!-- ESQUERDA: FORMULÁRIO PRINCIPAL -->
       <div class="lg:col-span-8 space-y-6">
         
-        <!-- Exibição Nativa de Erros RFC 7807 -->
-        <div *ngIf="erroApi" class="p-5 rounded-xl bg-red-50 border border-red-200 shadow-sm animate-[fadeIn_0.5s_ease-out]">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <i class="pi pi-exclamation-triangle text-red-500 text-xl"></i>
-            </div>
-            <div class="ml-4">
-              <h3 class="text-sm font-bold text-red-700 uppercase tracking-wider">{{ erroApi.title }}</h3>
-              <div class="mt-2 text-sm text-red-600">
-                <p>{{ erroApi.detail }}</p>
-                <ul *ngIf="erroApi.properties?.['invalid-params']" class="space-y-1 mt-3 p-3 bg-red-100 rounded-lg">
-                  <li *ngFor="let err of erroApi.properties?.['invalid-params']" class="flex items-start">
-                    <span class="text-red-500 mr-2">•</span>
-                    <span><b class="text-red-700">{{ err.name }}</b>: {{ err.reason }}</span>
-                  </li>
-                </ul>
+        <!-- Exibição Nativa de Erros RFC 7807 (Angular 18 Control Flow) -->
+        @if (erroApi) {
+          <div class="p-5 rounded-xl bg-red-50 border border-red-200 shadow-sm animate-[fadeIn_0.5s_ease-out]">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="pi pi-exclamation-triangle text-red-500 text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-sm font-bold text-red-700 uppercase tracking-wider">{{ erroApi.title }}</h3>
+                <div class="mt-2 text-sm text-red-600">
+                  <p>{{ erroApi.detail }}</p>
+                  @if (erroApi.properties?.['invalid-params']) {
+                    <ul class="space-y-1 mt-3 p-3 bg-red-100 rounded-lg">
+                      @for (err of erroApi.properties?.['invalid-params']; track err.name) {
+                        <li class="flex items-start">
+                          <span class="text-red-500 mr-2">•</span>
+                          <span><b class="text-red-700">{{ err.name }}</b>: {{ err.reason }}</span>
+                        </li>
+                      }
+                    </ul>
+                  }
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        }
 
         <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()" class="bg-white border border-slate-200 text-slate-700 rounded-2xl shadow-sm p-8 lg:p-10 space-y-10 relative">
           
@@ -87,31 +96,42 @@
             </div>
           </section>
 
-          <!-- SEÇÃO 2: Requisitos -->
+          <!-- SEÇÃO 2: Requisitos Físicos (Metrologia Real) -->
           <section class="pl-2 lg:pl-5 border-l-4 border-blue-100">
             <h3 class="text-xs font-bold text-slate-500 tracking-widest uppercase mb-6">
-              <span class="text-blue-600 mr-2">2.</span> Requisitos Mecânicos e Metrológicos
+              <span class="text-blue-600 mr-2">2.</span> Parâmetros Físicos WAAM
             </h3>
             
             <div class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Solicitação Mecânica em Serviço <span class="text-red-500">*</span></label>
-                <textarea formControlName="solicitacaoMecanicaServico" rows="3" class="w-full bg-white text-slate-800 px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none placeholder:text-slate-300" placeholder="Ex: Tensão de escoamento requerida, fadiga (ciclos/ano), dureza.."></textarea>
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Solicitação Ambiental Operacional</label>
-                <input formControlName="solicitacaoAmbientalOperacional" type="text" class="w-full bg-slate-50 text-slate-800 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300" placeholder="Ex: Desgaste abrasivo, corrosão severa, alta temperatura...">
-              </div>
-
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Fase 1: Setup e Remoção -->
                 <div class="space-y-2">
-                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Tolerância Dimensional Exigida (MM) <span class="text-red-500">*</span></label>
-                  <input formControlName="toleranciaDimensionalExigidaMm" type="text" class="w-full bg-white text-slate-800 px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300" placeholder="Ex: +- 0.5 mm">
+                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Tempo de Preparação (Minutos) <span class="text-red-500">*</span></label>
+                  <input formControlName="tempoPreparacaoMinutos" type="number" step="0.1" class="w-full bg-white text-slate-800 px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300">
                 </div>
                 <div class="space-y-2">
-                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Acabamento Superficial (MM)</label>
-                  <input formControlName="acabamentoSuperficialMm" type="text" class="w-full bg-slate-50 text-slate-800 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300" placeholder="Ex: Ra 3.2">
+                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Tempo de Remoção (Minutos) <span class="text-red-500">*</span></label>
+                  <input formControlName="tempoRemocaoMinutos" type="number" step="0.1" class="w-full bg-white text-slate-800 px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300">
+                </div>
+
+                <!-- Fase 2: Impressão 3D Arco e Massa -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Tempo de Arco Aberto (Minutos) <span class="text-red-500">*</span></label>
+                  <input formControlName="tempoArcoMinutos" type="number" step="0.1" class="w-full bg-white text-slate-800 px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300">
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Massa Estimada da Peça (KG) <span class="text-red-500">*</span></label>
+                  <input formControlName="massaEstimadaKg" type="number" step="0.01" class="w-full bg-slate-50 text-slate-800 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-300">
+                </div>
+                
+                <!-- Insumo: UUID Arame Real -->
+                <div class="space-y-2 md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Insumo de Deposição (Arame) <span class="text-red-500">*</span></label>
+                  <select formControlName="arameId" class="w-full bg-white text-slate-800 px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
+                    <option value="" disabled selected>Selecione a liga metálica correspondente...</option>
+                    <option value="0f0f5b90-1c10-4ed2-aea1-2ee61c778401">Aço Inoxidável 316L (ER316LSi)</option>
+                    <!-- Mock Temporário p/ DB Real -->
+                  </select>
                 </div>
               </div>
             </div>
@@ -149,8 +169,11 @@
               type="submit"
               [disabled]="orcamentoForm.invalid || isSubmitting" 
               class="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3">
-              <i class="pi pi-cloud-upload text-lg" *ngIf="!isSubmitting"></i>
-              <i class="pi pi-spin pi-spinner text-lg" *ngIf="isSubmitting"></i>
+              @if (!isSubmitting) {
+                <i class="pi pi-cloud-upload text-lg"></i>
+              } @else {
+                <i class="pi pi-spin pi-spinner text-lg"></i>
+              }
               SUBMETER SOLICITAÇÃO
             </button>
           </div>
@@ -172,8 +195,11 @@
               <div class="flex gap-4">
                 <div class="flex-shrink-0 mt-1">
                   <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#334155] border border-[#475569]">
-                    <i class="pi pi-file text-[#94a3b8]" *ngIf="!orcamentoForm.valid"></i>
-                    <i class="pi pi-check text-emerald-400" *ngIf="orcamentoForm.valid"></i>
+                    @if (!orcamentoForm.valid) {
+                      <i class="pi pi-file text-[#94a3b8]"></i>
+                    } @else {
+                      <i class="pi pi-check text-emerald-400"></i>
+                    }
                   </div>
                 </div>
                 <div>
