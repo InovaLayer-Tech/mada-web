@@ -9,12 +9,12 @@ import { OrcamentoResponseDTO } from '../../../../core/models/orcamento-response
 import { OrcamentoRequestDTO } from '../../../../core/models/orcamento-request.dto';
 
 @Component({
-  selector: 'app-formulario-requisicao',
+  selector: 'app-motor-metrologico',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './formulario-requisicao.component.html'
+  templateUrl: './motor-metrologico.component.html'
 })
-export class FormularioRequisicaoComponent {
+export class MotorMetrologicoComponent {
   private fb = inject(NonNullableFormBuilder);
   private orcamentoService = inject(OrcamentoService);
   private router = inject(Router);
@@ -26,6 +26,9 @@ export class FormularioRequisicaoComponent {
     identificacaoPeca: ['', Validators.required],
     quantidadeRequerida: [1, [Validators.required, Validators.min(1)]],
     aplicacaoComponente: [''],
+
+    // Entrada JSON Inteligente
+    jsonInput: [''],
 
     // Variáveis Físicas Mínimas (Phase 1 e 2)
     tempoPreparacaoMinutos: [0, [Validators.required, Validators.min(0.1)]],
@@ -50,6 +53,31 @@ export class FormularioRequisicaoComponent {
 
   constructor() {
     this.monitorarMudancasServicos();
+    this.monitorarEntradaJson();
+  }
+
+  private monitorarEntradaJson() {
+    this.orcamentoForm.controls.jsonInput.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((jsonStr) => {
+        try {
+          if (!jsonStr) return;
+          const data = JSON.parse(jsonStr);
+          
+          // Mapeamento Inteligente dos campos do fatiador Python para o formulário
+          this.orcamentoForm.patchValue({
+            massaEstimadaKg: data.massa_kg || data.mass_kg || data.massa || 0,
+            tempoArcoMinutos: data.tempo_arco_min || data.arc_time_min || data.tempo_arco || 0,
+            tempoPreparacaoMinutos: data.tempo_setup_min || data.setup_time || 0,
+            identificacaoPeca: data.nome_peca || data.part_name || ''
+          });
+
+          console.log('Dados do JSON aplicados ao formulário com sucesso.');
+        } catch (e) {
+          // Silent error - o usuário pode estar no meio da digitação
+          console.warn('Erro ao processar JSON: Formato inválido.');
+        }
+      });
   }
 
   private monitorarMudancasServicos() {
@@ -87,7 +115,8 @@ export class FormularioRequisicaoComponent {
         next: (response: OrcamentoResponseDTO) => {
           console.log('Orçamento Gerado com Sucesso', response.id);
           this.isSubmitting = false;
-          this.router.navigate(['/orcamentos/auditoria', response.id]);
+          // Navegação com passagem de estado (Router State) para o Dashboard de Auditoria
+          this.router.navigate(['/b2b/auditoria'], { state: { orcamento: response } });
         },
         error: (err: ProblemDetail) => {
           console.error('Falha de Regra de Negócio (RFC 7807):', err);
