@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from './features/b2c-portal-cliente/components/landing-page/landing-page.component';
+import { LandingPagePolishedComponent } from './features/b2c-portal-cliente/components/landing-page/landing-page.component';
 import { SolicitacaoRfqComponent } from './features/b2c-portal-cliente/components/solicitacao-rfq/solicitacao-rfq.component';
 import { DashboardClienteComponent } from './features/b2c-portal-cliente/components/dashboard-cliente/dashboard-cliente.component';
 import { FilaSolicitacoesComponent } from './features/b2b-painel-engenharia/components/fila-solicitacoes/fila-solicitacoes.component';
@@ -15,7 +15,7 @@ import { ConfiguracoesGlobaisComponent } from './features/b2b-painel-engenharia/
 
 export const routes: Routes = [
   // Rotas Públicas (Sem Sidebar)
-  { path: '', component: LandingPageComponent },
+  { path: '', component: LandingPagePolishedComponent },
   { path: 'login', component: LoginComponent },
 
   // Área Autenticada B2C

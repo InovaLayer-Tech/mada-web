@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-b2c-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   template: `
     <div class="flex h-screen bg-slate-50 overflow-hidden font-sans">
       <!-- Sidebar B2C -->
@@ -16,13 +17,13 @@ import { RouterModule } from '@angular/router';
           </div>
 
           <nav class="space-y-4">
-            <a routerLink="/cliente/dashboard" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[14px] font-black transition-all border border-transparent hover:bg-slate-50 text-slate-600 hover:text-slate-900">
-              <i class="pi pi-home text-xl"></i>
-              <span>Dashboard Principal</span>
+            <a routerLink="/cliente/dashboard" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent hover:bg-slate-50 text-slate-700 hover:text-slate-900">
+              <i class="pi pi-home text-2xl"></i>
+              <span>{{ 'SIDEBAR.B2C_DASHBOARD' | translate }}</span>
             </a>
-            <a routerLink="/cliente/rfq" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[14px] font-black transition-all border border-transparent hover:bg-slate-50 text-slate-600 hover:text-slate-900">
-              <i class="pi pi-file-plus text-xl"></i>
-              <span>Solicitar Orçamento RFQ</span>
+            <a routerLink="/cliente/rfq" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent hover:bg-slate-50 text-slate-700 hover:text-slate-900">
+              <i class="pi pi-file-plus text-2xl"></i>
+              <span>{{ 'SIDEBAR.B2C_NEW_RFQ' | translate }}</span>
             </a>
           </nav>
 
@@ -54,11 +55,11 @@ import { RouterModule } from '@angular/router';
           </div>
         </div>
 
-        <div class="mt-auto p-8 border-t border-slate-100">
-           <a routerLink="/" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-black transition-all text-red-500 hover:bg-red-50 hover:text-red-700">
-              <i class="pi pi-sign-out text-lg"></i>
-              <span>Sair do Sistema</span>
-            </a>
+        <div class="mt-auto p-8 relative z-10">
+           <button routerLink="/" class="w-full flex items-center justify-center gap-3 p-4 bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-600 border border-slate-200/50 hover:border-red-200 rounded-[1.5rem] transition-all font-black text-xs uppercase tracking-widest group">
+             <i class="pi pi-power-off text-sm group-hover:rotate-12 transition-transform"></i>
+             {{ 'SIDEBAR.LOGOUT' | translate }}
+           </button>
         </div>
       </aside>
 
@@ -89,9 +90,15 @@ import { RouterModule } from '@angular/router';
   `
 })
 export class B2cLayoutComponent {
+  private translate = inject(TranslateService);
   idiomaAtivo = 'PT';
+
+  constructor() {
+    this.translate.setDefaultLang('pt');
+  }
 
   setIdioma(idioma: string) {
     this.idiomaAtivo = idioma;
+    this.translate.use(idioma.toLowerCase());
   }
 }

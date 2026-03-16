@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-b2b-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   template: `
     <div class="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-600">
       <!-- Sidebar B2B (Back-Office LIGHT CORPORATE) -->
@@ -17,29 +18,29 @@ import { RouterModule } from '@angular/router';
           </div>
 
           <nav class="space-y-1.5">
-            <a routerLink="/b2b/pedidos" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-xl text-[15px] font-black transition-all border border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 group">
-              <i class="pi pi-list text-xl group-hover:text-blue-600 transition-colors"></i>
-              <span>Fila de RFQs</span>
+            <a routerLink="/b2b/pedidos" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900 group">
+              <i class="pi pi-list text-2xl group-hover:text-blue-600 transition-colors"></i>
+              <span>{{ 'SIDEBAR.B2B_QUEUE' | translate }}</span>
             </a>
-            <a routerLink="/b2b/motor" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-xl text-[15px] font-black transition-all border border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 group">
-              <i class="pi pi-cog text-xl group-hover:text-blue-600 transition-colors"></i>
-              <span>Motor Metrológico</span>
+            <a routerLink="/b2b/motor" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900 group">
+              <i class="pi pi-cog text-2xl group-hover:text-blue-600 transition-colors"></i>
+              <span>{{ 'SIDEBAR.B2B_MOTOR' | translate }}</span>
             </a>
-            <a routerLink="/b2b/auditoria" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-xl text-[15px] font-black transition-all border border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 group">
-              <i class="pi pi-shield text-xl group-hover:text-blue-600 transition-colors"></i>
-              <span>Auditoria Metrológica</span>
+            <a routerLink="/b2b/auditoria" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900 group">
+              <i class="pi pi-shield text-2xl group-hover:text-blue-600 transition-colors"></i>
+              <span>{{ 'SIDEBAR.B2B_AUDIT' | translate }}</span>
             </a>
             
-            <div class="h-8"></div>
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] px-5 mb-4 block font-mono">Infraestrutura</span>
+            <div class="h-10"></div>
+            <span class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] px-5 mb-6 block font-mono">{{ 'SIDEBAR.INFRASTRUCTURE' | translate }}</span>
             
-            <a routerLink="/b2b/catalogo" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-xl text-[15px] font-black transition-all border border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 group">
-              <i class="pi pi-database text-xl group-hover:text-blue-600 transition-colors"></i>
-              <span>Catálogo de Insumos</span>
+            <a routerLink="/b2b/catalogo" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900 group">
+              <i class="pi pi-database text-2xl group-hover:text-blue-600 transition-colors"></i>
+              <span>{{ 'SIDEBAR.B2B_CATALOG' | translate }}</span>
             </a>
-            <a routerLink="/b2b/taxas" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-xl text-[15px] font-black transition-all border border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 group">
-              <i class="pi pi-percentage text-xl group-hover:text-blue-600 transition-colors"></i>
-              <span>Regras e Taxas Globais</span>
+            <a routerLink="/b2b/taxas" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-5 rounded-2xl text-[16px] font-black transition-all border border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900 group">
+              <i class="pi pi-percentage text-2xl group-hover:text-blue-600 transition-colors"></i>
+              <span>{{ 'SIDEBAR.B2B_SETTINGS' | translate }}</span>
             </a>
           </nav>
         </div>
@@ -79,6 +80,13 @@ import { RouterModule } from '@angular/router';
                <span class="text-lg">🇺🇸</span> EN
              </button>
            </div>
+           <!-- Logout Button -->
+           <div class="mt-8 pt-8 border-t border-slate-100">
+             <button routerLink="/" class="w-full flex items-center justify-center gap-3 p-4 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 rounded-[1.5rem] transition-all font-black text-xs uppercase tracking-widest group shadow-sm">
+               <i class="pi pi-power-off text-sm group-hover:rotate-12 transition-transform"></i>
+               {{ 'SIDEBAR.LOGOUT' | translate }}
+             </button>
+           </div>
         </div>
       </aside>
 
@@ -111,9 +119,15 @@ import { RouterModule } from '@angular/router';
   styles: []
 })
 export class B2bLayoutComponent {
+  private translate = inject(TranslateService);
   idiomaAtivo = 'PT';
+
+  constructor() {
+    this.translate.setDefaultLang('pt');
+  }
 
   setIdioma(idioma: string) {
     this.idiomaAtivo = idioma;
+    this.translate.use(idioma.toLowerCase());
   }
 }

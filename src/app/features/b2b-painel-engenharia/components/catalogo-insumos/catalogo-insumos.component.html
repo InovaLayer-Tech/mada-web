@@ -2,7 +2,7 @@
   <main class="max-w-7xl mx-auto mt-12 px-8">
     <div class="mb-10 flex justify-between items-end border-b border-slate-200 pb-10">
       <div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Catálogo de Insumos</h1>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">{{ 'B2B.CATALOGO.TITLE' | translate }}</h1>
       </div>
     </div>
 
@@ -11,7 +11,7 @@
       <!-- Card: Arames -->
       <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden group hover:shadow-xl hover:shadow-blue-200/20 transition-all">
         <div class="px-10 py-7 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-          <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">P1: MATÉRIA-PRIMA (ARAMES)</h2>
+          <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">{{ 'B2B.CATALOGO.SEC_WIRES' | translate }}</h2>
           <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100">
             <i class="pi pi-box text-blue-600 text-sm"></i>
           </div>
@@ -26,7 +26,7 @@
                   </div>
                   <div>
                     <h3 class="text-base font-black text-slate-900 tracking-tight">{{ item.nome }}</h3>
-                    <p class="text-[9px] font-black text-slate-700 uppercase tracking-widest mt-1 opacity-80">Preço unitário por {{ item.unit }}</p>
+                    <p class="text-[9px] font-black text-slate-700 uppercase tracking-widest mt-1 opacity-80">{{ 'B2B.CATALOGO.UNIT_PRICE_BY' | translate }} {{ item.unit }}</p>
                   </div>
                 </div>
                 <div class="flex items-center gap-8">
@@ -44,7 +44,7 @@
       <!-- Card: Gases -->
       <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden group hover:shadow-xl hover:shadow-indigo-200/20 transition-all">
         <div class="px-10 py-7 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-          <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">P2: FLUIDOS DE PROTEÇÃO (GASES)</h2>
+          <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">{{ 'B2B.CATALOGO.SEC_GASES' | translate }}</h2>
           <div class="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
             <i class="pi pi-cloud text-indigo-600 text-sm"></i>
           </div>
@@ -59,7 +59,7 @@
                   </div>
                   <div>
                     <h3 class="text-base font-black text-slate-900 tracking-tight">{{ item.nome }}</h3>
-                    <p class="text-[9px] font-black text-slate-700 uppercase tracking-widest mt-1 opacity-80">Preço unitário por {{ item.unit }}</p>
+                    <p class="text-[9px] font-black text-slate-700 uppercase tracking-widest mt-1 opacity-80">{{ 'B2B.CATALOGO.UNIT_PRICE' | translate }} {{ item.unit }}</p>
                   </div>
                 </div>
                 <div class="flex items-center gap-8">

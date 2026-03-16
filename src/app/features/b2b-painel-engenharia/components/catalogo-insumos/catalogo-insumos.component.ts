@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-catalogo-insumos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
       <main class="max-w-7xl mx-auto mt-12 px-8">

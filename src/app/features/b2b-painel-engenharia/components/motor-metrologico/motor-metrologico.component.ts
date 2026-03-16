@@ -1,4 +1,5 @@
 import { Component, inject, DestroyRef } from '@angular/core';
+import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +12,7 @@ import { OrcamentoRequestDTO } from '../../../../core/models/orcamento-request.d
 @Component({
   selector: 'app-motor-metrologico',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './motor-metrologico.component.html'
 })
 export class MotorMetrologicoComponent {

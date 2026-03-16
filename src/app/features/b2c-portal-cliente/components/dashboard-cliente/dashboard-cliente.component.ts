@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-cliente',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './dashboard-cliente.component.html'
 })
 export class DashboardClienteComponent {

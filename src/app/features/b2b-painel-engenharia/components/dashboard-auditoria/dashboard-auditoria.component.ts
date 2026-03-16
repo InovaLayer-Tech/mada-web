@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
@@ -7,7 +8,7 @@ import { OrcamentoResponseDTO } from '../../../../core/models/orcamento-response
 @Component({
   selector: 'app-dashboard-auditoria',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './dashboard-auditoria.component.html'
 })
 export class DashboardAuditoriaComponent {

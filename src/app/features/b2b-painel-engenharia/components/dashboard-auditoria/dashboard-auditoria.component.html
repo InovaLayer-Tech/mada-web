@@ -2,11 +2,11 @@
   <main class="max-w-5xl mx-auto mt-12 px-8">
     <div class="mb-12 flex justify-between items-center">
       <div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter">Auditoria Metrológica</h1>
-        <p class="text-slate-500 mt-1 italic">Detalhamento técnico e financeiro do orçamento WAAM.</p>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter">{{ 'B2B.AUDITORIA.TITLE' | translate }}</h1>
+        <p class="text-slate-500 mt-1 italic">{{ 'B2B.AUDITORIA.SUBTITLE' | translate }}</p>
       </div>
       <div class="text-right">
-        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono block mb-1">ID Auditoria</span>
+        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono block mb-1">{{ 'B2B.AUDITORIA.ID_LABEL' | translate }}</span>
         <span class="text-xs font-black text-blue-600 font-mono">#WAAM-2024-0012</span>
       </div>
     </div>
@@ -16,18 +16,18 @@
       <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl group-hover:bg-blue-600/10 transition-all"></div>
       
       <div class="relative z-10 text-center">
-        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block font-mono">VALOR TOTAL DE VENDA (B2C)</span>
+        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6 block font-mono">{{ 'B2B.AUDITORIA.TOTAL_SALE' | translate }}</span>
         <h1 class="text-8xl font-black tracking-tighter mb-8 text-slate-900">
           <span class="text-3xl align-top mt-6 inline-block mr-2 text-slate-300">R$</span>{{ orcamentoMock.precoVendaFinal | number:'1.2-2' }}
         </h1>
         <div class="flex justify-center items-center gap-6">
           <div class="px-8 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 font-mono flex items-center gap-3">
             <span class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
-            Custo Base: <span class="text-slate-900 ml-1">{{ orcamentoMock.custoTotalCT | currency:'BRL' }}</span>
+            {{ 'B2B.AUDITORIA.BASE_COST' | translate }}: <span class="text-slate-900 ml-1">{{ orcamentoMock.custoTotalCT | currency:'BRL' }}</span>
           </div>
           <div class="px-8 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl text-[10px] font-black text-emerald-600 uppercase tracking-widest font-mono flex items-center gap-3">
             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-            Margem: <span class="text-slate-900 ml-1">{{ orcamentoMock.margemLucroAplicada }}</span>
+            {{ 'B2B.AUDITORIA.MARGIN' | translate }}: <span class="text-slate-900 ml-1">{{ orcamentoMock.margemLucroAplicada }}</span>
           </div>
         </div>
       </div>
@@ -42,8 +42,8 @@
            <div class="flex items-center gap-5">
              <div class="w-1.5 h-7 bg-slate-400 rounded-full shadow-sm"></div>
              <div>
-               <h2 class="text-[10px] font-black text-slate-500 tracking-[0.4em] uppercase font-industrial-mono transition-colors group-hover/btn:text-slate-800">{{ orcamentoMock.fases.ic.titulo }}</h2>
-               <p class="text-[9px] font-bold text-slate-400 uppercase mt-1">Setup e Substrato Base</p>
+               <h2 class="text-[10px] font-black text-slate-800 tracking-[0.4em] uppercase font-industrial-mono">{{ orcamentoMock.fases.ic.titulo }}</h2>
+               <p class="text-[9px] font-bold text-slate-400 uppercase mt-1">{{ 'B2B.AUDITORIA.DESC_IC' | translate }}</p>
              </div>
            </div>
            <div class="flex items-center gap-6">
@@ -72,7 +72,7 @@
              <div class="w-1.5 h-7 bg-blue-600 rounded-full shadow-sm"></div>
              <div>
                <h2 class="text-[10px] font-black text-blue-600 tracking-[0.4em] uppercase font-industrial-mono transition-colors group-hover/btn:text-blue-900">{{ orcamentoMock.fases.dc.titulo }}</h2>
-               <p class="text-[9px] font-bold text-blue-400 uppercase mt-1">Deposição e Core WAAM</p>
+               <p class="text-[9px] font-bold text-blue-400 uppercase mt-1">{{ 'B2B.AUDITORIA.DESC_DC' | translate }}</p>
              </div>
            </div>
            <div class="flex items-center gap-6">
@@ -101,7 +101,7 @@
              <div class="w-1.5 h-7 bg-emerald-600 rounded-full shadow-sm"></div>
              <div>
                <h2 class="text-[10px] font-black text-emerald-600 tracking-[0.4em] uppercase font-industrial-mono transition-colors group-hover/btn:text-emerald-900">{{ orcamentoMock.fases.ac.titulo }}</h2>
-               <p class="text-[9px] font-bold text-emerald-400 uppercase mt-1">Acabamento e Qualidade</p>
+               <p class="text-[9px] font-bold text-emerald-400 uppercase mt-1">{{ 'B2B.AUDITORIA.DESC_AC' | translate }}</p>
              </div>
            </div>
            <div class="flex items-center gap-6">
@@ -126,8 +126,9 @@
     </div>
 
     <div class="mt-16 text-center border-t border-slate-200 pt-10">
-      <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em] font-mono">InovaLayer 3D - Unidade Auditoria Metrológica WAAM v2.4</p>
+      <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em] font-mono">{{ 'B2B.AUDITORIA.FOOTER' | translate }}</p>
     </div>
+
 
   </main>
 </div>

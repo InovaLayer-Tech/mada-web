@@ -4,8 +4,8 @@
     <!-- Header Light -->
     <div class="mb-10 flex justify-between items-end border-b border-slate-200 pb-6">
       <div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Motor Metrológico (WAAM)</h1>
-        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mt-3 font-mono opacity-80">Processamento de Parâmetros de Deposição Industrial</p>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">{{ 'B2B.MOTOR.TITLE' | translate }}</h1>
+        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mt-3 font-mono opacity-80">{{ 'B2B.MOTOR.SUBTITLE' | translate }}</p>
       </div>
     </div>
 
@@ -20,25 +20,25 @@
           
           <div class="flex items-center gap-3 mb-6 relative z-10">
             <i class="pi pi-receipt text-indigo-600 text-xl"></i>
-            <h2 class="text-lg font-black text-indigo-950 tracking-tight uppercase">Resumo do Pedido do Cliente (RFQ)</h2>
+            <h2 class="text-lg font-black text-indigo-950 tracking-tight uppercase">{{ 'B2B.MOTOR.RESUMO' | translate }}</h2>
           </div>
           
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
             <div>
-              <p class="text-[9px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-1">Material Base</p>
-              <p class="text-sm font-black text-slate-900">{{ rfqDetails.material }}</p>
+              <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.MATERIAL_BASE' | translate }}</p>
+              <p class="text-base font-black text-slate-900">{{ rfqDetails.material }}</p>
             </div>
             <div>
-              <p class="text-[9px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-1">Acabamento</p>
-              <p class="text-sm font-black text-slate-900 leading-tight">{{ rfqDetails.acabamento }}</p>
+              <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.ACABAMENTO' | translate }}</p>
+              <p class="text-base font-black text-slate-900 leading-tight">{{ rfqDetails.acabamento }}</p>
             </div>
             <div>
-              <p class="text-[9px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-1">Tratamento Térmico</p>
-              <p class="text-sm font-black text-slate-900 leading-tight">{{ rfqDetails.tratamentoTermico }}</p>
+              <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.TRATAMENTO' | translate }}</p>
+              <p class="text-base font-black text-slate-900 leading-tight">{{ rfqDetails.tratamentoTermico }}</p>
             </div>
             <div>
-              <p class="text-[9px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-1">Dimensões Estimadas</p>
-              <p class="text-sm font-black text-slate-900 font-industrial-mono">{{ rfqDetails.dimensoes }}</p>
+              <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.DIMENSOES' | translate }}</p>
+              <p class="text-base font-black text-slate-900 font-industrial-mono">{{ rfqDetails.dimensoes }}</p>
             </div>
           </div>
         </div>
@@ -74,18 +74,18 @@
             
             <div class="flex items-center mb-10">
               <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse mr-3"></div>
-              <h2 class="text-xl font-black text-slate-900 tracking-tighter uppercase">Identificação do Projeto</h2>
+              <h2 class="text-xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_PROJECT' | translate }}</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">ID da Peça <span class="text-blue-600">*</span></label>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_ID' | translate }} <span class="text-blue-600">*</span></label>
                 <input formControlName="identificacaoPeca" type="text"
                   class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all placeholder:text-slate-300 text-base font-black uppercase font-industrial-mono shadow-inner"
                   placeholder="EX: TURBINA_H3_V2">
               </div>
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">Quantidade Requerida <span class="text-blue-600">*</span></label>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_QTY' | translate }} <span class="text-blue-600">*</span></label>
                 <input formControlName="quantidadeRequerida" type="number"
                   class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black font-industrial-mono shadow-inner">
               </div>
@@ -98,26 +98,26 @@
             
             <div class="flex items-center mb-10">
               <div class="w-2 h-2 bg-amber-500 rounded-full mr-3 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div>
-              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">Setup & Fatiamento</h3>
+              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_SETUP' | translate }}</h3>
             </div>
 
             <div class="mb-10 p-8 bg-slate-50 rounded-[2rem] border border-amber-200/50 shadow-inner">
               <label class="block text-[11px] font-black text-amber-600 uppercase tracking-widest mb-4 font-industrial-mono">
-                <i class="pi pi-code mr-2 text-xs"></i> InovSlicer JSON Dump (Sincronização Python)
+                <i class="pi pi-code mr-2 text-xs"></i> {{ 'B2B.MOTOR.LABEL_JSON' | translate }}
               </label>
               <textarea formControlName="jsonInput" 
                 class="w-full h-32 bg-white text-slate-700 p-6 rounded-2xl border border-slate-200 font-industrial-mono text-xs focus:outline-none focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all shadow-sm"
-                placeholder="Cole o output estruturado do fatiador aqui..."></textarea>
+                [placeholder]="'B2B.MOTOR.PLACEHOLDER_JSON' | translate"></textarea>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">Tempo Setup (min) <span class="text-amber-600">*</span></label>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_SETUP_TIME' | translate }} <span class="text-amber-600">*</span></label>
                 <input formControlName="tempoPreparacaoMinutos" type="number" step="0.1"
                   class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all text-base font-black font-industrial-mono shadow-inner">
               </div>
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">Tempo Remoção (min) <span class="text-amber-600">*</span></label>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_REMOVAL_TIME' | translate }} <span class="text-amber-600">*</span></label>
                 <input formControlName="tempoRemocaoMinutos" type="number" step="0.1"
                   class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all text-base font-black font-industrial-mono shadow-inner">
               </div>
@@ -130,25 +130,25 @@
             
             <div class="flex items-center mb-10">
               <div class="w-2 h-2 bg-blue-700 rounded-full mr-3 shadow-[0_0_8px_rgba(29,78,216,0.4)]"></div>
-              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">Deposição Metrológica</h3>
+              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_DEPOSITION' | translate }}</h3>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">Massa Final Estimada (kg) <span class="text-blue-600">*</span></label>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_WEIGHT' | translate }} <span class="text-blue-600">*</span></label>
                 <input formControlName="massaEstimadaKg" type="number" step="0.01"
                   class="w-full bg-blue-50 text-blue-900 px-6 py-4 rounded-2xl border border-blue-100 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black font-industrial-mono shadow-inner italic tracking-tight">
               </div>
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">Tempo de Arco (min) <span class="text-blue-600">*</span></label>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_ARC_TIME' | translate }} <span class="text-blue-600">*</span></label>
                 <input formControlName="tempoArcoMinutos" type="number" step="0.1"
                   class="w-full bg-blue-50 text-blue-900 px-6 py-4 rounded-2xl border border-blue-100 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black font-industrial-mono shadow-inner italic tracking-tight">
               </div>
               <div class="col-span-2 space-y-3">
-                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Liga Metálica Consumível (WAAM) <span class="text-blue-600">*</span></label>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">{{ 'B2B.MOTOR.LABEL_CONSUMABLE' | translate }} <span class="text-blue-600">*</span></label>
                 <select formControlName="arameId"
                   class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-sm font-black appearance-none cursor-pointer">
-                  <option value="" disabled selected>Vincular insumo do catálogo técnico...</option>
+                  <option value="" disabled selected>{{ 'B2B.MOTOR.SELECT_CONSUMABLE' | translate }}</option>
                   <option value="0f0f5b90-1c10-4ed2-aea1-2ee61c778401">Aço Inoxidável 316L High-Grade (ER316LSi)</option>
                   <option value="er70s">Aço Carbono Estrutural ER70S-6</option>
                   <option value="ti64">Liga Aeroespacial Titanium Grade 5 (Ti-6Al-4V)</option>
@@ -163,23 +163,23 @@
             
             <div class="flex items-center mb-10">
               <div class="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
-              <h3 class="text-xl font-black text-slate-900 tracking-tighter uppercase">Pós-Processamento & Validação</h3>
+              <h3 class="text-xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_POST' | translate }}</h3>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <label class="flex items-center p-8 bg-slate-50 border border-slate-200 rounded-[2rem] hover:bg-white hover:border-emerald-500/50 cursor-pointer transition-all group/opt shadow-sm">
                 <input type="checkbox" formControlName="requerProjetoCAD" class="w-6 h-6 bg-white border-slate-300 rounded text-emerald-600 focus:ring-emerald-500">
                 <div class="ml-5">
-                  <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-mono">Engenharia CAD/CAM</p>
-                  <p class="text-[9px] text-slate-400 mt-1 uppercase font-black tracking-tight opacity-70 italic">Setup de Trajetória & Simulação</p>
+                  <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-mono">{{ 'B2B.MOTOR.LABEL_CAD' | translate }}</p>
+                  <p class="text-[9px] text-slate-400 mt-1 uppercase font-black tracking-tight opacity-70 italic">{{ 'B2B.MOTOR.DESC_CAD' | translate }}</p>
                 </div>
               </label>
 
               <label class="flex items-center p-8 bg-slate-50 border border-slate-200 rounded-[2rem] hover:bg-white hover:border-emerald-500/50 cursor-pointer transition-all group/opt shadow-sm">
                 <input type="checkbox" formControlName="requerUsinagemFinal" class="w-6 h-6 bg-white border-slate-300 rounded text-emerald-600 focus:ring-emerald-500">
                 <div class="ml-5">
-                  <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-mono">Usinagem CNC Final</p>
-                  <p class="text-[9px] text-slate-400 mt-1 uppercase font-black tracking-tight opacity-70 italic">Retífica & Acabamento Subtrativo</p>
+                  <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-mono">{{ 'B2B.MOTOR.LABEL_CNC' | translate }}</p>
+                  <p class="text-[9px] text-slate-400 mt-1 uppercase font-black tracking-tight opacity-70 italic">{{ 'B2B.MOTOR.DESC_CNC' | translate }}</p>
                 </div>
               </label>
             </div>
@@ -187,8 +187,8 @@
             @if (orcamentoForm.controls.requerUsinagemFinal.value) {
               <div class="mt-8 p-10 bg-emerald-50 border border-emerald-100 rounded-[2rem] animate-fadeIn flex items-center justify-between shadow-inner">
                 <div>
-                  <label class="block text-[10px] font-black text-emerald-700 uppercase tracking-[0.2em] font-mono mb-1">Lead Time de Usinagem (minutos)</label>
-                  <p class="text-[9px] text-emerald-900/40 uppercase font-black font-mono italic">Cálculo baseado em volume de sobre-metal WAAM</p>
+                  <label class="block text-[10px] font-black text-emerald-700 uppercase tracking-[0.2em] font-mono mb-1">{{ 'B2B.MOTOR.LABEL_CNC_TIME' | translate }}</label>
+                  <p class="text-[9px] text-emerald-900/40 uppercase font-black font-mono italic">{{ 'B2B.MOTOR.DESC_CNC_TIME' | translate }}</p>
                 </div>
                 <input formControlName="tempoUsinagemMinutos" type="number"
                   class="w-32 bg-white text-emerald-900 px-6 py-4 rounded-xl border border-emerald-200 text-center font-black text-lg shadow-sm focus:border-emerald-500 focus:outline-none transition-all">
@@ -205,7 +205,7 @@
               } @else {
                 <i class="pi pi-spin pi-spinner text-2xl"></i>
               }
-              PROCESSAR BUDGET METROLÓGICO (IC/DC/AC)
+              {{ 'B2B.MOTOR.PROCESS_BTN' | translate }}
             </button>
           </div>
         </form>
@@ -219,7 +219,7 @@
           <div class="absolute -top-20 -right-20 w-48 h-48 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
           
           <div class="relative z-10">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 font-mono">Status do Pipeline</h3>
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 font-mono">{{ 'B2B.MOTOR.STATUS_TITLE' | translate }}</h3>
             
             <div class="flex gap-6 items-start">
               <div class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all duration-700 shadow-lg"
@@ -229,10 +229,10 @@
               
               <div class="flex-1">
                 <h4 class="text-slate-900 font-black text-lg tracking-tight leading-tight">
-                  {{ orcamentoForm.valid ? 'Cálculo Pronto' : 'Aguardando Dados' }}
+                  {{ orcamentoForm.valid ? ('B2B.MOTOR.STATUS_READY' | translate) : ('B2B.MOTOR.STATUS_WAITING' | translate) }}
                 </h4>
                 <p class="text-[11px] text-slate-500 mt-3 font-bold leading-relaxed italic opacity-80">
-                  {{ orcamentoForm.valid ? 'Motor metrológico calibrado e pronto para a síntese de custos.' : 'Necessário validação técnica dos campos obrigatórios (*) para liberar cálculo.' }}
+                  {{ orcamentoForm.valid ? ('B2B.MOTOR.STATUS_DESC_READY' | translate) : ('B2B.MOTOR.STATUS_DESC_WAITING' | translate) }}
                 </p>
               </div>
             </div>
@@ -260,11 +260,10 @@
         <div class="p-10 bg-blue-50/50 border border-blue-100 rounded-[2.5rem] text-center shadow-inner">
           <i class="pi pi-shield text-blue-600 text-xl mb-4 block"></i>
           <p class="text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] leading-relaxed">
-            Propriedade intelectual protegida.<br>
-            <span class="opacity-50">Algoritmo Metrológico InovaLayer v4.2</span>
+            {{ 'B2B.MOTOR.SEC_INTELLECTUAL' | translate }}<br>
+            <span class="opacity-50">{{ 'B2B.MOTOR.VERSION' | translate }}</span>
           </p>
         </div>
-
       </div>
     </div>
   </main>

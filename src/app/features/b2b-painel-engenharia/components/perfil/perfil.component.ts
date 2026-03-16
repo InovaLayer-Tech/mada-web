@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
-    <div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
-      <main class="max-w-4xl mx-auto mt-12 px-8">
-        <div class="bg-white rounded-[3.5rem] shadow-sm overflow-hidden border border-slate-200 relative group">
-          <!-- Premium Banner Light -->
-          <div class="h-64 bg-slate-100 relative overflow-hidden border-b border-slate-200">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl animate-pulse"></div>
+    <main class="max-w-4xl mx-auto mt-12 px-8 font-sans text-slate-700 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div class="bg-white rounded-[3.5rem] shadow-sm overflow-hidden border border-slate-200 relative group">
+        <!-- Premium Banner Light -->
+        <div class="h-64 bg-slate-50 relative overflow-hidden border-b border-slate-200">
+          <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl animate-pulse"></div>
             
             <div class="absolute -bottom-24 left-12 flex items-end gap-10">
               <div class="w-44 h-44 bg-white rounded-[3rem] p-4 shadow-xl border border-slate-100">
@@ -37,29 +37,29 @@ import { CommonModule } from '@angular/common';
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
               <div class="space-y-8">
                 <div>
-                   <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 font-mono">Bio Corporativa</h3>
+                   <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 font-mono">{{ 'B2B.PERFIL.BIO_TITLE' | translate }}</h3>
                    <p class="text-sm text-slate-500 leading-relaxed italic font-medium">
-                     Liderando a revolução da manufatura aditiva 4.0, focado em levar sistemas de deposição WAAM de alta taxa para a indústria pesada global.
+                     {{ 'B2B.PERFIL.BIO_CONTENT' | translate }}
                    </p>
                 </div>
                 
                 <div class="flex gap-4">
                   <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl flex-1 text-center shadow-inner">
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1 font-mono">Patentes</span>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1 font-mono">{{ 'B2B.PERFIL.PATENTS' | translate }}</span>
                     <span class="text-xl font-black text-slate-900 font-mono">08</span>
                   </div>
                   <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl flex-1 text-center shadow-inner">
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1 font-mono">Papers</span>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1 font-mono">{{ 'B2B.PERFIL.PAPERS' | translate }}</span>
                     <span class="text-xl font-black text-slate-900 font-mono">24</span>
                   </div>
                 </div>
               </div>
 
               <div class="space-y-8">
-                <div class="p-8 bg-slate-900 rounded-[2.5rem] relative overflow-hidden shadow-2xl shadow-slate-900/10">
-                  <div class="absolute -top-12 -left-12 w-48 h-48 bg-white/5 rounded-full blur-3xl"></div>
+                <div class="p-8 bg-blue-600 rounded-[2.5rem] relative overflow-hidden shadow-2xl shadow-blue-600/30">
+                  <div class="absolute -top-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
                   <p class="text-white text-base font-black italic relative z-10 text-center tracking-tight leading-relaxed">
-                    "Nossa missão é democratizar a alta performance na deposição metálica, unindo precisão metrológica e eficiência operacional."
+                    {{ 'B2B.PERFIL.QUOTE' | translate }}
                   </p>
                 </div>
               </div>
@@ -67,14 +67,14 @@ import { CommonModule } from '@angular/common';
 
             <!-- Team Divider Light -->
             <div class="mt-20 pt-10 border-t border-slate-100">
-              <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10 text-center font-mono font-bold">Liderança Executiva</h3>
+              <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10 text-center font-mono font-bold">{{ 'B2B.PERFIL.LEADERSHIP' | translate }}</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="p-8 bg-slate-50 border border-slate-200 rounded-[2.5rem] flex items-center gap-6 hover:border-blue-500/30 transition-all cursor-pointer group/co shadow-sm hover:shadow-lg">
                    <div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-2xl font-black text-slate-900 border border-slate-200 group-hover/co:scale-105 transition-transform">RI</div>
                    <div>
                      <p class="text-lg font-black text-slate-900 tracking-tight">Rafael Inova</p>
-                     <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1 font-mono">Founder & Technical Specialist</p>
+                     <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1 font-mono">Founder & {{ 'B2B.PERFIL.TECHNICAL_SPECIALIST' | translate }}</p>
                    </div>
                 </div>
               </div>
@@ -82,7 +82,6 @@ import { CommonModule } from '@angular/common';
           </div>
         </div>
       </main>
-    </div>
   `,
 })
 export class PerfilComponent {}

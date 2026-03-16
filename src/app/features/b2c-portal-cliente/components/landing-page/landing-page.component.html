@@ -7,78 +7,38 @@
     
     <div class="flex items-center gap-6">
       <div class="hidden md:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
-        <button class="px-4 py-2 bg-white shadow-sm rounded-xl text-[11px] font-black text-blue-600 flex items-center gap-2 border border-blue-100">
-          <span class="text-sm">🇧🇷</span> PT
+        <button (click)="setIdioma('PT')" 
+                [class.bg-white]="idiomaAtivo === 'PT'" [class.text-blue-600]="idiomaAtivo === 'PT'" [class.border-blue-100]="idiomaAtivo === 'PT'" [class.shadow-sm]="idiomaAtivo === 'PT'"
+                [class.hover:bg-white]="idiomaAtivo !== 'PT'" [class.text-slate-400]="idiomaAtivo !== 'PT'" [class.border-transparent]="idiomaAtivo !== 'PT'"
+                class="px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-2 border transition-all">
+          <span class="text-sm">🇧🇷</span> {{ 'NAV.PT' | translate }}
         </button>
-        <button class="px-4 py-2 hover:bg-white rounded-xl text-[11px] font-black text-slate-400 flex items-center gap-2 transition-all">
-          <span class="text-sm">🇺🇸</span> EN
+        <button (click)="setIdioma('EN')"
+                [class.bg-white]="idiomaAtivo === 'EN'" [class.text-blue-600]="idiomaAtivo === 'EN'" [class.border-blue-100]="idiomaAtivo === 'EN'" [class.shadow-sm]="idiomaAtivo === 'EN'"
+                [class.hover:bg-white]="idiomaAtivo !== 'EN'" [class.text-slate-400]="idiomaAtivo !== 'EN'" [class.border-transparent]="idiomaAtivo !== 'EN'"
+                class="px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-2 border transition-all">
+          <span class="text-sm">🇺🇸</span> {{ 'NAV.EN' | translate }}
         </button>
       </div>
 
-      <button (click)="login('b2b')" class="px-8 py-4 bg-slate-900 hover:bg-black text-white text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-xl shadow-slate-900/10">Acesso Administrativo</button>
+      <button (click)="login('cliente')" class="px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[11px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm">{{ 'NAV.B2C_LOGIN' | translate }}</button>
+      <button (click)="login('b2b')" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-blue-600/20">{{ 'NAV.B2B_LOGIN' | translate }}</button>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="relative pt-32 pb-40 px-8 overflow-hidden">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-      <!-- Content -->
-      <div class="lg:col-span-7 z-10">
-        <div class="flex items-center gap-6 mb-12">
+    <div class="max-w-5xl mx-auto text-center z-10 relative">
+        <div class="flex items-center justify-center gap-6 mb-12">
           <img src="assets/images/inovalayer-circulada.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow-2xl">
           <div class="h-10 w-px bg-slate-200"></div>
-          <span class="text-xs font-black text-slate-400 uppercase tracking-[0.5em] font-industrial-mono">3D Ecosystem</span>
+          <span class="text-xs font-black text-slate-400 uppercase tracking-[0.5em] font-industrial-mono">{{ 'LANDING.ECOSYSTEM' | translate }}</span>
         </div>
         
-        <h1 class="text-8xl lg:text-[10rem] font-black text-slate-900 leading-[0.8] tracking-tighter mb-12">
-          Manufatura <br> <span class="text-blue-600">Alta Taxa.</span>
-        </h1>
-        <p class="text-2xl text-slate-500 max-w-xl mb-16 leading-relaxed font-bold italic">
-          Software de metrologia avançada e inteligência de de custos para manufatura aditiva metálica industrial (WAAM).
+        <h1 class="text-8xl lg:text-[10rem] font-black text-slate-900 leading-[0.8] tracking-tighter mb-12" [innerHTML]="'LANDING.TITLE' | translate"></h1>
+        <p class="text-2xl text-slate-500 max-w-2xl mx-auto mb-16 leading-relaxed font-bold italic">
+          {{ 'LANDING.SUBTITLE' | translate }}
         </p>
-      </div>
-
-      <!-- Login Card Integrated -->
-      <div class="lg:col-span-5 relative z-10">
-        <div class="bg-white p-12 rounded-[3.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-100 relative overflow-hidden">
-          <div class="absolute -top-24 -right-24 w-60 h-60 bg-blue-50/50 rounded-full blur-3xl"></div>
-          
-          <div class="mb-10 text-center relative z-10">
-             <img src="assets/images/inovalayer-semfundo.png" alt="Logo" class="h-10 w-auto mx-auto mb-8">
-             <h2 class="text-3xl font-black text-slate-900 tracking-tight">Efetuar Login</h2>
-             <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-3 font-mono">Portal de Operações</p>
-          </div>
-          
-          <div class="space-y-6 relative z-10">
-            <!-- B2C Portal (Cliente) -->
-            <button (click)="login('cliente')" class="w-full flex items-center justify-between p-7 bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 rounded-3xl transition-all group text-left">
-              <div>
-                <p class="text-sm font-black text-slate-900 uppercase tracking-tight group-hover:text-blue-600">Portal do Cliente</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase font-mono">Solicitações e RFQ</p>
-              </div>
-              <div class="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center group-hover:border-blue-200 transition-all">
-                <i class="pi pi-arrow-right text-slate-300 group-hover:text-blue-600"></i>
-              </div>
-            </button>
-
-            <!-- B2B Portal (Back-Office) -->
-            <button (click)="login('b2b')" class="w-full flex items-center justify-between p-7 bg-slate-900 hover:bg-slate-800 rounded-3xl transition-all group text-left shadow-2xl shadow-slate-900/10">
-              <div>
-                <p class="text-sm font-black text-white uppercase tracking-tight">Painel de Engenharia</p>
-                <p class="text-[10px] font-bold text-slate-500 mt-1 uppercase font-mono">Back-Office & Auditoria</p>
-              </div>
-              <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:translate-x-1 transition-all">
-                <i class="pi pi-arrow-right text-white"></i>
-              </div>
-            </button>
-          </div>
-
-          <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-            <i class="pi pi-lock"></i>
-            Acesso Seguro InovaLayer 3D
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Background Industrial Image Hero -->
@@ -92,19 +52,19 @@
     <div class="max-w-7xl mx-auto px-8 grid grid-cols-2 lg:grid-cols-4 gap-12">
       <div class="text-center">
         <p class="text-4xl font-black text-slate-900 mb-2">+500</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Peças Produzidas</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.PARTS' | translate }}</p>
       </div>
       <div class="text-center">
         <p class="text-4xl font-black text-slate-900 mb-2">99%</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Aproveitamento</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.YIELD' | translate }}</p>
       </div>
       <div class="text-center">
         <p class="text-4xl font-black text-slate-900 mb-2">24h</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Resposta Técnica</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.RESPONSE' | translate }}</p>
       </div>
       <div class="text-center">
         <p class="text-4xl font-black text-slate-900 mb-2">B2B</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">Foco Industrial</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.FOCUS' | translate }}</p>
       </div>
     </div>
   </section>
@@ -118,18 +78,18 @@
            <div class="absolute inset-0 bg-blue-600/10"></div>
         </div>
         <div>
-          <h2 class="text-5xl font-black text-slate-900 tracking-tighter mb-8 leading-tight">Infraestrutura Escalonável <br> para Manufatura Aditiva.</h2>
+          <h2 class="text-5xl font-black text-slate-900 tracking-tighter mb-8 leading-tight" [innerHTML]="'LANDING.INFRA.TITLE' | translate"></h2>
           <p class="text-lg text-slate-500 mb-10 leading-relaxed font-medium">
-            Integramos hardware robótico de alta taxa com inteligência metrológica para garantir orçamentos competitivos e auditoria em tempo real.
+            {{ 'LANDING.INFRA.DESC' | translate }}
           </p>
           <div class="flex gap-4">
             <div class="p-6 bg-white border border-slate-200 rounded-3xl flex-1">
               <i class="pi pi-shield text-3xl text-blue-600 mb-4"></i>
-              <h3 class="text-sm font-black text-slate-900 uppercase">Qualidade ISO</h3>
+              <h3 class="text-sm font-black text-slate-900 uppercase">{{ 'LANDING.INFRA.QUALITY' | translate }}</h3>
             </div>
             <div class="p-6 bg-white border border-slate-200 rounded-3xl flex-1">
               <i class="pi pi-chart-line text-3xl text-blue-600 mb-4"></i>
-              <h3 class="text-sm font-black text-slate-900 uppercase">Otimização</h3>
+              <h3 class="text-sm font-black text-slate-900 uppercase">{{ 'LANDING.INFRA.OPT' | translate }}</h3>
             </div>
           </div>
         </div>
