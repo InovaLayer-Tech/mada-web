@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        'industrial-mono': ['JetBrains Mono', 'monospace'],
+      },
       colors: {
         'inova-blue': {
           500: '#3b82f6',

@@ -6,74 +6,108 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-      
-      <!-- Card: Arames -->
-      <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden group hover:shadow-xl hover:shadow-blue-200/20 transition-all">
-        <div class="px-10 py-7 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-          <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">{{ 'B2B.CATALOGO.SEC_WIRES' | translate }}</h2>
-          <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100">
-            <i class="pi pi-box text-blue-600 text-sm"></i>
+    <div class="overflow-x-auto w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Card: Arames -->
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all">
+          <div class="absolute -top-12 -right-12 w-48 h-48 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
+          
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-10">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 border border-blue-100">
+                  <i class="pi pi-box text-xl"></i>
+                </div>
+                <h2 class="text-xl font-black text-slate-900 tracking-tighter uppercase">Ligas Metálicas (Arames)</h2>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-separate border-spacing-y-3">
+                <thead>
+                  <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">
+                    <th class="px-6 pb-2">Material / Norma</th>
+                    <th class="px-6 pb-2">Status</th>
+                    <th class="px-6 pb-2 text-right">Custo/kg</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm font-black">
+                  <tr class="bg-slate-50 rounded-2xl border border-slate-100 group/row hover:bg-slate-900 hover:text-white transition-all">
+                    <td class="px-6 py-5 rounded-l-2xl">
+                      <p class="text-slate-900 group-hover/row:text-white">Aço Inoxidável 316L</p>
+                      <p class="text-[9px] text-slate-400 font-mono tracking-tighter">ER316LSi High-Grade</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-[9px] rounded-full border border-emerald-200">DISPONÍVEL</span>
+                    </td>
+                    <td class="px-6 py-5 rounded-r-2xl text-right font-mono">R$ 145,00</td>
+                  </tr>
+                  <tr class="bg-slate-50 rounded-2xl border border-slate-100 group/row hover:bg-slate-900 hover:text-white transition-all">
+                    <td class="px-6 py-5 rounded-l-2xl">
+                      <p class="text-slate-900 group-hover/row:text-white">Titânio Grau 5</p>
+                      <p class="text-[9px] text-slate-400 font-mono tracking-tighter">Ti-6Al-4V ELI</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-[9px] rounded-full border border-emerald-200">DISPONÍVEL</span>
+                    </td>
+                    <td class="px-6 py-5 rounded-r-2xl text-right font-mono">R$ 890,00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-        <div class="p-6">
-          <div class="space-y-3">
-            @for (item of aramesMock; track item.id) {
-              <div class="flex justify-between items-center p-6 bg-slate-50 hover:bg-white border border-transparent hover:border-blue-100 rounded-[2rem] transition-all group/item shadow-sm hover:shadow-lg">
-                <div class="flex items-center gap-5">
-                  <div class="w-12 h-12 bg-white text-blue-600 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm group-hover/item:bg-blue-600 group-hover/item:text-white transition-all border border-blue-50">
-                    {{ item.id.substring(0,2).toUpperCase() }}
-                  </div>
-                  <div>
-                    <h3 class="text-base font-black text-slate-900 tracking-tight">{{ item.nome }}</h3>
-                    <p class="text-[9px] font-black text-slate-700 uppercase tracking-widest mt-1 opacity-80">{{ 'B2B.CATALOGO.UNIT_PRICE_BY' | translate }} {{ item.unit }}</p>
-                  </div>
+
+        <!-- Card: Gases -->
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all">
+          <div class="absolute -top-12 -right-12 w-48 h-48 bg-slate-50 rounded-full blur-3xl group-hover:bg-slate-100 transition-all"></div>
+          
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-10">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 border border-slate-100">
+                  <i class="pi pi-filter text-xl"></i>
                 </div>
-                <div class="flex items-center gap-8">
-                  <span class="text-xl font-black text-slate-900 font-industrial-mono tracking-tighter">{{ item.precoKg | currency:'BRL' }}</span>
-                  <button (click)="editarPreco(item)" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-all">
-                    <i class="pi pi-pencil text-sm"></i>
-                  </button>
-                </div>
+                <h2 class="text-xl font-black text-slate-900 tracking-tighter uppercase">Atmosfera (Gases)</h2>
               </div>
-            }
+            </div>
+
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-separate border-spacing-y-3">
+                <thead>
+                  <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">
+                    <th class="px-6 pb-2">Tipo de Gás</th>
+                    <th class="px-6 pb-2">Status</th>
+                    <th class="px-6 pb-2 text-right">Custo/m³</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm font-black">
+                  <tr class="bg-slate-50 rounded-2xl border border-slate-100 group/row hover:bg-slate-900 hover:text-white transition-all">
+                    <td class="px-6 py-5 rounded-l-2xl">
+                      <p class="text-slate-900 group-hover/row:text-white">Argônio 5.0 (Puro)</p>
+                      <p class="text-[9px] text-slate-400 font-mono tracking-tighter">Cilindro T-50</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-[9px] rounded-full border border-emerald-200">ESTOQUE ALTO</span>
+                    </td>
+                    <td class="px-6 py-5 rounded-r-2xl text-right font-mono">R$ 12,50</td>
+                  </tr>
+                  <tr class="bg-slate-50 rounded-2xl border border-slate-100 group/row hover:bg-slate-900 hover:text-white transition-all">
+                    <td class="px-6 py-5 rounded-l-2xl">
+                      <p class="text-slate-900 group-hover/row:text-white">Mistura Ar/CO2 (M21)</p>
+                      <p class="text-[9px] text-slate-400 font-mono tracking-tighter">MAG Welding Standard</p>
+                    </td>
+                    <td class="px-6 py-5">
+                      <span class="px-3 py-1 bg-amber-100 text-amber-600 text-[9px] rounded-full border border-amber-200">ESTOQUE BAIXO</span>
+                    </td>
+                    <td class="px-6 py-5 rounded-r-2xl text-right font-mono">R$ 8,90</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Card: Gases -->
-      <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden group hover:shadow-xl hover:shadow-indigo-200/20 transition-all">
-        <div class="px-10 py-7 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-          <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">{{ 'B2B.CATALOGO.SEC_GASES' | translate }}</h2>
-          <div class="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-            <i class="pi pi-cloud text-indigo-600 text-sm"></i>
-          </div>
-        </div>
-        <div class="p-6">
-          <div class="space-y-3">
-            @for (item of gasesMock; track item.id) {
-              <div class="flex justify-between items-center p-6 bg-slate-50 hover:bg-white border border-transparent hover:border-indigo-100 rounded-[2rem] transition-all group/item shadow-sm hover:shadow-lg">
-                <div class="flex items-center gap-5">
-                  <div class="w-12 h-12 bg-white text-indigo-600 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm group-hover/item:bg-indigo-600 group-hover/item:text-white transition-all border border-indigo-50 font-industrial-mono">
-                    {{ item.id.substring(0,2).toUpperCase() }}
-                  </div>
-                  <div>
-                    <h3 class="text-base font-black text-slate-900 tracking-tight">{{ item.nome }}</h3>
-                    <p class="text-[9px] font-black text-slate-700 uppercase tracking-widest mt-1 opacity-80">{{ 'B2B.CATALOGO.UNIT_PRICE' | translate }} {{ item.unit }}</p>
-                  </div>
-                </div>
-                <div class="flex items-center gap-8">
-                  <span class="text-xl font-black text-slate-900 font-industrial-mono tracking-tighter">{{ item.precoM3 | currency:'BRL' }}</span>
-                  <button (click)="editarPreco(item)" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all">
-                    <i class="pi pi-pencil text-sm"></i>
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-
     </div>
 
     <div class="mt-16 p-10 bg-white border border-slate-200 rounded-[3rem] shadow-sm text-center">

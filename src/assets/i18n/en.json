@@ -67,6 +67,9 @@
     "MOTOR": {
       "TITLE": "Metrological Engine (WAAM)",
       "SUBTITLE": "Industrial Deposition Parameters Processing",
+      "SEC_LINK_RFQ": "Link Client Request",
+      "DESC_LINK_RFQ": "Select a pending RFQ to load parameters automatically",
+      "SELECT_RFQ_PLACEHOLDER": "Select an RFQ from the queue...",
       "RESUMO": "Client Request Summary (RFQ)",
       "MATERIAL_BASE": "Base Material",
       "ACABAMENTO": "Desired Finish",
@@ -116,7 +119,21 @@
     "CATALOGO": {
       "TITLE": "Supplies Catalog",
       "SUBTITLE": "WAAM raw material & consumables inventory",
-      "NEW_BTN": "New Supply"
+      "NEW_BTN": "New Supply",
+      "TABLE": {
+        "SPEC": "Technical Specification",
+        "COST_KG": "Cost ($/kg)",
+        "COST_M3": "Cost ($/m³)",
+        "DENSITY": "Density (g/cm³)",
+        "EFFICIENCY": "Yield Rate",
+        "FLOW": "Rec. Flow (L/min)",
+        "STATUS": "Status",
+        "ACTIONS": "Actions",
+        "ACTIVE": "Active",
+        "INACTIVE": "Inactive",
+        "WIRES_SECTION": "Consumables (Metallic Wires)",
+        "GASES_SECTION": "Protection (Atmospheric Gases)"
+      }
     },
     "CONFIG": {
       "TITLE": "Global Rules & Rates",

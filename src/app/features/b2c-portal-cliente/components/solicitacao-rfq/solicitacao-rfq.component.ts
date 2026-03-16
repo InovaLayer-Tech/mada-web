@@ -2,12 +2,12 @@ import { Component, inject } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-solicitacao-rfq',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, RouterLink],
   templateUrl: './solicitacao-rfq.component.html'
 })
 export class SolicitacaoRfqComponent {
@@ -18,6 +18,7 @@ export class SolicitacaoRfqComponent {
     empresa: ['', Validators.required],
     contato: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
+    quantidade: [1, [Validators.required, Validators.min(1)]],
     arquivo3d: [null as File | null],
     
     // Configurações Técnicas

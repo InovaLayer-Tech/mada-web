@@ -47,11 +47,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
         <div class="mt-auto p-8 relative z-10">
            <a routerLink="/b2b/perfil" class="flex items-center gap-4 p-4 bg-slate-50 rounded-[1.5rem] border border-slate-200/50 hover:border-blue-200 transition-all group overflow-hidden relative">
-             <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg">
-               V
+             <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xs shadow-lg">
+               V / R
              </div>
              <div class="flex-1 overflow-hidden">
-               <p class="text-sm font-black text-slate-900 truncate">Vinicius Rafael</p>
+               <p class="text-base font-black text-slate-900 truncate">Vinicius / Rafael</p>
                <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest truncate font-mono">CEO & Founder</p>
              </div>
              <i class="pi pi-chevron-right text-[10px] text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>

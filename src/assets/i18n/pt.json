@@ -67,6 +67,9 @@
     "MOTOR": {
       "TITLE": "Motor Metrológico (WAAM)",
       "SUBTITLE": "Processamento de Parâmetros de Deposição Industrial",
+      "SEC_LINK_RFQ": "Vincular Solicitação do Cliente",
+      "DESC_LINK_RFQ": "Selecione um RFQ pendente para carregar os parâmetros automaticamente",
+      "SELECT_RFQ_PLACEHOLDER": "Selecione um RFQ na fila...",
       "RESUMO": "Resumo do Pedido do Cliente (RFQ)",
       "MATERIAL_BASE": "Material de Base",
       "ACABAMENTO": "Acabamento Desejado",
@@ -116,7 +119,21 @@
     "CATALOGO": {
       "TITLE": "Catálogo de Insumos",
       "SUBTITLE": "Inventário de matéria-prima & consumíveis WAAM",
-      "NEW_BTN": "Novo Insumo"
+      "NEW_BTN": "Novo Insumo",
+      "TABLE": {
+        "SPEC": "Especificação Técnica",
+        "COST_KG": "Custo (R$/kg)",
+        "COST_M3": "Custo (R$/m³)",
+        "DENSITY": "Densidade (g/cm³)",
+        "EFFICIENCY": "T. Eficiência",
+        "FLOW": "Vazão Rec. (L/min)",
+        "STATUS": "Status",
+        "ACTIONS": "Ações",
+        "ACTIVE": "Ativo",
+        "INACTIVE": "Inativo",
+        "WIRES_SECTION": "Consumíveis (Arames Metálicos)",
+        "GASES_SECTION": "Proteção (Gases Atmosféricos)"
+      }
     },
     "CONFIG": {
       "TITLE": "Regras e Taxas Globais",

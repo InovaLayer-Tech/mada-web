@@ -52,12 +52,62 @@ export class MotorMetrologicoComponent {
   erroApi: ProblemDetail | null = null;
   isSubmitting = false;
 
+  pendingRfqsMock = [
+    { 
+      id: 'REQ-2026-001', 
+      cliente: 'AeroParts S.A.', 
+      material: 'Titânio Grado 5', 
+      acabamento: 'Usinagem de Precisão', 
+      tratamento: 'Sem Tratamento', 
+      dimensoes: '120 x 80 x 45 mm',
+      quantidade: 5 
+    },
+    { 
+      id: 'REQ-2026-002', 
+      cliente: 'MetalMec Brasil', 
+      material: 'Inconel 718', 
+      acabamento: 'Faces de Contato', 
+      tratamento: 'Alívio de Tensões', 
+      dimensoes: '250 x 250 x 100 mm',
+      quantidade: 2 
+    },
+    { 
+      id: 'REQ-2026-003', 
+      cliente: 'InovaTech Labs', 
+      material: 'Aço Inox 316L', 
+      acabamento: 'Bruto de Deposição', 
+      tratamento: 'Nenhum', 
+      dimensoes: '450 x 200 x 150 mm',
+      quantidade: 1 
+    }
+  ];
+
   rfqDetails = {
-    material: 'Aço Inoxidável 316L',
-    acabamento: 'Usinagem de Faces de Contato',
-    tratamentoTermico: 'Sim (Alívio de Tensões)',
-    dimensoes: '450 x 200 x 150 mm'
+    material: '---',
+    acabamento: '---',
+    tratamentoTermico: '---',
+    dimensoes: '---'
   };
+
+  carregarDadosRfq(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const rfqId = select.value;
+    const rfq = this.pendingRfqsMock.find(r => r.id === rfqId);
+    
+    if (rfq) {
+      this.rfqDetails = {
+        material: rfq.material,
+        acabamento: rfq.acabamento,
+        tratamentoTermico: rfq.tratamento,
+        dimensoes: rfq.dimensoes
+      };
+      
+      this.orcamentoForm.patchValue({
+        identificacaoPeca: rfq.id,
+        quantidadeRequerida: rfq.quantidade
+      });
+    }
+  }
 
   constructor() {
     this.monitorarMudancasServicos();
@@ -114,23 +164,16 @@ export class MotorMetrologicoComponent {
     this.isSubmitting = true;
     this.erroApi = null;
 
-    // Extrai o DTO validado
-    const payload: OrcamentoRequestDTO = this.orcamentoForm.getRawValue() as unknown as OrcamentoRequestDTO;
+    // Simulação do Cálculo Metrológico para Demonstração
+    setTimeout(() => {
+      this.isSubmitting = false;
+      this.router.navigate(['/b2b/auditoria']);
+    }, 800);
 
-    this.orcamentoService.submeterOrcamento(payload)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response: OrcamentoResponseDTO) => {
-          console.log('Orçamento Gerado com Sucesso', response.id);
-          this.isSubmitting = false;
-          // Navegação com passagem de estado (Router State) para o Dashboard de Auditoria
-          this.router.navigate(['/b2b/auditoria'], { state: { orcamento: response } });
-        },
-        error: (err: ProblemDetail) => {
-          console.error('Falha de Regra de Negócio (RFC 7807):', err);
-          this.erroApi = err;
-          this.isSubmitting = false;
-        }
-      });
+    /* 
+    // Código original mantido para futura integração real
+    const payload: OrcamentoRequestDTO = this.orcamentoForm.getRawValue() as unknown as OrcamentoRequestDTO;
+    ...
+    */
   }
 }
