@@ -6,103 +6,106 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-950 text-slate-300">
+    <div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
       <main class="max-w-7xl mx-auto mt-12 px-8">
-        <div class="mb-12 flex justify-between items-end">
+        <div class="mb-10 flex justify-between items-end border-b border-slate-200 pb-10">
           <div>
-            <h1 class="text-4xl font-black text-white tracking-tighter">Catálogo de Insumos</h1>
-            <p class="text-slate-500 mt-1 italic">Gestão de matérias-primas e gases para deposição WAAM.</p>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Catálogo de Insumos</h1>
+            <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mt-3 font-industrial-mono opacity-80">Inventário de Matéria-Prima & Consumíveis WAAM</p>
           </div>
-          <button class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-2xl text-[10px] font-black text-white uppercase tracking-widest shadow-lg shadow-blue-600/20 active:translate-y-0.5 transition-all flex items-center gap-2">
-            <i class="pi pi-plus text-xs"></i>
+          <button class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-xl shadow-blue-600/20 active:scale-95 flex items-center gap-3">
+            <i class="pi pi-plus"></i>
             Novo Insumo
           </button>
         </div>
 
-        <!-- Tabela de Arames Dark -->
+        <!-- Tabela de Arames Light -->
         <section class="mb-16">
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-1.5 h-6 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.4)]"></div>
-            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-mono">Consumíveis (Arames Metálicos)</h2>
+            <div class="w-2 h-6 bg-blue-600 rounded-full shadow-[0_0_8px_rgba(37,99,235,0.4)]"></div>
+            <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">Consumíveis (Arames Metálicos)</h2>
           </div>
           
-          <div class="bg-slate-900 border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
+          <div class="bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-sm">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-white/5 bg-white/5">
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Especificação Técnica</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Custo (R$/kg)</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-mono">Densidade</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-mono">Taxa Perda</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right font-mono">Ações</th>
+                <tr class="border-b border-slate-100 bg-slate-50/50">
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono">Especificação Técnica</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono">Custo (R$/kg)</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-industrial-mono">Densidade (g/cm³)</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-industrial-mono">T. Eficiência</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-industrial-mono">Status</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right font-industrial-mono">Ações</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-white/5">
-                <tr class="hover:bg-white/5 transition-colors group">
-                  <td class="px-8 py-6">
-                    <p class="text-sm font-black text-white">Aço Inoxidável 316L (ER316LSi)</p>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase font-mono">AISI 316L / 1.4430</p>
-                  </td>
-                  <td class="px-8 py-6 text-sm font-black text-blue-400 font-mono">R$ 55,00</td>
-                  <td class="px-8 py-6 text-sm text-center font-bold text-slate-400 italic">8.00</td>
-                  <td class="px-8 py-6 text-center">
-                    <span class="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md text-[10px] font-black border border-blue-500/20">2.5%</span>
-                  </td>
-                  <td class="px-8 py-6 text-right">
-                    <button class="text-slate-500 hover:text-blue-400 transition-colors p-2"><i class="pi pi-pencil"></i></button>
-                    <button class="text-slate-500 hover:text-red-400 transition-colors p-2"><i class="pi pi-trash"></i></button>
-                  </td>
-                </tr>
-                <tr class="hover:bg-white/5 transition-colors group">
-                  <td class="px-8 py-6">
-                    <p class="text-sm font-black text-white">Aço Carbono ER70S-6</p>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase font-mono">AWS A5.18 ER70S-6</p>
-                  </td>
-                  <td class="px-8 py-6 text-sm font-black text-blue-400 font-mono">R$ 18,50</td>
-                  <td class="px-8 py-6 text-sm text-center font-bold text-slate-400 italic">7.85</td>
-                  <td class="px-8 py-6 text-center">
-                    <span class="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md text-[10px] font-black border border-blue-500/20">3.0%</span>
-                  </td>
-                  <td class="px-8 py-6 text-right">
-                    <button class="text-slate-500 hover:text-blue-400 transition-colors p-2"><i class="pi pi-pencil"></i></button>
-                    <button class="text-slate-500 hover:text-red-400 transition-colors p-2"><i class="pi pi-trash"></i></button>
-                  </td>
-                </tr>
+              <tbody class="divide-y divide-slate-100">
+                @for (item of aramesMock; track item.id) {
+                  <tr class="hover:bg-slate-50/80 transition-colors group">
+                    <td class="px-8 py-6">
+                      <p class="text-sm font-black text-slate-900">{{ item.nome }}</p>
+                      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 font-industrial-mono">{{ item.sigla }}</p>
+                    </td>
+                    <td class="px-8 py-6 text-sm font-black text-blue-600 font-industrial-mono">R$ {{ item.preco.toFixed(2) }}</td>
+                    <td class="px-8 py-6 text-sm text-center font-black text-slate-600 font-industrial-mono">{{ item.densidade.toFixed(2) }}</td>
+                    <td class="px-8 py-6 text-center">
+                      <span class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black border border-blue-100 font-industrial-mono shadow-sm">{{ item.eficiencia }}%</span>
+                    </td>
+                    <td class="px-8 py-6 text-center">
+                      <span class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-xl border shadow-sm font-industrial-mono"
+                            [ngClass]="item.ativo ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'">
+                        {{ item.ativo ? 'Ativo' : 'Inativo' }}
+                      </span>
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                      <button class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-100 transition-all shadow-sm mr-2"><i class="pi pi-pencil text-sm"></i></button>
+                      <button class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 transition-all shadow-sm"><i class="pi pi-trash text-sm"></i></button>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
         </section>
 
-        <!-- Tabela de Gases Dark -->
+        <!-- Tabela de Gases Light -->
         <section>
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-1.5 h-6 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
-            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-mono">Proteção (Gases Atmosféricos)</h2>
+            <div class="w-2 h-6 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div>
+            <h2 class="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] font-industrial-mono">Proteção (Gases Atmosféricos)</h2>
           </div>
           
-          <div class="bg-slate-900 border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
+          <div class="bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-sm">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-white/5 bg-white/5">
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Mistura / Gás</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Custo (R$/m³)</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-mono">Vazão (L/min)</th>
-                  <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right font-mono">Ações</th>
+                <tr class="border-b border-slate-100 bg-slate-50/50">
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono">Mistura / Gás</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono">Custo (R$/m³)</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-industrial-mono">Vazão Rec. (L/min)</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center font-industrial-mono">Status</th>
+                  <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right font-industrial-mono">Ações</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-white/5">
-                <tr class="hover:bg-white/5 transition-colors group">
-                  <td class="px-8 py-6">
-                    <p class="text-sm font-black text-white">Argônio 98% + CO2 2%</p>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase font-mono">Inel-3 (WAAM Premium)</p>
-                  </td>
-                  <td class="px-8 py-6 text-sm font-black text-emerald-400 font-mono">R$ 12,40</td>
-                  <td class="px-8 py-6 text-sm text-center font-bold text-slate-400 italic">15</td>
-                  <td class="px-8 py-6 text-right">
-                    <button class="text-slate-500 hover:text-blue-400 transition-colors p-2"><i class="pi pi-pencil"></i></button>
-                    <button class="text-slate-500 hover:text-red-400 transition-colors p-2"><i class="pi pi-trash"></i></button>
-                  </td>
-                </tr>
+              <tbody class="divide-y divide-slate-100">
+                @for (item of gasesMock; track item.id) {
+                  <tr class="hover:bg-slate-50/80 transition-colors group">
+                    <td class="px-8 py-6">
+                      <p class="text-sm font-black text-slate-900">{{ item.nome }}</p>
+                      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 font-industrial-mono">{{ item.sigla }}</p>
+                    </td>
+                    <td class="px-8 py-6 text-sm font-black text-indigo-600 font-industrial-mono">R$ {{ item.preco.toFixed(2) }}</td>
+                    <td class="px-8 py-6 text-sm text-center font-black text-slate-600 font-industrial-mono">{{ item.vazaoGas }}</td>
+                    <td class="px-8 py-6 text-center">
+                      <span class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-xl border shadow-sm font-industrial-mono"
+                            [ngClass]="item.ativo ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'">
+                        {{ item.ativo ? 'Ativo' : 'Inativo' }}
+                      </span>
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                      <button class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-100 transition-all shadow-sm mr-2"><i class="pi pi-pencil text-sm"></i></button>
+                      <button class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 transition-all shadow-sm"><i class="pi pi-trash text-sm"></i></button>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
@@ -111,4 +114,16 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
-export class CatalogoInsumosComponent {}
+export class CatalogoInsumosComponent {
+  aramesMock = [
+    { id: '1', nome: 'Aço Inoxidável 316L (ER316LSi)', sigla: 'AISI 316L / 1.4430', preco: 55.00, densidade: 8.00, eficiencia: 97.5, ativo: true },
+    { id: '2', nome: 'Aço Carbono ER70S-6', sigla: 'AWS A5.18 ER70S-6', preco: 18.50, densidade: 7.85, eficiencia: 95.0, ativo: true },
+    { id: '3', nome: 'Liga Aeroespacial Titanium Grade 5', sigla: 'Ti-6Al-4V', preco: 450.00, densidade: 4.43, eficiencia: 99.0, ativo: false }
+  ];
+
+  gasesMock = [
+    { id: '1', nome: 'Argônio 98% + CO2 2%', sigla: 'Inel-3 (WAAM Premium)', preco: 12.40, vazaoGas: 15, ativo: true },
+    { id: '2', nome: 'Argônio 100% Puro', sigla: 'Ar 5.0 Industrial', preco: 18.20, vazaoGas: 18, ativo: true }
+  ];
+}
+

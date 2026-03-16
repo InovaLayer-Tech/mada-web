@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,12 +20,12 @@ html,
 body {
   height: 100%;
   margin: 0;
-  /* Utilização de fontes do sistema para máxima performance e legibilidade */
-  font-family:
-    'Inter',
-    system-ui,
-    -apple-system,
-    sans-serif;
-  /* Fundo ligeiramente cinzento (Slate 50) para reduzir o cansaço visual em ambiente industrial */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: #f8fafc;
+}
+
+/* Utilitários Tipográficos Industriais */
+.font-industrial-mono {
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.025em;
 }

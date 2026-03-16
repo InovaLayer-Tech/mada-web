@@ -13,6 +13,16 @@ import { OrcamentoResponseDTO } from '../../../../core/models/orcamento-response
 export class DashboardAuditoriaComponent {
   private router = inject(Router);
 
+  faseAberta: string | null = 'dc';
+
+  toggleFase(fase: string) {
+    if (this.faseAberta === fase) {
+      this.faseAberta = null;
+    } else {
+      this.faseAberta = fase;
+    }
+  }
+
   // IA: Metodologia WAAM - Objeto Mock Estático para Prototipagem
   orcamentoMock = {
     id: 'REQ-2026-001',
@@ -46,8 +56,8 @@ export class DashboardAuditoriaComponent {
         subtotal: 1280.50,
         detalhes: [
           { sigla: 'AC4', descricao: 'Fatiamento CAD/CAM (Software/Engenharia)', valor: 450.00 },
-          { sigla: 'AC7', descricao: 'Parametrização Térmica e Metalúrgica', valor: 330.50 },
-          { sigla: 'AC8', descricao: 'Usinagem CNC de Acabamento', valor: 500.00 }
+          { sigla: 'AC7', descricao: 'Tratamento Térmico (Alívio de Tensões)', valor: 330.50 },
+          { sigla: 'AC8', descricao: 'Usinagem de Precisão CNC', valor: 500.00 }
         ]
       }
     }

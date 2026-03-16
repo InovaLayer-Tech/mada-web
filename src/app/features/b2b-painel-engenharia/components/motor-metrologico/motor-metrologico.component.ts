@@ -51,6 +51,13 @@ export class MotorMetrologicoComponent {
   erroApi: ProblemDetail | null = null;
   isSubmitting = false;
 
+  rfqDetails = {
+    material: 'Aço Inoxidável 316L',
+    acabamento: 'Usinagem de Faces de Contato',
+    tratamentoTermico: 'Sim (Alívio de Tensões)',
+    dimensoes: '450 x 200 x 150 mm'
+  };
+
   constructor() {
     this.monitorarMudancasServicos();
     this.monitorarEntradaJson();

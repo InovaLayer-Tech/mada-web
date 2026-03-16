@@ -9,41 +9,55 @@ import { RouterModule } from '@angular/router';
   template: `
     <div class="flex h-screen bg-slate-50 overflow-hidden font-sans">
       <!-- Sidebar B2C -->
-      <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shadow-xl z-20">
+      <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shadow-sm z-20">
         <div class="p-8">
-          <div class="mb-12 flex items-center justify-center">
-            <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer 3D" class="h-20 w-auto drop-shadow-md">
+          <div class="mb-12 flex items-center">
+            <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer 3D" class="h-8 w-auto">
           </div>
 
-          <nav class="space-y-2">
-            <a routerLink="/cliente/dashboard" routerLinkActive="bg-blue-50 text-blue-600 border-blue-200" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-black transition-all border border-transparent hover:bg-slate-50 text-slate-500 hover:text-slate-900">
-              <i class="pi pi-home text-lg"></i>
-              <span>Dashboard</span>
+          <nav class="space-y-4">
+            <a routerLink="/cliente/dashboard" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[14px] font-black transition-all border border-transparent hover:bg-slate-50 text-slate-600 hover:text-slate-900">
+              <i class="pi pi-home text-xl"></i>
+              <span>Dashboard Principal</span>
             </a>
-            <a routerLink="/cliente/rfq" routerLinkActive="bg-blue-50 text-blue-600 border-blue-200" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-black transition-all border border-transparent hover:bg-slate-50 text-slate-500 hover:text-slate-900">
-              <i class="pi pi-file-plus text-lg"></i>
-              <span>Solicitar RFQ</span>
+            <a routerLink="/cliente/rfq" routerLinkActive="bg-blue-50 text-blue-700 border-blue-200 shadow-sm" class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[14px] font-black transition-all border border-transparent hover:bg-slate-50 text-slate-600 hover:text-slate-900">
+              <i class="pi pi-file-plus text-xl"></i>
+              <span>Solicitar Orçamento RFQ</span>
             </a>
           </nav>
 
-          <!-- Seletor de Idiomas -->
+          <!-- Seletor de Idiomas Reativo -->
           <div class="mt-12 pt-8 border-t border-slate-100">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Idioma / Language</span>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block font-mono">Global Language</span>
             <div class="flex gap-2">
-              <button class="flex-1 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs font-black text-blue-600 flex items-center justify-center gap-2 uppercase tracking-tighter shadow-sm shadow-blue-600/5">
-                <span class="text-lg">🇧🇷</span> PT
+              <button (click)="setIdioma('PT')"
+                      [class.bg-blue-50]="idiomaAtivo === 'PT'"
+                      [class.text-blue-600]="idiomaAtivo === 'PT'"
+                      [class.border-blue-200]="idiomaAtivo === 'PT'"
+                      [class.bg-white]="idiomaAtivo !== 'PT'"
+                      [class.text-slate-400]="idiomaAtivo !== 'PT'"
+                      [class.border-slate-200]="idiomaAtivo !== 'PT'"
+                      class="flex-1 py-2 border rounded-lg text-[10px] font-black transition-all flex items-center justify-center gap-2 uppercase tracking-tighter hover:bg-slate-50">
+                <span class="text-sm">🇧🇷</span> PT
               </button>
-              <button class="flex-1 py-2 bg-white border border-slate-200 rounded-lg text-xs font-black text-slate-400 hover:border-blue-200 hover:text-blue-500 transition-all flex items-center justify-center gap-2 uppercase tracking-tighter whitespace-nowrap">
-                <span class="text-lg">🇺🇸</span> EN
+              <button (click)="setIdioma('EN')"
+                      [class.bg-blue-50]="idiomaAtivo === 'EN'"
+                      [class.text-blue-600]="idiomaAtivo === 'EN'"
+                      [class.border-blue-200]="idiomaAtivo === 'EN'"
+                      [class.bg-white]="idiomaAtivo !== 'EN'"
+                      [class.text-slate-400]="idiomaAtivo !== 'EN'"
+                      [class.border-slate-200]="idiomaAtivo !== 'EN'"
+                      class="flex-1 py-2 border rounded-lg text-[10px] font-black transition-all flex items-center justify-center gap-2 uppercase tracking-tighter hover:bg-slate-50">
+                <span class="text-sm">🇺🇸</span> EN
               </button>
             </div>
           </div>
         </div>
 
         <div class="mt-auto p-8 border-t border-slate-100">
-           <a routerLink="/" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-black transition-all text-red-400 hover:bg-red-50 hover:text-red-600">
+           <a routerLink="/" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-black transition-all text-red-500 hover:bg-red-50 hover:text-red-700">
               <i class="pi pi-sign-out text-lg"></i>
-              <span>Sair</span>
+              <span>Sair do Sistema</span>
             </a>
         </div>
       </aside>
@@ -52,16 +66,16 @@ import { RouterModule } from '@angular/router';
       <main class="flex-1 overflow-y-auto relative bg-slate-50">
         <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between px-10">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Portal do Cliente</span>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">InovaLayer 3D Portal do Cliente</span>
           </div>
           <div class="flex items-center gap-4">
             <a routerLink="/cliente/perfil" class="flex items-center gap-3 group">
               <div class="text-right hidden sm:block">
-                <p class="text-xs font-black text-slate-900 leading-none">Cliente InovaLayer</p>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Gestão de Conta</p>
+                <p class="text-xs font-black text-slate-900 leading-none">Cliente Principal</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Gestão Corporativa</p>
               </div>
-              <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200 group-hover:border-blue-500 transition-all">
-                <i class="pi pi-user text-slate-400 group-hover:text-blue-500"></i>
+              <div class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100 group-hover:border-blue-500 transition-all">
+                <img src="assets/images/inovalayer-circulada.png" class="w-6 h-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity">
               </div>
             </a>
           </div>
@@ -74,4 +88,10 @@ import { RouterModule } from '@angular/router';
     </div>
   `
 })
-export class B2cLayoutComponent {}
+export class B2cLayoutComponent {
+  idiomaAtivo = 'PT';
+
+  setIdioma(idioma: string) {
+    this.idiomaAtivo = idioma;
+  }
+}

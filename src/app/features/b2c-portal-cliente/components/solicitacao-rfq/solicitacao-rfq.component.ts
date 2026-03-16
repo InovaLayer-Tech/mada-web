@@ -18,7 +18,11 @@ export class SolicitacaoRfqComponent {
     contato: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     materialDesejado: ['', Validators.required],
+    finalidade: ['', Validators.required],
+    tratamentoTermico: [false],
+    acabamento: ['', Validators.required],
     urgencia: ['Padrao', Validators.required],
+    condicoesTrabalho: [''],
     requisitosTecnicos: [''],
     arquivo3d: [null as File | null]
   });
