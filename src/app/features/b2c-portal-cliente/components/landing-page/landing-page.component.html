@@ -1,99 +1,148 @@
 <div class="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30">
-  <!-- Navbar (Simplified) -->
+  <!-- Navbar Original Identity -->
   <nav class="w-full px-8 py-6 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 flex justify-between items-center shadow-sm">
     <div class="flex items-center gap-3">
-      <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer 3D" class="h-12 w-auto">
+      <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer3D" class="h-12 w-auto">
+      <div class="h-8 w-px bg-slate-200 mx-2"></div>
+      <span class="text-xl font-black tracking-tighter text-slate-900 font-industrial">InovaLayer<span class="text-blue-600">3D</span></span>
     </div>
     
     <div class="flex items-center gap-6">
       <div class="hidden md:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
         <button (click)="setIdioma('PT')" 
                 [class.bg-white]="idiomaAtivo === 'PT'" [class.text-blue-600]="idiomaAtivo === 'PT'" [class.border-blue-100]="idiomaAtivo === 'PT'" [class.shadow-sm]="idiomaAtivo === 'PT'"
-                [class.hover:bg-white]="idiomaAtivo !== 'PT'" [class.text-slate-400]="idiomaAtivo !== 'PT'" [class.border-transparent]="idiomaAtivo !== 'PT'"
                 class="px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-2 border transition-all">
-          <span class="text-sm">🇧🇷</span> {{ 'NAV.PT' | translate }}
+          <span class="text-sm">🇧🇷</span> PT
         </button>
         <button (click)="setIdioma('EN')"
                 [class.bg-white]="idiomaAtivo === 'EN'" [class.text-blue-600]="idiomaAtivo === 'EN'" [class.border-blue-100]="idiomaAtivo === 'EN'" [class.shadow-sm]="idiomaAtivo === 'EN'"
-                [class.hover:bg-white]="idiomaAtivo !== 'EN'" [class.text-slate-400]="idiomaAtivo !== 'EN'" [class.border-transparent]="idiomaAtivo !== 'EN'"
                 class="px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-2 border transition-all">
-          <span class="text-sm">🇺🇸</span> {{ 'NAV.EN' | translate }}
+          <span class="text-sm">🇺🇸</span> EN
         </button>
       </div>
 
-      <button (click)="login('cliente')" class="px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[11px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm">{{ 'NAV.B2C_LOGIN' | translate }}</button>
-      <button (click)="login('b2b')" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-blue-600/20">{{ 'NAV.B2B_LOGIN' | translate }}</button>
+      <!-- Simplified Login/Signup buttons -->
+      <div class="flex items-center gap-4">
+        <button (click)="irParaCadastro()" class="px-6 py-3 border-2 border-slate-200 text-slate-600 text-xs font-black rounded-xl hover:bg-slate-100 transition-all uppercase tracking-tight">
+          {{ 'NAV.SIGNUP' | translate }}
+        </button>
+        <button (click)="irParaLogin()" class="px-8 py-3 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 uppercase tracking-tight">
+          {{ 'NAV.LOGIN' | translate }}
+        </button>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- Hero Section Restored -->
   <section class="relative pt-32 pb-40 px-8 overflow-hidden">
     <div class="max-w-5xl mx-auto text-center z-10 relative">
         <div class="flex items-center justify-center gap-6 mb-12">
           <img src="assets/images/inovalayer-circulada.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow-2xl">
           <div class="h-10 w-px bg-slate-200"></div>
-          <span class="text-xs font-black text-slate-400 uppercase tracking-[0.5em] font-industrial-mono">{{ 'LANDING.ECOSYSTEM' | translate }}</span>
+          <span class="text-xs font-black text-slate-400 uppercase tracking-[0.5em]">{{ 'LANDING.ECOSYSTEM' | translate }}</span>
         </div>
         
         <h1 class="text-8xl lg:text-[10rem] font-black text-slate-900 leading-[0.8] tracking-tighter mb-12" [innerHTML]="'LANDING.TITLE' | translate"></h1>
         <p class="text-2xl text-slate-500 max-w-2xl mx-auto mb-16 leading-relaxed font-bold italic">
           {{ 'LANDING.SUBTITLE' | translate }}
         </p>
+
+        <div class="flex justify-center gap-6">
+           <button (click)="irParaLogin()" class="px-12 py-5 bg-blue-600 text-white text-sm font-black rounded-2xl hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 uppercase tracking-widest">
+              {{ 'NAV.LOGIN' | translate }}
+           </button>
+        </div>
     </div>
 
-    <!-- Background Industrial Image Hero -->
-    <div class="absolute lg:right-0 bottom-0 lg:bottom-24 w-full lg:w-1/3 h-96 lg:h-2/3 -z-20 opacity-40">
-       <div class="w-full h-full bg-[url('assets/images/fotos/hero-waam.jpg')] bg-cover bg-center rounded-l-[5rem] shadow-2xl"></div>
-    </div>
+    <!-- Background Decoration (Soft) -->
+    <div class="absolute -right-20 top-20 w-96 h-96 bg-blue-100/50 rounded-full blur-[100px] -z-10"></div>
+    <div class="absolute -left-20 bottom-20 w-96 h-96 bg-slate-200/50 rounded-full blur-[100px] -z-10"></div>
   </section>
 
   <!-- Stats -->
-  <section class="py-20 bg-white border-y border-slate-100">
-    <div class="max-w-7xl mx-auto px-8 grid grid-cols-2 lg:grid-cols-4 gap-12">
+  <section class="py-24 bg-white border-y border-slate-100">
+    <div class="max-w-7xl mx-auto px-12 grid grid-cols-2 lg:grid-cols-4 gap-12">
       <div class="text-center">
-        <p class="text-4xl font-black text-slate-900 mb-2">+500</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.PARTS' | translate }}</p>
+        <p class="text-5xl font-black text-slate-900 mb-3">+500</p>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-mono">{{ 'LANDING.STATS.PARTS' | translate }}</p>
       </div>
       <div class="text-center">
-        <p class="text-4xl font-black text-slate-900 mb-2">99%</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.YIELD' | translate }}</p>
+        <p class="text-5xl font-black text-slate-900 mb-3">99%</p>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-mono">{{ 'LANDING.STATS.YIELD' | translate }}</p>
       </div>
       <div class="text-center">
-        <p class="text-4xl font-black text-slate-900 mb-2">24h</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.RESPONSE' | translate }}</p>
+        <p class="text-5xl font-black text-slate-900 mb-3">24h</p>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-mono">{{ 'LANDING.STATS.RESPONSE' | translate }}</p>
       </div>
       <div class="text-center">
-        <p class="text-4xl font-black text-slate-900 mb-2">B2B</p>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'LANDING.STATS.FOCUS' | translate }}</p>
+        <p class="text-5xl font-black text-blue-600 mb-3">B2B</p>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-mono">{{ 'LANDING.STATS.FOCUS' | translate }}</p>
       </div>
     </div>
   </section>
 
   <!-- Industrial Context -->
-  <section class="py-32 px-8 bg-slate-50">
+  <section class="py-40 px-8 bg-slate-50">
     <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        <div class="rounded-[3.5rem] overflow-hidden shadow-2xl relative h-[500px]">
-           <div class="absolute inset-0 bg-[url('assets/images/fotos/industria-background.jpg')] bg-cover bg-center group-hover:scale-105 transition-all"></div>
-           <div class="absolute inset-0 bg-blue-600/10"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+        <div class="rounded-[4rem] overflow-hidden shadow-3xl relative h-[550px] border-8 border-white">
+           <div class="absolute inset-0 bg-[#f8fafc]">
+              <div class="w-full h-full bg-[url('assets/images/fotos/industria-background.jpg')] bg-cover bg-center transition-all duration-[5000ms] hover:scale-110"></div>
+           </div>
+           <div class="absolute inset-0 bg-blue-600/5"></div>
         </div>
         <div>
-          <h2 class="text-5xl font-black text-slate-900 tracking-tighter mb-8 leading-tight" [innerHTML]="'LANDING.INFRA.TITLE' | translate"></h2>
-          <p class="text-lg text-slate-500 mb-10 leading-relaxed font-medium">
+          <h2 class="text-6xl font-black text-slate-900 tracking-tighter mb-10 leading-[0.9]" [innerHTML]="'LANDING.INFRA.TITLE' | translate"></h2>
+          <p class="text-xl text-slate-500 mb-12 leading-relaxed font-medium">
             {{ 'LANDING.INFRA.DESC' | translate }}
           </p>
-          <div class="flex gap-4">
-            <div class="p-6 bg-white border border-slate-200 rounded-3xl flex-1">
-              <i class="pi pi-shield text-3xl text-blue-600 mb-4"></i>
-              <h3 class="text-sm font-black text-slate-900 uppercase">{{ 'LANDING.INFRA.QUALITY' | translate }}</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="p-8 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
+              <i class="pi pi-shield text-4xl text-blue-600 mb-6 block"></i>
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">{{ 'LANDING.INFRA.QUALITY' | translate }}</h3>
             </div>
-            <div class="p-6 bg-white border border-slate-200 rounded-3xl flex-1">
-              <i class="pi pi-chart-line text-3xl text-blue-600 mb-4"></i>
-              <h3 class="text-sm font-black text-slate-900 uppercase">{{ 'LANDING.INFRA.OPT' | translate }}</h3>
+            <div class="p-8 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
+              <i class="pi pi-chart-line text-4xl text-blue-600 mb-6 block"></i>
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">{{ 'LANDING.INFRA.OPT' | translate }}</h3>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Footer Restored -->
+  <footer class="py-24 px-12 bg-white border-t border-slate-100">
+     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+        <div class="flex flex-col items-center md:items-start gap-4">
+           <div class="flex items-center gap-4">
+              <img src="assets/images/inovalayer-semfundo.png" alt="Logo" class="h-10 w-auto opacity-80">
+              <span class="text-sm font-black tracking-tighter text-slate-400 italic">InovaLayer3D Ecosystem</span>
+           </div>
+           <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ 'B2B.MOTOR.VERSION' | translate }}</p>
+        </div>
+        
+        <div class="flex gap-16">
+           <div class="text-center md:text-left">
+              <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Navigação</h4>
+              <nav class="flex flex-col gap-3 text-[12px] text-slate-500 font-bold">
+                 <a href="#" class="hover:text-blue-600">Documentação</a>
+                 <a href="#" class="hover:text-blue-600">Suporte</a>
+              </nav>
+           </div>
+           <div class="text-center md:text-left">
+              <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Empresa</h4>
+              <nav class="flex flex-col gap-3 text-[12px] text-slate-500 font-bold">
+                 <a href="#" class="hover:text-blue-600">Sobre</a>
+                 <a href="#" class="hover:text-blue-600">Contato</a>
+              </nav>
+           </div>
+        </div>
+        
+        <div class="text-center md:text-right">
+           <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">InovaLayer3D &copy; 2026</span>
+           <button class="px-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-500 hover:bg-slate-100 transition-all uppercase tracking-widest">Global HQ - Brazil</button>
+        </div>
+     </div>
+  </footer>
 </div>

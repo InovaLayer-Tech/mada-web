@@ -12,11 +12,13 @@ import { LoginComponent } from './features/shared/login/login.component';
 import { PerfilComponent } from './features/b2b-painel-engenharia/components/perfil/perfil.component';
 import { PerfilClienteComponent } from './features/b2c-portal-cliente/components/perfil/perfil-cliente.component';
 import { ConfiguracoesGlobaisComponent } from './features/b2b-painel-engenharia/components/configuracoes-globais/configuracoes-globais.component';
+import { CadastroClienteComponent } from './features/b2c-portal-cliente/components/cadastro-cliente/cadastro-cliente.component';
 
 export const routes: Routes = [
   // Rotas Públicas (Sem Sidebar)
   { path: '', component: LandingPagePolishedComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'cadastro', component: CadastroClienteComponent },
 
   // Área Autenticada B2C
   { 

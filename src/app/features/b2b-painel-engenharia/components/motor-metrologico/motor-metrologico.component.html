@@ -37,8 +37,8 @@
               (change)="carregarDadosRfq($event)"
               class="w-full bg-slate-50 text-slate-900 pl-14 pr-12 py-5 rounded-3xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-industrial-mono text-base font-black appearance-none cursor-pointer shadow-inner">
               <option value="" disabled selected>{{ 'B2B.MOTOR.SELECT_RFQ_PLACEHOLDER' | translate }}</option>
-              @for (rfq of pendingRfqsMock; track rfq.id) {
-                <option [value]="rfq.id">{{ rfq.id }} - {{ rfq.cliente }} ({{ rfq.material }})</option>
+              @for (rfq of pendingRfqs; track rfq.id) {
+                <option [value]="rfq.id">{{ rfq.id.substring(0,8) }} - {{ rfq.empresa }} ({{ rfq.fase2DC.arameMetalicoNome }})</option>
               }
             </select>
             <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
@@ -75,29 +75,6 @@
             </div>
           </div>
         </div>
-
-        <!-- RFC 7807 Error Feedback -->
-        @if (erroApi) {
-          <div class="p-8 rounded-[2rem] bg-red-50 border border-red-100 shadow-sm animate-shake">
-            <div class="flex gap-4">
-              <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
-              <div>
-                <h3 class="text-xs font-black text-red-700 uppercase tracking-widest mb-2 font-mono">{{ erroApi.title }}</h3>
-                <p class="text-base text-red-900 font-medium leading-relaxed opacity-70 italic">{{ erroApi.detail }}</p>
-                
-                @if (erroApi.properties?.['invalid-params']) {
-                  <div class="mt-4 grid grid-cols-1 gap-2">
-                    @for (err of erroApi.properties?.['invalid-params']; track err.name) {
-                      <div class="text-xs font-black bg-white text-red-600 px-4 py-2 rounded-xl border border-red-100 font-mono shadow-sm">
-                        <span class="text-red-400 mr-2">></span> {{ err.name }}: {{ err.reason }}
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        }
 
         <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
@@ -182,9 +159,9 @@
                 <select formControlName="arameId"
                   class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black appearance-none cursor-pointer">
                   <option value="" disabled selected>{{ 'B2B.MOTOR.SELECT_CONSUMABLE' | translate }}</option>
-                  <option value="0f0f5b90-1c10-4ed2-aea1-2ee61c778401">Aço Inoxidável 316L High-Grade (ER316LSi)</option>
-                  <option value="er70s">Aço Carbono Estrutural ER70S-6</option>
-                  <option value="ti64">Liga Aeroespacial Titanium Grade 5 (Ti-6Al-4V)</option>
+                  @for (arame of arames; track arame.id) {
+                    <option [value]="arame.id">{{ arame.nome }} ({{ arame.ligaMetalica }})</option>
+                  }
                 </select>
               </div>
             </div>

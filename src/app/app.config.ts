@@ -1,7 +1,8 @@
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 
@@ -25,7 +26,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     importProvidersFrom(

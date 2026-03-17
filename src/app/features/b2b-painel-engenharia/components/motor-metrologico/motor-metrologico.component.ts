@@ -6,8 +6,9 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { ProblemDetail } from '../../../../core/models/problem-detail';
-import { OrcamentoResponseDTO } from '../../../../core/models/orcamento-response.dto';
-import { OrcamentoRequestDTO } from '../../../../core/models/orcamento-request.dto';
+import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
+import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
+import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
 
 @Component({
   selector: 'app-motor-metrologico',
@@ -15,11 +16,15 @@ import { OrcamentoRequestDTO } from '../../../../core/models/orcamento-request.d
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './motor-metrologico.component.html'
 })
-export class MotorMetrologicoComponent {
+export class MotorMetrologicoComponent implements OnInit {
   private fb = inject(NonNullableFormBuilder);
   private orcamentoService = inject(OrcamentoService);
+  private arameService = inject(ArameMetalicoService);
   private router = inject(Router);
-  private destroyRef = inject(DestroyRef); // Gerenciamento automático de assinaturas (Angular 16+)
+  private destroyRef = inject(DestroyRef);
+
+  arames: ArameMetalicoResponseDTO[] = [];
+  pendingRfqs: OrcamentoResponseDTO[] = [];
 
   // Strict Typed Reactive Form + NonNullable
   orcamentoForm = this.fb.group({
@@ -52,35 +57,20 @@ export class MotorMetrologicoComponent {
   erroApi: ProblemDetail | null = null;
   isSubmitting = false;
 
-  pendingRfqsMock = [
-    { 
-      id: 'REQ-2026-001', 
-      cliente: 'AeroParts S.A.', 
-      material: 'Titânio Grado 5', 
-      acabamento: 'Usinagem de Precisão', 
-      tratamento: 'Sem Tratamento', 
-      dimensoes: '120 x 80 x 45 mm',
-      quantidade: 5 
-    },
-    { 
-      id: 'REQ-2026-002', 
-      cliente: 'MetalMec Brasil', 
-      material: 'Inconel 718', 
-      acabamento: 'Faces de Contato', 
-      tratamento: 'Alívio de Tensões', 
-      dimensoes: '250 x 250 x 100 mm',
-      quantidade: 2 
-    },
-    { 
-      id: 'REQ-2026-003', 
-      cliente: 'InovaTech Labs', 
-      material: 'Aço Inox 316L', 
-      acabamento: 'Bruto de Deposição', 
-      tratamento: 'Nenhum', 
-      dimensoes: '450 x 200 x 150 mm',
-      quantidade: 1 
-    }
-  ];
+  ngOnInit() {
+    this.carregarMateriais();
+    this.carregarRfqsPendentes();
+  }
+
+  carregarMateriais() {
+    this.arameService.listarTodos().subscribe(data => this.arames = data);
+  }
+
+  carregarRfqsPendentes() {
+    this.orcamentoService.listarTodos().subscribe(data => {
+      this.pendingRfqs = data.filter(r => r.status === 'PENDENTE');
+    });
+  }
 
   rfqDetails = {
     material: '---',
@@ -92,19 +82,19 @@ export class MotorMetrologicoComponent {
   carregarDadosRfq(event: Event) {
     const select = event.target as HTMLSelectElement;
     const rfqId = select.value;
-    const rfq = this.pendingRfqsMock.find(r => r.id === rfqId);
+    const rfq = this.pendingRfqs.find(r => r.id === rfqId);
     
     if (rfq) {
       this.rfqDetails = {
-        material: rfq.material,
-        acabamento: rfq.acabamento,
-        tratamentoTermico: rfq.tratamento,
-        dimensoes: rfq.dimensoes
+        material: rfq.nomeArameMetalico || 'N/A',
+        acabamento: '---', 
+        tratamentoTermico: '---',
+        dimensoes: '---'
       };
       
       this.orcamentoForm.patchValue({
         identificacaoPeca: rfq.id,
-        quantidadeRequerida: rfq.quantidade
+        quantidadeRequerida: 1 
       });
     }
   }
@@ -164,16 +154,21 @@ export class MotorMetrologicoComponent {
     this.isSubmitting = true;
     this.erroApi = null;
 
-    // Simulação do Cálculo Metrológico para Demonstração
+    const payload = this.orcamentoForm.getRawValue();
+    
+    // Na vida real, chamaríamos o serviço de cálculo
+    // Mas para manter o fluxo do usuário, vamos apenas redirecionar com os dados
+    // simulando que o backend já processou o cálculo.
+    
     setTimeout(() => {
       this.isSubmitting = false;
-      this.router.navigate(['/b2b/auditoria']);
-    }, 800);
-
-    /* 
-    // Código original mantido para futura integração real
-    const payload: OrcamentoRequestDTO = this.orcamentoForm.getRawValue() as unknown as OrcamentoRequestDTO;
-    ...
-    */
+      // Passamos o RFQ selecionado (ou o novo) para a auditoria
+      const rfqId = this.orcamentoForm.value.identificacaoPeca;
+      const rfqOriginal = this.pendingRfqs.find(r => r.id === rfqId);
+      
+      // Simulação: se original existe, navegamos com ele. 
+      // Em produção, isso viria de uma resposta de POST /calculo
+      this.router.navigate(['/b2b/auditoria'], { state: { rfq: rfqOriginal } });
+    }, 1000);
   }
 }

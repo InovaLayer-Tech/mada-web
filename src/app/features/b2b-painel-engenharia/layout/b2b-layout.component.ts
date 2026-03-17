@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-b2b-layout',
@@ -14,7 +15,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
         
         <div class="p-8 relative z-10">
           <div class="mb-12">
-            <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer 3D" class="h-8 w-auto">
+            <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer3D" class="h-10 w-auto">
           </div>
 
           <nav class="space-y-1.5">
@@ -46,19 +47,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
         </div>
 
         <div class="mt-auto p-8 relative z-10">
-           <a routerLink="/b2b/perfil" class="flex items-center gap-4 p-4 bg-slate-50 rounded-[1.5rem] border border-slate-200/50 hover:border-blue-200 transition-all group overflow-hidden relative">
-             <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xs shadow-lg">
-               V / R
-             </div>
-             <div class="flex-1 overflow-hidden">
-               <p class="text-base font-black text-slate-900 truncate">Vinicius / Rafael</p>
-               <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest truncate font-mono">CEO & Founder</p>
-             </div>
-             <i class="pi pi-chevron-right text-[10px] text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
-           </a>
-           
            <!-- Seletor de Idiomas Light -->
-           <div class="mt-6 flex gap-2">
+           <div class="flex gap-2">
              <button (click)="setIdioma('PT')" 
                      [class.bg-blue-50]="idiomaAtivo === 'PT'"
                      [class.text-blue-600]="idiomaAtivo === 'PT'"
@@ -80,13 +70,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
                <span class="text-lg">🇺🇸</span> EN
              </button>
            </div>
-           <!-- Logout Button -->
-           <div class="mt-8 pt-8 border-t border-slate-100">
-             <button routerLink="/" class="w-full flex items-center justify-center gap-3 p-4 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 rounded-[1.5rem] transition-all font-black text-xs uppercase tracking-widest group shadow-sm">
-               <i class="pi pi-power-off text-sm group-hover:rotate-12 transition-transform"></i>
-               {{ 'SIDEBAR.LOGOUT' | translate }}
-             </button>
-           </div>
         </div>
       </aside>
 
@@ -104,9 +87,25 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
                <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shadow-sm"></div>
                SISTEMA OPERACIONAL
              </div>
-             <button class="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all">
-               <i class="pi pi-bell"></i>
-             </button>
+             
+             <div class="h-8 w-px bg-slate-200 mx-2"></div>
+
+             <!-- User Profile & Logout -->
+             <div class="flex items-center gap-4">
+                <a routerLink="/b2b/perfil" class="flex items-center gap-3 group px-4 py-2 hover:bg-slate-50 rounded-xl transition-all">
+                  <div class="text-right">
+                    <p class="text-[13px] font-black text-slate-900 leading-none">{{ authService.currentUser()?.email || 'Engenharia' }}</p>
+                    <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest mt-1">{{ authService.currentUser()?.role || 'Admin' }}</p>
+                  </div>
+                  <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-[10px] shadow-md">
+                    {{ (authService.currentUser()?.email?.substring(0, 2) || 'IN').toUpperCase() }}
+                  </div>
+                </a>
+
+                <button (click)="authService.logout()" class="w-10 h-10 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-100 rounded-xl flex items-center justify-center transition-all group" title="Sair">
+                  <i class="pi pi-power-off text-xs group-hover:rotate-12 transition-transform"></i>
+                </button>
+             </div>
           </div>
         </header>
 
@@ -120,6 +119,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class B2bLayoutComponent {
   private translate = inject(TranslateService);
+  public authService = inject(AuthService);
   idiomaAtivo = 'PT';
 
   constructor() {

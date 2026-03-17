@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
+import { OrcamentoService } from '../../../../core/services/orcamento.service';
+import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
 
 @Component({
   selector: 'app-dashboard-cliente',
@@ -8,15 +10,22 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, TranslateModule],
   templateUrl: './dashboard-cliente.component.html'
 })
-export class DashboardClienteComponent {
-  solicitacoesMock = [
-    { id: 'RFQ-001', peca: 'Hélice Propulsora Rev A', data: '2026-03-10', status: 'Aguardando Análise', material: 'Inox 316L' },
-    { id: 'RFQ-002', peca: 'Flange Industrial 20"', data: '2026-03-12', status: 'Concluído', material: 'Aço Carbono', preco: '5.954,97', prazo: '12 dias úteis', peso: '4.8kg' },
-    { id: 'RFQ-003', peca: 'Suporte Motor Titânio', data: '2026-03-14', status: 'Em Produção', material: 'Titânio Gr5' }
-  ];
+export class DashboardClienteComponent implements OnInit {
+  private orcamentoService = inject(OrcamentoService);
 
+  rfqs: OrcamentoResponseDTO[] = [];
   showProposta = false;
-  selectedProposta: any = null;
+  selectedProposta: OrcamentoResponseDTO | null = null;
+
+  ngOnInit() {
+    this.carregarDados();
+  }
+
+  carregarDados() {
+    this.orcamentoService.listarTodos().subscribe(data => {
+      this.rfqs = data;
+    });
+  }
 
   abrirProposta(item: any) {
     this.selectedProposta = item;

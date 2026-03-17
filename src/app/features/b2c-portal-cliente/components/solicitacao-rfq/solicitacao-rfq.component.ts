@@ -1,8 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
+import { OrcamentoService } from '../../../../core/services/orcamento.service';
+import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
 
 @Component({
   selector: 'app-solicitacao-rfq',
@@ -10,9 +13,14 @@ import { Router, RouterLink } from '@angular/router';
   imports: [CommonModule, ReactiveFormsModule, TranslateModule, RouterLink],
   templateUrl: './solicitacao-rfq.component.html'
 })
-export class SolicitacaoRfqComponent {
+export class SolicitacaoRfqComponent implements OnInit {
   private fb = inject(NonNullableFormBuilder);
   private router = inject(Router);
+  private arameService = inject(ArameMetalicoService);
+  private orcamentoService = inject(OrcamentoService);
+
+  arames: ArameMetalicoResponseDTO[] = [];
+  isSending = false;
 
   rfqForm = this.fb.group({
     empresa: ['', Validators.required],
@@ -22,7 +30,7 @@ export class SolicitacaoRfqComponent {
     arquivo3d: [null as File | null],
     
     // Configurações Técnicas
-    materialDesejado: ['', Validators.required],
+    arameId: ['', Validators.required],
     finalidade: ['', Validators.required],
     
     // Requisitos de Precisão
@@ -40,10 +48,23 @@ export class SolicitacaoRfqComponent {
     dimensaoZ: [null as number | null, [Validators.required, Validators.min(1)]],
     
     // Condições Adicionais
-    condicoesTrabalho: ['']
+    condicoesTrabalho: [''],
+    
+    // Campos necessários para o cálculo mas não no formulário visual direto
+    tempoPreparacaoMinutos: [30],
+    tempoRemocaoMinutos: [15],
+    tempoArcoMinutos: [120],
+    massaEstimadaKg: [1.5],
+    tempoUsinagemMinutos: [60]
   });
 
-  isSending = false;
+  ngOnInit() {
+    this.carregarMateriais();
+  }
+
+  carregarMateriais() {
+    this.arameService.listarTodos().subscribe(data => this.arames = data);
+  }
 
   enviarSolicitacao() {
     if (this.rfqForm.invalid) {
@@ -53,12 +74,22 @@ export class SolicitacaoRfqComponent {
 
     this.isSending = true;
     
-    // Simulação de Sucesso (Mock)
-    setTimeout(() => {
-      alert('Solicitação RFQ enviada com sucesso! Nossa engenharia analisará o fatiamento e retornará em breve.');
-      this.isSending = false;
-      this.router.navigate(['/b2c/dashboard']);
-    }, 1500);
+    const request = this.rfqForm.getRawValue();
+    // In Angular getRawValue will contain number for number inputs
+    // We need to ensure we match the OrcamentoRequestDTO interface
+    
+    this.orcamentoService.criarOrcamento(request as any).subscribe({
+      next: () => {
+        alert('Solicitação RFQ enviada com sucesso! Nossa engenharia analisará o fatiamento e retornará em breve.');
+        this.isSending = false;
+        this.router.navigate(['/cliente/dashboard']);
+      },
+      error: (err) => {
+        console.error('Erro ao enviar RFQ:', err);
+        alert('Erro ao enviar solicitação. Por favor, tente novamente.');
+        this.isSending = false;
+      }
+    });
   }
 
   onFileSelected(event: any) {

@@ -3,19 +3,21 @@
     "PT": "PT",
     "EN": "EN",
     "B2B_LOGIN": "Acesso Administrativo",
-    "B2C_LOGIN": "Acesso Cliente"
+    "B2C_LOGIN": "Acesso Cliente",
+    "LOGIN": "Portal InovaLayer3D",
+    "SIGNUP": "Cadastrar Empresa"
   },
   "LANDING": {
-    "ECOSYSTEM": "3D Ecosystem",
-    "TITLE": "Manufatura <br> <span class=\"text-blue-600\">Alta Taxa.</span>",
-    "SUBTITLE": "Software de metrologia avançada e inteligência de custos para manufatura aditiva metálica industrial (WAAM).",
+    "ECOSYSTEM": "The WAAM Ecosystem",
+    "TITLE": "Manufatura <br> <span class=\"text-blue-600\">InovaLayer.</span>",
+    "SUBTITLE": "Liderança tecnológica em metrologia industrial e inteligência de custos para manufatura aditiva metálica (WAAM).",
     "LOGIN_TITLE": "Efetuar Login",
     "LOGIN_SUBTITLE": "Portal de Operações",
     "B2C_TITLE": "Portal do Cliente",
     "B2C_SUBTITLE": "Solicitações e RFQ",
     "B2B_TITLE": "Painel de Engenharia",
     "B2B_SUBTITLE": "Back-Office & Auditoria",
-    "SECURE_ACCESS": "Acesso Seguro InovaLayer 3D",
+    "SECURE_ACCESS": "Acesso Seguro InovaLayer3D",
     "STATS": {
       "PARTS": "Peças Produzidas",
       "YIELD": "Aproveitamento",
@@ -23,10 +25,10 @@
       "FOCUS": "Foco Industrial"
     },
     "INFRA": {
-      "TITLE": "Infraestrutura Escalonável <br> para Manufatura Aditiva.",
-      "DESC": "Integramos hardware robótico de alta taxa com inteligência metrológica para garantir orçamentos competitivos e auditoria em tempo real.",
-      "QUALITY": "Qualidade ISO",
-      "OPT": "Otimização"
+      "TITLE": "Engenharia de Precisão e <br> Infraestrutura Escalonável.",
+      "DESC": "A InovaLayer3D integra hardware robótico de última geração com inteligência metrológica proprietária para viabilizar orçamentos precisos e auditoria em tempo real.",
+      "QUALITY": "Padrão Industrial",
+      "OPT": "Eficiência Operacional"
     }
   },
   "SIDEBAR": {
@@ -114,7 +116,7 @@
       "DESC_IC": "Setup e Substrato Base",
       "DESC_DC": "Deposição e Core WAAM",
       "DESC_AC": "Acabamento e Qualidade",
-      "FOOTER": "InovaLayer 3D - Unidade Auditoria Metrológica WAAM v2.4"
+      "FOOTER": "InovaLayer3D - Unidade Auditoria Metrológica WAAM v2.4"
     },
     "CATALOGO": {
       "TITLE": "Catálogo de Insumos",

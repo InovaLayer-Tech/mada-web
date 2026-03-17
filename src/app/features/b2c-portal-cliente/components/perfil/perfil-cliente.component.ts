@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
+import { ClienteService } from '../../../../core/services/cliente.service';
+import { ClienteResponseDTO } from '../../../../core/models/cliente.model';
 
 @Component({
   selector: 'app-perfil-cliente',
   standalone: true,
   imports: [CommonModule, TranslateModule],
   template: `
-    <div class="max-w-4xl mx-auto mt-12 px-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
+    <div class="max-w-4xl mx-auto mt-12 px-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12" *ngIf="cliente">
       <div class="mb-10">
         <h1 class="text-4xl font-black text-slate-900 tracking-tight">{{ 'B2C.PERFIL.TITLE' | translate }}</h1>
         <p class="text-slate-500 mt-2">{{ 'B2C.PERFIL.SUBTITLE' | translate }}</p>
@@ -18,8 +20,8 @@ import { CommonModule } from '@angular/common';
         <div class="md:col-span-4 space-y-6">
           <div class="text-center p-8 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm">
             <img src="assets/images/inovalayer-circulada.png" alt="Logo InovaLayer" class="w-24 h-24 mx-auto mb-6 object-contain">
-            <h2 class="text-xl font-black text-slate-900 leading-tight">AeroParts Brazil</h2>
-            <p class="text-[10px] font-bold text-blue-600 uppercase tracking-[0.2em] mt-2 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block">{{ 'B2C.PERFIL.VIP_CLIENT' | translate }}</p>
+            <h2 class="text-xl font-black text-slate-900 leading-tight">{{ cliente.nomeRazaoSocial }}</h2>
+            <p *ngIf="cliente.vip" class="text-[10px] font-bold text-blue-600 uppercase tracking-[0.2em] mt-2 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block">{{ 'B2C.PERFIL.VIP_CLIENT' | translate }}</p>
           </div>
 
           <div class="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-blue-600/30 relative overflow-hidden group">
@@ -30,7 +32,7 @@ import { CommonModule } from '@angular/common';
           </div>
         </div>
 
-        <!-- Formulário (Mock) -->
+        <!-- Formulário Real -->
         <div class="md:col-span-8">
           <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-8">
             <section>
@@ -38,16 +40,16 @@ import { CommonModule } from '@angular/common';
               <div class="grid grid-cols-1 gap-6">
                 <div>
                   <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ 'B2C.PERFIL.COMPANY_NAME' | translate }}</label>
-                  <input type="text" readonly value="AeroParts Brazil Soluções Aeroespaciais S.A." class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                  <input type="text" readonly [value]="cliente.nomeRazaoSocial" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ 'B2C.PERFIL.CNPJ' | translate }}</label>
-                    <input type="text" readonly value="12.345.678/0001-90" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                    <input type="text" readonly [value]="cliente.cnpj" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
                   </div>
                   <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ 'B2C.PERFIL.SECTOR' | translate }}</label>
-                    <input type="text" readonly value="{{ 'B2C.PERFIL.AERO' | translate }}" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                    <input type="text" readonly [value]="cliente.setorAtuacao" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
                   </div>
                 </div>
               </div>
@@ -87,7 +89,7 @@ import { CommonModule } from '@angular/common';
             </section>
 
             <div class="pt-6">
-              <button class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 text-xs">
+              <button class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 text-xs text-center min-w-[200px]">
                 {{ 'B2C.PERFIL.SAVE' | translate }}
               </button>
             </div>
@@ -97,4 +99,13 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
-export class PerfilClienteComponent {}
+export class PerfilClienteComponent implements OnInit {
+  private clienteService = inject(ClienteService);
+  cliente: ClienteResponseDTO | null = null;
+
+  ngOnInit() {
+    this.clienteService.obterPerfilAtual().subscribe(data => {
+      this.cliente = data;
+    });
+  }
+}

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { OrcamentoService } from '../../../core/services/orcamento.service';
+import { OrcamentoResponseDTO } from '../../../core/models/orcamento.model';
 
 @Component({
   selector: 'app-fila-solicitacoes',
@@ -9,17 +11,23 @@ import { Router, RouterLink } from '@angular/router';
   imports: [CommonModule, TranslateModule, RouterLink],
   templateUrl: './fila-solicitacoes.component.html'
 })
-export class FilaSolicitacoesComponent {
-  rfqsMock = [
-    { id: 'RFQ-001', cliente: 'AeroParts Brazil', peca: 'Hélice Propulsora', material: 'Inox 316L', data: '2026-03-10', urgencia: 'Normal' },
-    { id: 'RFQ-002', cliente: 'PetroMaster S.A.', peca: 'Flange Industrial 20"', material: 'Aço Carbono', data: '2026-03-12', urgencia: 'Urgente' },
-    { id: 'RFQ-003', cliente: 'TitanSpace Inc', peca: 'Suporte Motor', material: 'Titânio Gr5', data: '2026-03-14', urgencia: 'Normal' }
-  ];
+export class FilaSolicitacoesComponent implements OnInit {
+  private orcamentoService = inject(OrcamentoService);
+  private router = inject(Router);
 
-  constructor(private router: Router) {}
+  rfqs: OrcamentoResponseDTO[] = [];
 
-  iniciarMetrologia(rfq: any) {
-    // Simula a navegação para o motor metrológico carregando os dados do RFQ
-    this.router.navigate(['/b2b/motor-metrologico'], { state: { rfq } });
+  ngOnInit() {
+    this.carregarDados();
+  }
+
+  carregarDados() {
+    this.orcamentoService.listarTodos().subscribe(data => {
+      this.rfqs = data;
+    });
+  }
+
+  iniciarMetrologia(rfq: OrcamentoResponseDTO) {
+    this.router.navigate(['/b2b/motor'], { state: { rfq } });
   }
 }

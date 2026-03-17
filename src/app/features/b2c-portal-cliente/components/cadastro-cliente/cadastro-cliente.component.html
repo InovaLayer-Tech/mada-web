@@ -1,0 +1,96 @@
+<div class="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="flex justify-center mb-6">
+      <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-3">
+        <span class="text-white text-3xl font-bold">iL</span>
+      </div>
+    </div>
+    <h2 class="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+      Crie sua conta
+    </h2>
+    <p class="mt-2 text-center text-sm text-slate-600">
+      Junte-se à revolução da manufatura 3D WAAM.
+    </p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow-xl shadow-slate-200/50 sm:rounded-2xl sm:px-10 border border-slate-100">
+      <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        
+        <!-- Nome Completo -->
+        <div>
+          <label for="nomeCompleto" class="block text-sm font-semibold text-slate-700">Nome Completo</label>
+          <div class="mt-1">
+            <input id="nomeCompleto" formControlName="nomeCompleto" type="text" 
+              class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
+              placeholder="Digite seu nome completo">
+          </div>
+          <p *ngIf="hasError('nomeCompleto', 'required')" class="mt-1 text-xs text-red-500 font-medium">O nome é obrigatório.</p>
+        </div>
+
+        <!-- Nome Empresa -->
+        <div>
+          <label for="nomeEmpresa" class="block text-sm font-semibold text-slate-700">Nome da Empresa</label>
+          <div class="mt-1">
+            <input id="nomeEmpresa" formControlName="nomeEmpresa" type="text" 
+              class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
+              placeholder="Ex: InovaTech">
+          </div>
+          <p *ngIf="hasError('nomeEmpresa', 'required')" class="mt-1 text-xs text-red-500 font-medium">O nome da empresa é obrigatório.</p>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-semibold text-slate-700">E-mail Corporativo</label>
+          <div class="mt-1">
+            <input id="email" formControlName="email" type="email" 
+              class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
+              placeholder="seu@email.com">
+          </div>
+          <p *ngIf="hasError('email', 'required')" class="mt-1 text-xs text-red-500 font-medium">O e-mail é obrigatório.</p>
+          <p *ngIf="hasError('email', 'email')" class="mt-1 text-xs text-red-500 font-medium">Informe um e-mail válido.</p>
+        </div>
+
+        <!-- Senha -->
+        <div>
+          <label for="senha" class="block text-sm font-semibold text-slate-700">Senha</label>
+          <div class="mt-1">
+            <input id="senha" formControlName="senha" type="password" 
+              class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
+              placeholder="Mínimo 8 caracteres">
+          </div>
+          <p *ngIf="hasError('senha', 'required')" class="mt-1 text-xs text-red-500 font-medium">A senha é obrigatória.</p>
+          <p *ngIf="hasError('senha', 'minlength')" class="mt-1 text-xs text-red-500 font-medium">A senha deve ter pelo menos 8 caracteres.</p>
+        </div>
+
+        <!-- Confirmação Senha -->
+        <div>
+          <label for="confirmacaoSenha" class="block text-sm font-semibold text-slate-700">Confirmar Senha</label>
+          <div class="mt-1">
+            <input id="confirmacaoSenha" formControlName="confirmacaoSenha" type="password" 
+              class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
+              placeholder="Repita sua senha">
+          </div>
+          <p *ngIf="isPasswordsMismatch()" class="mt-1 text-xs text-red-500 font-medium">As senhas não coincidem.</p>
+        </div>
+
+        <!-- Botão Submissão -->
+        <div>
+          <button type="submit" [disabled]="cadastroForm.invalid"
+            class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+            Criar Conta
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-8 border-t border-slate-100 pt-6">
+        <p class="text-center text-sm text-slate-600">
+          Já possui uma conta? 
+          <a routerLink="/login" class="font-bold text-blue-600 hover:text-blue-500 transition-colors">
+            Faça login
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
