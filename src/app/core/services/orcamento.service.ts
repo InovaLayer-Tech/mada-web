@@ -11,15 +11,19 @@ export class OrcamentoService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/orcamentos`;
 
-  criarOrcamento(request: OrcamentoRequestDTO): Observable<OrcamentoResponseDTO> {
-    return this.http.post<OrcamentoResponseDTO>(this.apiUrl, request);
-  }
-
   listarTodos(): Observable<OrcamentoResponseDTO[]> {
     return this.http.get<OrcamentoResponseDTO[]>(this.apiUrl);
   }
 
+  criar(orcamento: OrcamentoRequestDTO): Observable<OrcamentoResponseDTO> {
+    return this.http.post<OrcamentoResponseDTO>(this.apiUrl, orcamento);
+  }
+
   buscarPorId(id: string): Observable<OrcamentoResponseDTO> {
     return this.http.get<OrcamentoResponseDTO>(`${this.apiUrl}/${id}`);
+  }
+
+  processarCalculo(id: string, dadosCalculo: Partial<OrcamentoRequestDTO>): Observable<OrcamentoResponseDTO> {
+    return this.http.put<OrcamentoResponseDTO>(`${this.apiUrl}/${id}/calcular`, dadosCalculo);
   }
 }

@@ -12,8 +12,10 @@ export class ClienteService {
   private apiUrl = `${environment.apiUrl}/clientes`;
 
   obterPerfilAtual(): Observable<ClienteResponseDTO> {
-    // Para o MVP, pegamos o primeiro cliente retornado para simular o logado
-    // Em produção, isso usaria o /me ou o ID do token JWT
     return this.http.get<ClienteResponseDTO>(`${this.apiUrl}/atual`);
+  }
+
+  atualizarPerfil(id: string, cliente: any): Observable<ClienteResponseDTO> {
+    return this.http.put<ClienteResponseDTO>(`${this.apiUrl}/${id}`, cliente);
   }
 }

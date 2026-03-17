@@ -10,12 +10,12 @@
     <div class="flex items-center gap-6">
       <div class="hidden md:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
         <button (click)="setIdioma('PT')" 
-                [class.bg-white]="idiomaAtivo === 'PT'" [class.text-blue-600]="idiomaAtivo === 'PT'" [class.border-blue-100]="idiomaAtivo === 'PT'" [class.shadow-sm]="idiomaAtivo === 'PT'"
+                [class.bg-white]="languageService.idiomaAtivo() === 'PT'" [class.text-blue-600]="languageService.idiomaAtivo() === 'PT'" [class.border-blue-100]="languageService.idiomaAtivo() === 'PT'" [class.shadow-sm]="languageService.idiomaAtivo() === 'PT'"
                 class="px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-2 border transition-all">
           <span class="text-sm">🇧🇷</span> PT
         </button>
         <button (click)="setIdioma('EN')"
-                [class.bg-white]="idiomaAtivo === 'EN'" [class.text-blue-600]="idiomaAtivo === 'EN'" [class.border-blue-100]="idiomaAtivo === 'EN'" [class.shadow-sm]="idiomaAtivo === 'EN'"
+                [class.bg-white]="languageService.idiomaAtivo() === 'EN'" [class.text-blue-600]="languageService.idiomaAtivo() === 'EN'" [class.border-blue-100]="languageService.idiomaAtivo() === 'EN'" [class.shadow-sm]="languageService.idiomaAtivo() === 'EN'"
                 class="px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-2 border transition-all">
           <span class="text-sm">🇺🇸</span> EN
         </button>
@@ -124,17 +124,17 @@
         
         <div class="flex gap-16">
            <div class="text-center md:text-left">
-              <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Navigação</h4>
+              <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">{{ 'NAV.NAV_NAVIGATION' | translate }}</h4>
               <nav class="flex flex-col gap-3 text-[12px] text-slate-500 font-bold">
-                 <a href="#" class="hover:text-blue-600">Documentação</a>
-                 <a href="#" class="hover:text-blue-600">Suporte</a>
+                 <a href="#" class="hover:text-blue-600">{{ 'NAV.NAV_DOCS' | translate }}</a>
+                 <a href="#" class="hover:text-blue-600">{{ 'NAV.NAV_SUPPORT' | translate }}</a>
               </nav>
            </div>
            <div class="text-center md:text-left">
-              <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Empresa</h4>
+              <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">{{ 'NAV.NAV_COMPANY' | translate }}</h4>
               <nav class="flex flex-col gap-3 text-[12px] text-slate-500 font-bold">
-                 <a href="#" class="hover:text-blue-600">Sobre</a>
-                 <a href="#" class="hover:text-blue-600">Contato</a>
+                 <a href="#" class="hover:text-blue-600">{{ 'NAV.NAV_ABOUT' | translate }}</a>
+                 <a href="#" class="hover:text-blue-600">{{ 'NAV.NAV_CONTACT' | translate }}</a>
               </nav>
            </div>
         </div>

@@ -2,10 +2,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TranslateModule } from "@ngx-translate/core";
-import { ArameMetalicoService } from '../../../core/services/arame-metalico.service';
-import { GasProtecaoService } from '../../../core/services/gas-protecao.service';
-import { ArameMetalicoResponseDTO } from '../../../core/models/arame-metalico.model';
-import { GasProtecaoResponseDTO } from '../../../core/models/gas-protecao.model';
+import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
+import { GasProtecaoService } from '../../../../core/services/gas-protecao.service';
+import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
+import { GasProtecaoResponseDTO } from '../../../../core/models/gas-protecao.model';
 
 @Component({
   selector: 'app-catalogo-insumos',
@@ -29,17 +29,17 @@ export class CatalogoInsumosComponent implements OnInit {
   }
 
   carregarDados() {
-    this.arameService.listarTodos().subscribe(data => this.arames = data);
-    this.gasService.listarTodos().subscribe(data => this.gases = data);
+    this.arameService.listarTodos().subscribe((data: ArameMetalicoResponseDTO[]) => this.arames = data);
+    this.gasService.listarTodos().subscribe((data: GasProtecaoResponseDTO[]) => this.gases = data);
   }
 
   insumoForm = this.fb.group({
     nome: ['', Validators.required],
     sigla: ['', Validators.required],
     preco: [0, [Validators.required, Validators.min(0.01)]],
-    densidade: [0], // Solo para Arame
-    eficiencia: [100], // Solo para Arame
-    vazaoGas: [15], // Solo para Gás
+    densidade: [0], 
+    eficiencia: [100], 
+    vazaoGas: [15], 
     ativo: [true]
   });
 
@@ -61,10 +61,6 @@ export class CatalogoInsumosComponent implements OnInit {
       this.insumoForm.markAllAsTouched();
       return;
     }
-
-    // Por enquanto mantemos a lógica de push para feedback visual imediato, 
-    // mas o ideal seria chamar o serviço de persistência.
-    // TODO: Implementar métodos de criação nos serviços (POST)
     this.fecharModal();
   }
 }

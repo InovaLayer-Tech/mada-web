@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService, AuthResponse } from '../../../core/services/auth.service';
+import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
   selector: 'app-login',
@@ -12,15 +13,28 @@ import { AuthService, AuthResponse } from '../../../core/services/auth.service';
   template: `
     <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
       <div class="w-full max-w-[480px] bg-white rounded-[3rem] p-12 shadow-[0_32px_64px_-16px_rgba(15,23,42,0.1)] border border-slate-100 relative">
-        <!-- Botão Voltar -->
-        <a routerLink="/" class="absolute left-10 top-10 flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors group">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left group-hover:-translate-x-1 transition-transform" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-          </svg>
-          <span class="text-[10px] font-black uppercase tracking-widest">Voltar</span>
-        </a>
+        <!-- Navbar Topo -->
+        <div class="absolute left-10 right-10 top-10 flex justify-between items-center">
+          <!-- Botão Voltar -->
+          <a routerLink="/" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors group">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left group-hover:-translate-x-1 transition-transform" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-widest">{{ 'NAV.NAV_NAVIGATION' | translate }}</span>
+          </a>
 
-        <div class="text-center mb-8">
+          <!-- Seletor Idioma -->
+          <div class="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-100">
+            <button (click)="setIdioma('PT')" 
+                    [class.bg-white]="languageService.idiomaAtivo() === 'PT'" [class.text-blue-600]="languageService.idiomaAtivo() === 'PT'" [class.shadow-sm]="languageService.idiomaAtivo() === 'PT'"
+                    class="px-2 py-1 rounded-lg text-[9px] font-black transition-all">PT</button>
+            <button (click)="setIdioma('EN')"
+                    [class.bg-white]="languageService.idiomaAtivo() === 'EN'" [class.text-blue-600]="languageService.idiomaAtivo() === 'EN'" [class.shadow-sm]="languageService.idiomaAtivo() === 'EN'"
+                    class="px-2 py-1 rounded-lg text-[9px] font-black transition-all">EN</button>
+          </div>
+        </div>
+
+        <div class="text-center mb-8 mt-12">
           <div class="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-600/20">
             <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer3D" class="w-12 h-auto brightness-0 invert">
           </div>
@@ -68,9 +82,14 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  protected languageService = inject(LanguageService);
 
   isLoading = signal(false);
   errorMessage = signal('');
+
+  setIdioma(idioma: string) {
+    this.languageService.setLanguage(idioma);
+  }
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

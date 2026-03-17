@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
   selector: 'app-b2c-layout',
@@ -32,23 +33,23 @@ import { AuthService } from '../../../core/services/auth.service';
           <div class="mt-12 pt-8 border-t border-slate-100">
             <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block font-mono">Global Language</span>
             <div class="flex gap-2">
-              <button (click)="setIdioma('PT')"
-                      [class.bg-blue-50]="idiomaAtivo === 'PT'"
-                      [class.text-blue-600]="idiomaAtivo === 'PT'"
-                      [class.border-blue-200]="idiomaAtivo === 'PT'"
-                      [class.bg-white]="idiomaAtivo !== 'PT'"
-                      [class.text-slate-400]="idiomaAtivo !== 'PT'"
-                      [class.border-slate-200]="idiomaAtivo !== 'PT'"
+              <button (click)="languageService.setLanguage('PT')"
+                      [class.bg-blue-50]="languageService.idiomaAtivo() === 'PT'"
+                      [class.text-blue-600]="languageService.idiomaAtivo() === 'PT'"
+                      [class.border-blue-200]="languageService.idiomaAtivo() === 'PT'"
+                      [class.bg-white]="languageService.idiomaAtivo() !== 'PT'"
+                      [class.text-slate-400]="languageService.idiomaAtivo() !== 'PT'"
+                      [class.border-slate-200]="languageService.idiomaAtivo() !== 'PT'"
                       class="flex-1 py-2 border rounded-lg text-[10px] font-black transition-all flex items-center justify-center gap-2 uppercase tracking-tighter hover:bg-slate-50">
                 <span class="text-sm">🇧🇷</span> PT
               </button>
-              <button (click)="setIdioma('EN')"
-                      [class.bg-blue-50]="idiomaAtivo === 'EN'"
-                      [class.text-blue-600]="idiomaAtivo === 'EN'"
-                      [class.border-blue-200]="idiomaAtivo === 'EN'"
-                      [class.bg-white]="idiomaAtivo !== 'EN'"
-                      [class.text-slate-400]="idiomaAtivo !== 'EN'"
-                      [class.border-slate-200]="idiomaAtivo !== 'EN'"
+              <button (click)="languageService.setLanguage('EN')"
+                      [class.bg-blue-50]="languageService.idiomaAtivo() === 'EN'"
+                      [class.text-blue-600]="languageService.idiomaAtivo() === 'EN'"
+                      [class.border-blue-200]="languageService.idiomaAtivo() === 'EN'"
+                      [class.bg-white]="languageService.idiomaAtivo() !== 'EN'"
+                      [class.text-slate-400]="languageService.idiomaAtivo() !== 'EN'"
+                      [class.border-slate-200]="languageService.idiomaAtivo() !== 'EN'"
                       class="flex-1 py-2 border rounded-lg text-[10px] font-black transition-all flex items-center justify-center gap-2 uppercase tracking-tighter hover:bg-slate-50">
                 <span class="text-sm">🇺🇸</span> EN
               </button>
@@ -89,16 +90,6 @@ import { AuthService } from '../../../core/services/auth.service';
   `
 })
 export class B2cLayoutComponent {
-  private translate = inject(TranslateService);
   public authService = inject(AuthService);
-  idiomaAtivo = 'PT';
-
-  constructor() {
-    this.translate.setDefaultLang('pt');
-  }
-
-  setIdioma(idioma: string) {
-    this.idiomaAtivo = idioma;
-    this.translate.use(idioma.toLowerCase());
-  }
+  protected languageService = inject(LanguageService);
 }

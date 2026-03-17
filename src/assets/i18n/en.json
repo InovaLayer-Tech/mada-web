@@ -5,7 +5,13 @@
     "B2B_LOGIN": "Admin Access",
     "B2C_LOGIN": "Client Access",
     "LOGIN": "InovaLayer3D Portal",
-    "SIGNUP": "Create Account"
+    "SIGNUP": "Create Account",
+    "NAV_DOCS": "Documentation",
+    "NAV_SUPPORT": "Support",
+    "NAV_ABOUT": "About",
+    "NAV_CONTACT": "Contact",
+    "NAV_COMPANY": "Company",
+    "NAV_NAVIGATION": "Navigation"
   },
   "LANDING": {
     "ECOSYSTEM": "The WAAM Ecosystem",
@@ -153,7 +159,14 @@
       "PROFIT": "Industrial Profit Margin",
       "TAX": "Average Tax Rate",
       "SAVING": "Saving Data...",
-      "SAVE": "Save Changes"
+      "SAVE": "Save Changes",
+      "CANCEL": "Cancel"
+    },
+      "PERFIL_EDIT": {
+        "TITLE": "Edit Technical Profile",
+        "NAME": "Full Name",
+        "BIO": "Corporate Bio",
+        "SAVE_SUCCESS": "Profile updated successfully!"
     },
     "PERFIL": {
       "TITLE": "Executive Profile",
@@ -236,6 +249,21 @@
       "DISCARD": "DISCARD REQUEST",
       "SEND": "CONFIRM RFQ SUBMISSION",
       "SENDING": "PROCESSING..."
+    },
+    "CADASTRO": {
+      "TITLE": "CREATE CORPORATE ACCOUNT",
+      "SUBTITLE": "Start your journey in additive manufacturing",
+      "ALREADY_HAVE": "Already have an account?",
+      "ENTER_HERE": "Enter here",
+      "NAME": "Full Name",
+      "COMPANY": "Business Name / Company",
+      "EMAIL": "Corporate Email",
+      "PASSWORD": "Password",
+      "CONFIRM_PASSWORD": "Confirm",
+      "MISMATCH": "Passwords do not match",
+      "PROCESS": "PROCESSING...",
+      "FINISH": "FINISH REGISTRATION",
+      "SUCCESS": "Registration successful! Welcome to InovaLayer3D."
     }
   }
 }

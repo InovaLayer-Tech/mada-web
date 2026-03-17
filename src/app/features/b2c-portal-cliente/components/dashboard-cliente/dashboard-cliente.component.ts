@@ -22,12 +22,12 @@ export class DashboardClienteComponent implements OnInit {
   }
 
   carregarDados() {
-    this.orcamentoService.listarTodos().subscribe(data => {
+    this.orcamentoService.listarTodos().subscribe((data: OrcamentoResponseDTO[]) => {
       this.rfqs = data;
     });
   }
 
-  abrirProposta(item: any) {
+  abrirProposta(item: OrcamentoResponseDTO) {
     this.selectedProposta = item;
     this.showProposta = true;
   }

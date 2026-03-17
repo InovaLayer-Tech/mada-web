@@ -1,189 +1,210 @@
 <div class="min-h-screen bg-slate-50 pb-20 font-sans animate-in fade-in duration-700">
 
   <div class="max-w-4xl mx-auto mt-12 px-8">
-    <div class="mb-12 text-center">
-      <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-3">{{ 'B2C.RFQ.TITLE' | translate }}</h1>
-      <p class="text-slate-500 font-bold italic text-lg opacity-80">{{ 'B2C.RFQ.SUBTITLE' | translate }}</p>
+    
+    <!-- Stepper Header -->
+    <div class="mb-12">
+      <div class="flex items-center justify-between max-w-2xl mx-auto relative mb-12">
+        <!-- Progress Line Background -->
+        <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-200 -translate-y-1/2 z-0"></div>
+        <!-- Active Progress Line -->
+        <div class="absolute top-1/2 left-0 h-1 bg-blue-600 -translate-y-1/2 z-0 transition-all duration-500"
+             [style.width.%]="(currentStep() - 1) * 50"></div>
+
+        <!-- Step 1 Indicator -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center font-black transition-all duration-300"
+               [ngClass]="currentStep() >= 1 ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-slate-400 border-2 border-slate-200'">
+            @if (currentStep() > 1) { <i class="pi pi-check"></i> } @else { 1 }
+          </div>
+          <span class="mt-3 text-[10px] font-black uppercase tracking-widest text-slate-400" [class.text-blue-600]="currentStep() >= 1">Projeto</span>
+        </div>
+
+        <!-- Step 2 Indicator -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center font-black transition-all duration-300"
+               [ngClass]="currentStep() >= 2 ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-slate-400 border-2 border-slate-200'">
+            @if (currentStep() > 2) { <i class="pi pi-check"></i> } @else { 2 }
+          </div>
+          <span class="mt-3 text-[10px] font-black uppercase tracking-widest text-slate-400" [class.text-blue-600]="currentStep() >= 2">Envelope</span>
+        </div>
+
+        <!-- Step 3 Indicator -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center font-black transition-all duration-300"
+               [ngClass]="currentStep() >= 3 ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-slate-400 border-2 border-slate-200'">
+            3
+          </div>
+          <span class="mt-3 text-[10px] font-black uppercase tracking-widest text-slate-400" [class.text-blue-600]="currentStep() >= 3">Requisitos</span>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-3">Solicitar Orçamento WAAM</h1>
+        <p class="text-slate-500 font-bold italic text-lg opacity-80">Transformando metal em geometria de valor.</p>
+      </div>
     </div>
 
     <form [formGroup]="rfqForm" (ngSubmit)="enviarSolicitacao()" class="space-y-10">
       
-      <!-- Seção 1: Empresa e Contato -->
-      <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-12 hover:shadow-lg transition-all">
-        <div class="flex items-center mb-8 pb-6 border-b border-slate-100">
-          <div class="w-2 h-8 bg-blue-600 rounded-full mr-4"></div>
-          <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">{{ 'B2C.RFQ.SEC_CORP' | translate }}</h2>
-        </div>
+      <!-- STEP 1: PROJETO -->
+      @if (currentStep() === 1) {
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-12 hover:shadow-lg transition-all animate-in slide-in-from-right duration-500">
+          <div class="flex items-center mb-8 pb-6 border-b border-slate-100">
+            <div class="w-2 h-8 bg-blue-600 rounded-full mr-4"></div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">Dados do Projeto</h2>
+          </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="space-y-3">
-            <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.LABEL_COMPANY' | translate }} <span class="text-blue-600">*</span></label>
-            <input formControlName="empresa" type="text" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-bold placeholder:text-slate-300 shadow-inner">
-          </div>
-          <div class="space-y-3">
-            <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.LABEL_CONTACT' | translate }} <span class="text-blue-600">*</span></label>
-            <input formControlName="contato" type="text" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-bold placeholder:text-slate-300 shadow-inner">
-          </div>
-          <div class="space-y-3">
-            <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.LABEL_EMAIL' | translate }} <span class="text-blue-600">*</span></label>
-            <input formControlName="email" type="email" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-bold placeholder:text-slate-300 shadow-inner">
-          </div>
-          <div class="space-y-3">
-            <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2B.MOTOR.LABEL_QTY' | translate }} <span class="text-blue-600">*</span></label>
-            <input formControlName="quantidade" type="number" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-bold placeholder:text-slate-300 shadow-inner">
-          </div>
-        </div>
-      </div>
-
-      <!-- Seção 2: Projeto 3D e Material -->
-      <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-12 hover:shadow-lg transition-all">
-        <div class="flex items-center mb-10 pb-6 border-b border-slate-100">
-          <div class="w-2 h-8 bg-indigo-600 rounded-full mr-4"></div>
-          <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">{{ 'B2C.RFQ.SEC_TECH' | translate }}</h2>
-        </div>
-
-        <div class="space-y-12">
-          <!-- UPLOAD -->
-          <div class="relative border-4 border-dashed border-slate-100 bg-slate-50/50 rounded-[3rem] p-12 flex flex-col items-center justify-center transition-all hover:bg-white hover:border-indigo-100 group cursor-pointer shadow-inner">
-            <input type="file" (change)="onFileSelected($event)" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept=".stl,.obj,.step,.iges">
-            <div class="w-20 h-20 bg-white rounded-3xl shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-slate-50">
-              <i class="pi pi-cloud-upload text-4xl text-indigo-600"></i>
-            </div>
-            <p class="text-base font-black text-slate-900 mb-2">{{ 'B2C.RFQ.UPLOAD_DRAG' | translate }}</p>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono">{{ 'B2C.RFQ.UPLOAD_LIMIT' | translate }}</p>
-            
-            @if(rfqForm.controls.arquivo3d.value) {
-              <div class="mt-6 px-6 py-2.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-3 shadow-lg shadow-indigo-600/20">
-                <i class="pi pi-file"></i>
-                {{ rfqForm.controls.arquivo3d.value.name }}
+          <div class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="space-y-3">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Nome do Projeto <span class="text-blue-600">*</span></label>
+                <input formControlName="nomeProjeto" type="text" placeholder="Ex: Matriz de Estamparia V2"
+                       class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 transition-all font-bold shadow-inner">
               </div>
-            }
-          </div>
-
-          <!-- Grid: Material e Finalidade -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-3">
-              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.MATERIAL_LABEL' | translate }} <span class="text-blue-600">*</span></label>
-              <select formControlName="arameId" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all font-black appearance-none cursor-pointer">
-                <option value="" disabled selected>{{ 'COMMON.SELECT_MATERIAL' | translate }}</option>
-                @for (arame of arames; track arame.id) {
-                  <option [value]="arame.id">{{ arame.nome }} ({{ arame.ligaMetalica }})</option>
-                }
-              </select>
+              <div class="space-y-3">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Nome da Empresa <span class="text-blue-600">*</span></label>
+                <input formControlName="nomeEmpresa" type="text" placeholder="Razão Social"
+                       class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 transition-all font-bold shadow-inner">
+              </div>
             </div>
             <div class="space-y-3">
-              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.PURPOSE_LABEL' | translate }} <span class="text-blue-600">*</span></label>
-              <select formControlName="finalidade" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all font-black appearance-none cursor-pointer">
-                <option value="" disabled selected>{{ 'COMMON.SELECT_PURPOSE' | translate }}</option>
+              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Finalidade da Peça <span class="text-blue-600">*</span></label>
+              <select formControlName="finalidadePeca" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 transition-all font-black appearance-none cursor-pointer">
+                <option value="" disabled selected>Selecione a finalidade</option>
                 <option value="Prototipo">Protótipo Funcional</option>
                 <option value="Uso Final">Peça de Uso Final (Série)</option>
                 <option value="Reparo">Reparo / Manutenção</option>
               </select>
             </div>
           </div>
+        </div>
+      }
 
-          <!-- P1: Requisitos de Precisão -->
-          <div class="p-10 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] space-y-10">
-            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] font-mono flex items-center gap-4">
-               <span class="w-10 h-px bg-slate-200"></span>
-               {{ 'B2C.RFQ.SEC_PRECISION' | translate }}
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <!-- STEP 2: ENVELOPE FÍSICO -->
+      @if (currentStep() === 2) {
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-12 hover:shadow-lg transition-all animate-in slide-in-from-right duration-500">
+          <div class="flex items-center mb-10 pb-6 border-b border-slate-100">
+            <div class="w-2 h-8 bg-indigo-600 rounded-full mr-4"></div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">Envelope Físico e Material</h2>
+          </div>
+
+          <div class="space-y-12">
+            <!-- Upload 3D Mock -->
+            <div class="relative border-4 border-dashed border-slate-100 bg-slate-50/50 rounded-[3rem] p-12 flex flex-col items-center justify-center transition-all hover:bg-white hover:border-indigo-100 group cursor-pointer shadow-inner">
+              <input type="file" (change)="onFileSelected($event)" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept=".stl,.obj,.step,.iges">
+              <div class="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-6 border border-slate-50">
+                <i class="pi pi-cloud-upload text-3xl text-indigo-600"></i>
+              </div>
+              <p class="text-sm font-black text-slate-900 mb-1">Upload de Arquivo 3D</p>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Suportado: STL, STEP, OBJ (Máx 20MB)</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.TOLERANCE_LABEL' | translate }}</label>
-                <select formControlName="tolerancia" class="w-full bg-white text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all font-black appearance-none cursor-pointer shadow-sm">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Material Desejado <span class="text-blue-600">*</span></label>
+                <select formControlName="materialDesejadoId" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-indigo-600 transition-all font-black shadow-inner">
+                  <option value="" disabled selected>Selecione o material</option>
+                  @for (arame of arames; track arame.id) {
+                    <option [value]="arame.id">{{ arame.nome }} ({{ arame.ligaMetalica }})</option>
+                  }
+                </select>
+              </div>
+              <div class="space-y-3">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Quantidade <span class="text-blue-600">*</span></label>
+                <input formControlName="quantidade" type="number" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-indigo-600 transition-all font-bold shadow-inner">
+              </div>
+            </div>
+
+            <div class="p-10 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] space-y-8">
+              <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] font-mono text-center mb-4">Dimensões Máximas (mm)</h3>
+              <div class="grid grid-cols-3 gap-8">
+                <div class="space-y-3">
+                  <input type="number" formControlName="dimensaoX" placeholder="X" class="w-full bg-white text-slate-900 px-4 py-5 rounded-2xl border border-slate-200 text-center font-black text-lg focus:border-indigo-600 transition-all shadow-inner">
+                </div>
+                <div class="space-y-3">
+                  <input type="number" formControlName="dimensaoY" placeholder="Y" class="w-full bg-white text-slate-900 px-4 py-5 rounded-2xl border border-slate-200 text-center font-black text-lg focus:border-indigo-600 transition-all shadow-inner">
+                </div>
+                <div class="space-y-3">
+                  <input type="number" formControlName="dimensaoZ" placeholder="Z" class="w-full bg-white text-slate-900 px-4 py-5 rounded-2xl border border-slate-200 text-center font-black text-lg focus:border-indigo-600 transition-all shadow-inner">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- STEP 3: REQUISITOS TÉCNICOS -->
+      @if (currentStep() === 3) {
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-12 hover:shadow-lg transition-all animate-in slide-in-from-right duration-500">
+          <div class="flex items-center mb-8 pb-6 border-b border-slate-100">
+            <div class="w-2 h-8 bg-emerald-600 rounded-full mr-4"></div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">Requisitos e Pós-Processamento</h2>
+          </div>
+
+          <div class="space-y-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="space-y-3">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Tolerância Exigida</label>
+                <select formControlName="tolerancia" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:border-emerald-600 transition-all font-black shadow-inner">
                   <option value="Bruta">Bruta de Deposição (+/- 2.0mm)</option>
                   <option value="Semi">Semi-acabada (+/- 1.0mm)</option>
                   <option value="Usinada">Precisão Usinada ISO/DIN</option>
                 </select>
               </div>
-              <div class="flex items-center pt-8">
-                 <label class="flex items-center gap-5 cursor-pointer group">
-                   <div class="relative w-8 h-8 bg-white border-2 border-slate-200 rounded-xl flex items-center justify-center transition-all group-hover:border-indigo-600 overflow-hidden shadow-sm">
-                     <input type="checkbox" formControlName="canaisInternos" class="absolute inset-0 opacity-0 cursor-pointer z-10 peer">
-                     <i class="pi pi-check text-indigo-600 scale-0 peer-checked:scale-100 transition-transform font-black"></i>
-                   </div>
-                   <span class="text-[12px] font-black text-slate-900 uppercase tracking-tight">{{ 'B2C.RFQ.INTERNAL_CHANNELS' | translate }}</span>
-                 </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- P2: Qualidade e Pós-Processamento -->
-          <div class="p-10 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] space-y-10">
-            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] font-mono flex items-center gap-4">
-               <span class="w-10 h-px bg-slate-200"></span>
-               {{ 'B2C.RFQ.SEC_QUALITY' | translate }}
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.INSPECTION_LEVEL' | translate }}</label>
-                <select formControlName="nivelInspecao" class="w-full bg-white text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-black appearance-none cursor-pointer shadow-sm">
-                  <option value="Visual">Inspeção Visual Simples</option>
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Nível de Inspeção</label>
+                <select formControlName="nivelInspecao" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:border-emerald-600 transition-all font-black shadow-inner">
+                  <option value="Visual">Visual Simples</option>
                   <option value="LP">Líquido Penetrante (LP)</option>
-                  <option value="U_RX">Ultrassom / Raio-X Industrial</option>
+                  <option value="U_RX">Ultrassom / Raio-X</option>
                 </select>
               </div>
-              <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.SURFACE_FINISH' | translate }}</label>
-                <select formControlName="acabamento" class="w-full bg-white text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-black appearance-none cursor-pointer shadow-sm">
-                  <option value="Bruto">Bruto de Fusão (Sem Usinagem)</option>
-                  <option value="Faceado">Usinagem de Superfícies de Contato</option>
-                  <option value="Integral">Usinagem Integral (CNC 5 eixos)</option>
-                </select>
-              </div>
-              <div class="md:col-span-2">
-                <label class="flex items-center gap-8 cursor-pointer group bg-white p-8 rounded-[2rem] border border-slate-200 hover:border-blue-600 transition-all shadow-sm">
-                  <div class="relative w-14 h-7 bg-slate-200 rounded-full transition-all peer-checked:bg-blue-600">
-                    <input type="checkbox" formControlName="tratamentoTermico" class="absolute inset-0 opacity-0 cursor-pointer z-10 peer">
-                    <div class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-all peer-checked:left-8"></div>
-                  </div>
-                  <div class="flex-1">
-                     <p class="text-sm font-black text-slate-900 uppercase tracking-tight">{{ 'B2C.RFQ.HEAT_TREATMENT' | translate }}</p>
-                     <p class="text-[11px] text-slate-400 font-black uppercase mt-1 font-mono tracking-widest opacity-80">{{ 'B2C.RFQ.HEAT_TREATMENT_SUB' | translate }}</p>
-                  </div>
-                </label>
-              </div>
             </div>
-          </div>
 
-          <!-- P3: Dimensões -->
-          <div class="p-10 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] space-y-10">
-            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] font-mono flex items-center gap-4">
-               <span class="w-10 h-px bg-slate-200"></span>
-               {{ 'B2C.RFQ.SEC_DIMENSIONS' | translate }}
-            </h3>
-            <div class="grid grid-cols-3 gap-8">
-              <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">{{ 'B2C.RFQ.DIM_X' | translate }}</label>
-                <input type="number" formControlName="dimensaoX" class="w-full bg-white text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 text-center font-industrial-mono font-black text-lg focus:border-blue-600 transition-all shadow-inner" placeholder="X">
-              </div>
-              <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">{{ 'B2C.RFQ.DIM_Y' | translate }}</label>
-                <input type="number" formControlName="dimensaoY" class="w-full bg-white text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 text-center font-industrial-mono font-black text-lg focus:border-blue-600 transition-all shadow-inner" placeholder="Y">
-              </div>
-              <div class="space-y-3">
-                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">{{ 'B2C.RFQ.DIM_Z' | translate }}</label>
-                <input type="number" formControlName="dimensaoZ" class="w-full bg-white text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 text-center font-industrial-mono font-black text-lg focus:border-blue-600 transition-all shadow-inner" placeholder="Z">
-              </div>
+            <div class="space-y-3">
+              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Acabamento Superficial</label>
+              <select formControlName="acabamento" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:border-emerald-600 transition-all font-black shadow-inner">
+                <option value="Bruto">Sem Usinagem</option>
+                <option value="Faceado">Faceamento de Bases</option>
+                <option value="Integral">Usinagem Total CNC</option>
+              </select>
             </div>
-          </div>
 
-          <div class="md:col-span-2 space-y-4">
-            <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">{{ 'B2C.RFQ.ADDITIONAL_CONDITIONS' | translate }}</label>
-            <textarea formControlName="condicoesTrabalho" class="w-full bg-slate-50 text-slate-900 px-8 py-6 rounded-[2rem] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-medium h-40 shadow-inner" placeholder="..."></textarea>
+            <div class="flex items-center gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+              <label class="flex items-center gap-4 cursor-pointer">
+                <div class="relative w-12 h-6 bg-slate-200 rounded-full transition-all peer-checked:bg-blue-600">
+                  <input type="checkbox" formControlName="tratamentoTermico" class="absolute inset-0 opacity-0 cursor-pointer z-10 peer">
+                  <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7"></div>
+                </div>
+                <span class="text-sm font-black text-slate-700 uppercase">Tratamento Térmico de Alívio</span>
+              </label>
+            </div>
           </div>
         </div>
-      </div>
+      }
 
-      <div class="flex flex-col md:flex-row justify-end items-center gap-8 pt-12 border-t border-slate-100">
-        <button type="button" routerLink="/" class="text-[12px] font-black text-slate-400 hover:text-slate-900 uppercase tracking-[0.3em] transition-colors active:scale-95">{{ 'B2C.RFQ.DISCARD' | translate }}</button>
-        <button type="submit" [disabled]="rfqForm.invalid || isSending" class="px-20 py-7 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] text-[12px] font-black uppercase tracking-[0.4em] shadow-2xl shadow-blue-600/30 transition-all flex items-center justify-center gap-5 disabled:opacity-40 active:scale-95 min-w-[350px]">
-          @if(isSending) {
-            <i class="pi pi-spin pi-spinner text-xl"></i>
-          }
-          {{ isSending ? ('B2C.RFQ.SENDING' | translate) : ('B2C.RFQ.SEND' | translate) }}
+      <!-- Bottom Navigation -->
+      <div class="flex flex-col md:flex-row justify-between items-center gap-8 pt-8 border-t border-slate-100">
+        <button type="button" (click)="prevStep()" [disabled]="currentStep() === 1"
+                class="px-10 py-5 bg-white border border-slate-200 text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-30 active:scale-95">
+          Voltar
         </button>
+        
+        <div class="flex gap-4">
+          @if (currentStep() < totalSteps) {
+            <button type="button" (click)='nextStep()'
+                    class="px-20 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] shadow-xl shadow-blue-600/20 transition-all active:scale-95">
+              Próximo Passo
+            </button>
+          } @else {
+            <button type="submit" [disabled]="rfqForm.invalid || isSending()" 
+                    class="px-20 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] shadow-xl shadow-emerald-600/20 transition-all flex items-center gap-4 active:scale-95 disabled:opacity-50">
+              @if(isSending()) { <i class="pi pi-spin pi-spinner"></i> }
+              Finalizar Solicitação
+            </button>
+          }
+        </div>
       </div>
     </form>
   </div>

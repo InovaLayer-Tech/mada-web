@@ -31,12 +31,13 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     importProvidersFrom(
       TranslateModule.forRoot({
-        defaultLanguage: 'pt',
         loader: {
           provide: TranslateLoader,
           useFactory: HttpLoaderFactory,
           deps: [HttpClient]
-        }
+        },
+        useDefaultLang: false,
+        isolate: false
       })
     )
   ],

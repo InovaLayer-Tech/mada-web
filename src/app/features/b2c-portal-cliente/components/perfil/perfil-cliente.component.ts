@@ -1,18 +1,24 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { ClienteResponseDTO } from '../../../../core/models/cliente.model';
 
 @Component({
   selector: 'app-perfil-cliente',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule],
   template: `
     <div class="max-w-4xl mx-auto mt-12 px-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12" *ngIf="cliente">
-      <div class="mb-10">
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight">{{ 'B2C.PERFIL.TITLE' | translate }}</h1>
-        <p class="text-slate-500 mt-2">{{ 'B2C.PERFIL.SUBTITLE' | translate }}</p>
+      <div class="mb-10 flex justify-between items-end">
+        <div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight">{{ 'B2C.PERFIL.TITLE' | translate }}</h1>
+          <p class="text-slate-500 mt-2">{{ 'B2C.PERFIL.SUBTITLE' | translate }}</p>
+        </div>
+        <button *ngIf="!editMode" (click)="toggleEdit()" class="px-6 py-2 border-2 border-slate-200 hover:border-blue-500 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+          {{ 'B2C.PERFIL.CHANGE' | translate }}
+        </button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -20,7 +26,7 @@ import { ClienteResponseDTO } from '../../../../core/models/cliente.model';
         <div class="md:col-span-4 space-y-6">
           <div class="text-center p-8 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm">
             <img src="assets/images/inovalayer-circulada.png" alt="Logo InovaLayer" class="w-24 h-24 mx-auto mb-6 object-contain">
-            <h2 class="text-xl font-black text-slate-900 leading-tight">{{ cliente.nomeRazaoSocial }}</h2>
+            <h2 class="text-xl font-black text-slate-900 leading-tight">{{ clienteForm.get('razaoSocial')?.value }}</h2>
             <p *ngIf="cliente.vip" class="text-[10px] font-bold text-blue-600 uppercase tracking-[0.2em] mt-2 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block">{{ 'B2C.PERFIL.VIP_CLIENT' | translate }}</p>
           </div>
 
@@ -33,14 +39,16 @@ import { ClienteResponseDTO } from '../../../../core/models/cliente.model';
         </div>
 
         <!-- Formulário Real -->
-        <div class="md:col-span-8">
+        <form [formGroup]="clienteForm" (ngSubmit)="salvar()" class="md:col-span-8">
           <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-8">
             <section>
               <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-4">{{ 'B2C.PERFIL.COMPANY_DATA' | translate }}</h3>
               <div class="grid grid-cols-1 gap-6">
                 <div>
                   <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ 'B2C.PERFIL.COMPANY_NAME' | translate }}</label>
-                  <input type="text" readonly [value]="cliente.nomeRazaoSocial" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                  <input type="text" [readonly]="!editMode" formControlName="razaoSocial" 
+                    [class.bg-slate-50]="!editMode" [class.border-blue-500]="editMode"
+                    class="w-full border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none transition-all">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                   <div>
@@ -49,7 +57,13 @@ import { ClienteResponseDTO } from '../../../../core/models/cliente.model';
                   </div>
                   <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ 'B2C.PERFIL.SECTOR' | translate }}</label>
-                    <input type="text" readonly [value]="cliente.setorAtuacao" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                    <select *ngIf="editMode" formControlName="setorAtuacao" class="w-full border border-blue-500 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                      <option value="Aeroespacial / Defesa">{{ 'B2C.PERFIL.AERO' | translate }}</option>
+                      <option value="Automotivo">Automotivo</option>
+                      <option value="Energia">Energia</option>
+                      <option value="Médico / Dental">Médico / Dental</option>
+                    </select>
+                    <input *ngIf="!editMode" type="text" readonly [value]="cliente.setorAtuacao" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
                   </div>
                 </div>
               </div>
@@ -83,29 +97,77 @@ import { ClienteResponseDTO } from '../../../../core/models/cliente.model';
                       <p class="text-[10px] font-bold text-slate-400 uppercase">Português (Brasil)</p>
                     </div>
                   </div>
-                  <button class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">{{ 'B2C.PERFIL.CHANGE' | translate }}</button>
                 </div>
               </div>
             </section>
 
-            <div class="pt-6">
-              <button class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 text-xs text-center min-w-[200px]">
-                {{ 'B2C.PERFIL.SAVE' | translate }}
+            <div class="pt-6 flex gap-4" *ngIf="editMode">
+              <button type="submit" [disabled]="saving || clienteForm.invalid" 
+                class="flex-1 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 text-xs text-center disabled:opacity-50">
+                {{ (saving ? 'B2B.CONFIG.SAVING' : 'B2C.PERFIL.SAVE') | translate }}
+              </button>
+              <button type="button" (click)="toggleEdit()" 
+                class="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-2xl font-black uppercase tracking-widest transition-all text-xs text-center">
+                {{ 'B2B.CONFIG.CANCEL' | translate }}
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   `
 })
 export class PerfilClienteComponent implements OnInit {
   private clienteService = inject(ClienteService);
+  private fb = inject(FormBuilder);
+  
   cliente: ClienteResponseDTO | null = null;
+  clienteForm: FormGroup;
+  editMode = false;
+  saving = false;
+
+  constructor() {
+    this.clienteForm = this.fb.group({
+      razaoSocial: ['', [Validators.required]],
+      setorAtuacao: ['', [Validators.required]]
+    });
+  }
 
   ngOnInit() {
+    this.carregarPerfil();
+  }
+
+  carregarPerfil() {
     this.clienteService.obterPerfilAtual().subscribe(data => {
       this.cliente = data;
+      this.clienteForm.patchValue({
+        razaoSocial: data.nomeRazaoSocial,
+        setorAtuacao: data.setorAtuacao
+      });
     });
+  }
+
+  toggleEdit() {
+    this.editMode = !this.editMode;
+    if (!this.editMode) {
+      this.carregarPerfil(); // Reset if cancel
+    }
+  }
+
+  salvar() {
+    if (this.clienteForm.valid && this.cliente) {
+      this.saving = true;
+      this.clienteService.atualizarPerfil(this.cliente.id, this.clienteForm.value).subscribe({
+        next: (updated) => {
+          this.cliente = updated;
+          this.saving = false;
+          this.editMode = false;
+        },
+        error: () => {
+          this.saving = false;
+          // Toast ou feedback aqui
+        }
+      });
+    }
   }
 }

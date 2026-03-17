@@ -1,280 +1,184 @@
-<div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
+<div class="min-h-screen bg-slate-50 pb-20 font-sans animate-in fade-in duration-700">
 
-  <main class="max-w-7xl mx-auto mt-12 px-8">
-    <!-- Header Light -->
-    <div class="mb-10 flex justify-between items-end border-b border-slate-200 pb-6">
-      <div>
-        <h1 class="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">{{ 'B2B.MOTOR.TITLE' | translate }}</h1>
-        <p class="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mt-3 font-mono opacity-80">{{ 'B2B.MOTOR.SUBTITLE' | translate }}</p>
+  <!-- Sub-header Industrial -->
+  <div class="bg-white border-b border-slate-200 px-12 py-8 flex justify-between items-center shadow-sm">
+    <div>
+      <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">Motor Metrológico WAAM</h1>
+      <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-1">Orquestração de Custos e Fatiamento 3D</p>
+    </div>
+    <div class="flex gap-4">
+      <div class="px-6 py-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-4">
+        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+        <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest">Servidor Online</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-[1400px] mx-auto mt-12 px-8 grid grid-cols-1 lg:grid-cols-12 gap-12">
+    
+    <!-- LADO ESQUERDO: Seleção e Resumo do Projeto -->
+    <div class="lg:col-span-4 space-y-8">
+      <div class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm">
+        <h2 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-8 flex items-center gap-4">
+          <i class="pi pi-briefcase text-blue-600"></i> Seleção de RFQ Pendente
+        </h2>
+        
+        <select (change)="onRfqChange($event)" class="w-full bg-slate-50 text-slate-900 px-6 py-5 rounded-[1.5rem] border border-slate-200 focus:border-blue-600 outline-none font-black mb-10 appearance-none cursor-pointer shadow-inner">
+          <option value="" disabled selected>ESCOLHA UMA SOLICITAÇÃO...</option>
+          @for (rfq of pendingRfqs; track rfq.id) {
+            <option [value]="rfq.id">{{ rfq.nomeProjeto }} ({{ rfq.dataEmissao | date:'dd/MM' }})</option>
+          }
+        </select>
+
+        @if (rfqSelecionado) {
+          <div class="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+            <div class="p-6 bg-blue-50/50 rounded-3xl border border-blue-100">
+              <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">Dados do Cliente</p>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Status</p>
+                  <span class="text-xs font-black text-slate-700 uppercase">{{ rfqSelecionado.status }}</span>
+                </div>
+                <div>
+                  <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Lote</p>
+                  <span class="text-xs font-black text-slate-700 uppercase">{{ rfqSelecionado.quantidadeRequerida }} unidades</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-6 bg-slate-50/50 rounded-3xl border border-slate-100">
+               <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Geometria Solicitada</p>
+               <p class="text-[11px] font-bold text-slate-600 leading-relaxed font-mono">
+                 DIMENSÕES: {{ rfqSelecionado.dimensaoXmm }} x {{ rfqSelecionado.dimensaoYmm }} x {{ rfqSelecionado.dimensaoZmm }} mm
+               </p>
+            </div>
+          </div>
+        } @else {
+          <div class="h-40 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-3xl opacity-40">
+            <i class="pi pi-inbox text-3xl text-slate-300 mb-3"></i>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aguardando Seleção</p>
+          </div>
+        }
+      </div>
+
+      <!-- JSON Input (Power User) -->
+      <div class="bg-slate-900 rounded-[2.5rem] p-10 shadow-2xl">
+         <div class="flex items-center justify-between mb-6">
+           <h2 class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Importar JSON do Fatiador</h2>
+           <i class="pi pi-code text-blue-400 opacity-50"></i>
+         </div>
+         <textarea [formControl]="orcamentoForm.controls.jsonInput" 
+                   class="w-full h-40 bg-slate-800 text-blue-400 p-6 rounded-2xl border border-slate-700 font-mono text-xs focus:ring-1 focus:ring-blue-500 outline-none scrollbar-hide"
+                   placeholder='{ "massa_kg": 2.4, "tempo_arco": 140 }'></textarea>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-
-      <!-- LEFT: FORM -->
-      <div class="lg:col-span-8 space-y-8">
-        <!-- SELECAO RFQ (Recognition over Recall) -->
-        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm relative overflow-hidden group hover:shadow-xl hover:shadow-slate-200/50 transition-all">
-          <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
-          
-          <div class="flex items-center justify-between mb-8 relative z-10">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
-                <i class="pi pi-search-plus text-xl"></i>
-              </div>
-              <div>
-                <h2 class="text-2xl font-black text-slate-900 tracking-tight uppercase">{{ 'B2B.MOTOR.SEC_LINK_RFQ' | translate }}</h2>
-                <p class="text-xs text-slate-500 font-black uppercase tracking-widest mt-1 opacity-70">{{ 'B2B.MOTOR.DESC_LINK_RFQ' | translate }}</p>
-              </div>
-            </div>
+    <!-- LADO DIREITO: Formulário de Injeção Metrológica -->
+    <div class="lg:col-span-8">
+      <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()" class="space-y-10">
+        
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-12 shadow-sm">
+          <div class="flex items-center mb-10 pb-6 border-b border-slate-100">
+            <div class="w-2 h-8 bg-indigo-600 rounded-full mr-4"></div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">Variáveis de Fabricação (Fase DC)</h2>
           </div>
 
-          <div class="relative z-10">
-            <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-              <i class="pi pi-search text-slate-400"></i>
-            </div>
-            <select 
-              (change)="carregarDadosRfq($event)"
-              class="w-full bg-slate-50 text-slate-900 pl-14 pr-12 py-5 rounded-3xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-industrial-mono text-base font-black appearance-none cursor-pointer shadow-inner">
-              <option value="" disabled selected>{{ 'B2B.MOTOR.SELECT_RFQ_PLACEHOLDER' | translate }}</option>
-              @for (rfq of pendingRfqs; track rfq.id) {
-                <option [value]="rfq.id">{{ rfq.id.substring(0,8) }} - {{ rfq.empresa }} ({{ rfq.fase2DC.arameMetalicoNome }})</option>
-              }
-            </select>
-            <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
-              <i class="pi pi-chevron-down text-slate-400"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- Resumo do Pedido RFQ -->
-        <div class="bg-indigo-50 border border-indigo-100 rounded-[2.5rem] p-8 shadow-inner relative overflow-hidden">
-          <div class="absolute -right-10 -top-10 w-40 h-40 bg-white rounded-full blur-2xl opacity-50"></div>
-          
-          <div class="flex items-center gap-3 mb-6 relative z-10">
-            <i class="pi pi-receipt text-indigo-600 text-xl"></i>
-            <h2 class="text-xl font-black text-indigo-950 tracking-tight uppercase">{{ 'B2B.MOTOR.RESUMO' | translate }}</h2>
-          </div>
-          
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
-            <div>
-              <p class="text-xs font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.MATERIAL_BASE' | translate }}</p>
-              <p class="text-base font-black text-slate-900">{{ rfqDetails.material }}</p>
-            </div>
-            <div>
-              <p class="text-xs font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.ACABAMENTO' | translate }}</p>
-              <p class="text-base font-black text-slate-900 leading-tight">{{ rfqDetails.acabamento }}</p>
-            </div>
-            <div>
-              <p class="text-xs font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.TRATAMENTO' | translate }}</p>
-              <p class="text-base font-black text-slate-900 leading-tight">{{ rfqDetails.tratamentoTermico }}</p>
-            </div>
-            <div>
-              <p class="text-xs font-black text-indigo-500 uppercase tracking-widest font-industrial-mono mb-2">{{ 'B2B.MOTOR.DIMENSOES' | translate }}</p>
-              <p class="text-base font-black text-slate-900 font-industrial-mono">{{ rfqDetails.dimensoes }}</p>
-            </div>
-          </div>
-        </div>
-
-        <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()" class="space-y-8">
-
-          <!-- SECTION 1: Projeto -->
-          <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-10 relative overflow-hidden group transition-all hover:shadow-xl hover:shadow-slate-200/50">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
-            
-            <div class="flex items-center mb-10">
-              <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse mr-3"></div>
-              <h2 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_PROJECT' | translate }}</h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div class="space-y-3">
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_ID' | translate }} <span class="text-blue-600">*</span></label>
-                <input formControlName="identificacaoPeca" type="text" readonly
-                  class="w-full bg-slate-100 text-slate-400 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none transition-all text-base font-black uppercase font-industrial-mono cursor-not-allowed"
-                  placeholder="---">
-              </div>
-              <div class="space-y-3">
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_QTY' | translate }} <span class="text-blue-600">*</span></label>
-                <input formControlName="quantidadeRequerida" type="number"
-                  class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black font-industrial-mono shadow-inner">
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 2: Setup (Amber) -->
-          <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-10 relative overflow-hidden group transition-all hover:shadow-xl hover:shadow-amber-200/20">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-amber-50 rounded-full blur-3xl group-hover:bg-amber-100 transition-all"></div>
-            
-            <div class="flex items-center mb-10">
-              <div class="w-2 h-2 bg-amber-500 rounded-full mr-3 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div>
-              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_SETUP' | translate }}</h3>
-            </div>
-
-            <div class="mb-10 p-8 bg-slate-50 rounded-[2rem] border border-amber-200/50 shadow-inner">
-              <label class="block text-xs font-black text-amber-600 uppercase tracking-widest mb-4 font-industrial-mono">
-                <i class="pi pi-code mr-2 text-xs"></i> {{ 'B2B.MOTOR.LABEL_JSON' | translate }}
-              </label>
-              <textarea formControlName="jsonInput" 
-                class="w-full h-32 bg-white text-slate-700 p-6 rounded-2xl border border-slate-200 font-industrial-mono text-sm focus:outline-none focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all shadow-sm"
-                [placeholder]="'B2B.MOTOR.PLACEHOLDER_JSON' | translate"></textarea>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div class="space-y-3">
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_SETUP_TIME' | translate }} <span class="text-amber-600">*</span></label>
-                <input formControlName="tempoPreparacaoMinutos" type="number" step="0.1"
-                  class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all text-base font-black font-industrial-mono shadow-inner">
-              </div>
-              <div class="space-y-3">
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_REMOVAL_TIME' | translate }} <span class="text-amber-600">*</span></label>
-                <input formControlName="tempoRemocaoMinutos" type="number" step="0.1"
-                  class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-amber-500/5 focus:border-amber-500 transition-all text-base font-black font-industrial-mono shadow-inner">
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 3: Deposição (Blue) -->
-          <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-10 relative overflow-hidden group transition-all hover:shadow-xl hover:shadow-blue-200/30">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
-            
-            <div class="flex items-center mb-10">
-              <div class="w-2 h-2 bg-blue-700 rounded-full mr-3 shadow-[0_0_8px_rgba(29,78,216,0.4)]"></div>
-              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_DEPOSITION' | translate }}</h3>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div class="space-y-3">
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_WEIGHT' | translate }} <span class="text-blue-600">*</span></label>
-                <input formControlName="massaEstimadaKg" type="number" step="0.01"
-                  class="w-full bg-blue-50 text-blue-900 px-6 py-4 rounded-2xl border border-blue-100 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black font-industrial-mono shadow-inner italic tracking-tight">
-              </div>
-              <div class="space-y-3">
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest font-industrial-mono">{{ 'B2B.MOTOR.LABEL_ARC_TIME' | translate }} <span class="text-blue-600">*</span></label>
-                <input formControlName="tempoArcoMinutos" type="number" step="0.1"
-                  class="w-full bg-blue-50 text-blue-900 px-6 py-4 rounded-2xl border border-blue-100 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black font-industrial-mono shadow-inner italic tracking-tight">
-              </div>
-              <div class="col-span-2 space-y-3">
-                <label class="block text-xs font-black text-slate-500 uppercase tracking-widest font-mono">{{ 'B2B.MOTOR.LABEL_CONSUMABLE' | translate }} <span class="text-blue-600">*</span></label>
-                <select formControlName="arameId"
-                  class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all text-base font-black appearance-none cursor-pointer">
-                  <option value="" disabled selected>{{ 'B2B.MOTOR.SELECT_CONSUMABLE' | translate }}</option>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <!-- Arame -->
+            <div class="space-y-4">
+               <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Arame Metálico Base</label>
+               <select formControlName="arameId" class="w-full bg-slate-50 text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 focus:border-indigo-600 transition-all font-black appearance-none cursor-pointer shadow-inner">
+                  <option value="" disabled>SELECIONE O MATERIAL...</option>
                   @for (arame of arames; track arame.id) {
                     <option [value]="arame.id">{{ arame.nome }} ({{ arame.ligaMetalica }})</option>
                   }
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 4: Engenharia (Emerald) -->
-          <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-10 relative overflow-hidden group transition-all hover:shadow-xl hover:shadow-emerald-200/20">
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-emerald-50 rounded-full blur-3xl group-hover:bg-emerald-100 transition-all"></div>
-            
-            <div class="flex items-center mb-10">
-              <div class="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
-              <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.MOTOR.SEC_POST' | translate }}</h3>
+               </select>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <label class="flex items-center p-8 bg-slate-50 border border-slate-200 rounded-[2rem] hover:bg-white hover:border-emerald-500/50 cursor-pointer transition-all group/opt shadow-sm">
-                <input type="checkbox" formControlName="requerProjetoCAD" class="w-6 h-6 bg-white border-slate-300 rounded text-emerald-600 focus:ring-emerald-500">
-                <div class="ml-5">
-                  <p class="text-xs font-black text-slate-900 uppercase tracking-widest font-mono">{{ 'B2B.MOTOR.LABEL_CAD' | translate }}</p>
-                  <p class="text-[11px] text-slate-400 mt-1 uppercase font-black tracking-tight opacity-70 italic">{{ 'B2B.MOTOR.DESC_CAD' | translate }}</p>
-                </div>
-              </label>
-
-              <label class="flex items-center p-8 bg-slate-50 border border-slate-200 rounded-[2rem] hover:bg-white hover:border-emerald-500/50 cursor-pointer transition-all group/opt shadow-sm">
-                <input type="checkbox" formControlName="requerUsinagemFinal" class="w-6 h-6 bg-white border-slate-300 rounded text-emerald-600 focus:ring-emerald-500">
-                <div class="ml-5">
-                  <p class="text-xs font-black text-slate-900 uppercase tracking-widest font-mono">{{ 'B2B.MOTOR.LABEL_CNC' | translate }}</p>
-                  <p class="text-[11px] text-slate-400 mt-1 uppercase font-black tracking-tight opacity-70 italic">{{ 'B2B.MOTOR.DESC_CNC' | translate }}</p>
-                </div>
-              </label>
-            </div>
-
-            @if (orcamentoForm.controls.requerUsinagemFinal.value) {
-              <div class="mt-8 p-10 bg-emerald-50 border border-emerald-100 rounded-[2rem] animate-fadeIn flex items-center justify-between shadow-inner">
-                <div>
-                  <label class="block text-xs font-black text-emerald-700 uppercase tracking-[0.2em] font-mono mb-1">{{ 'B2B.MOTOR.LABEL_CNC_TIME' | translate }}</label>
-                  <p class="text-[11px] text-emerald-900/40 uppercase font-black font-mono italic">{{ 'B2B.MOTOR.DESC_CNC_TIME' | translate }}</p>
-                </div>
-                <input formControlName="tempoUsinagemMinutos" type="number"
-                  class="w-32 bg-white text-emerald-900 px-6 py-4 rounded-xl border border-emerald-200 text-center font-black text-lg shadow-sm focus:border-emerald-500 focus:outline-none transition-all">
-              </div>
-            }
-          </div>
-
-          <!-- SUBMIT CTA -->
-          <div class="sticky bottom-10 z-40 bg-white/70 backdrop-blur-xl p-5 rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-slate-200/50">
-            <button type="submit" [disabled]="orcamentoForm.invalid || isSubmitting"
-              class="w-full py-7 bg-slate-900 hover:bg-black text-white rounded-[2rem] text-sm font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_-10px_rgba(15,23,42,0.3)] disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-5 group active:scale-[0.98]">
-              @if (!isSubmitting) {
-                <i class="pi pi-cog text-3xl group-hover:rotate-180 transition-transform duration-1000"></i>
-              } @else {
-                <i class="pi pi-spin pi-spinner text-3xl"></i>
-              }
-              {{ 'B2B.MOTOR.PROCESS_BTN' | translate }}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- RIGHT: STATUS PANEL (Sticky) -->
-      <div class="hidden lg:block lg:col-span-4 sticky top-12 space-y-8">
-        
-        <!-- Engine Status Light -->
-        <div class="bg-white border border-slate-200 rounded-[3rem] p-10 shadow-sm relative overflow-hidden group">
-          <div class="absolute -top-20 -right-20 w-48 h-48 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
-          
-          <div class="relative z-10">
-            <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.4em] mb-12 font-mono">{{ 'B2B.MOTOR.STATUS_TITLE' | translate }}</h3>
-            
-            <div class="flex gap-6 items-start">
-              <div class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all duration-700 shadow-lg"
-                [ngClass]="orcamentoForm.valid ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-slate-100 text-slate-300 border border-slate-200'">
-                <i class="pi text-3xl" [ngClass]="orcamentoForm.valid ? 'pi-check-circle animate-pulse' : 'pi-lock'"></i>
-              </div>
-              
-              <div class="flex-1">
-                <h4 class="text-slate-900 font-black text-xl tracking-tight leading-tight">
-                  {{ orcamentoForm.valid ? ('B2B.MOTOR.STATUS_READY' | translate) : ('B2B.MOTOR.STATUS_WAITING' | translate) }}
-                </h4>
-                <p class="text-xs text-slate-500 mt-3 font-bold leading-relaxed italic opacity-80">
-                  {{ orcamentoForm.valid ? ('B2B.MOTOR.STATUS_DESC_READY' | translate) : ('B2B.MOTOR.STATUS_DESC_WAITING' | translate) }}
-                </p>
+            <!-- Massa -->
+            <div class="space-y-4">
+              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Massa Estimada da Peça</label>
+              <div class="relative">
+                <input type="number" formControlName="massaEstimadaKg" class="w-full bg-slate-50 text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 focus:border-indigo-600 transition-all font-industrial-mono font-black text-xl shadow-inner pr-16" placeholder="0.00">
+                <span class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase">kg</span>
               </div>
             </div>
 
-            <div class="mt-12 pt-10 border-t border-slate-100 space-y-6">
-              <div class="flex items-center justify-between group/kpi">
-                <div class="flex items-center gap-3 text-xs font-black text-slate-400 uppercase tracking-widest font-mono group-hover/kpi:text-blue-600 transition-colors">
-                  <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
-                  Metodologia WAAM
-                </div>
-                <i class="pi pi-verified text-blue-600"></i>
+            <!-- Tempo de Arco -->
+            <div class="space-y-4">
+              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Tempo de Arco (Deposição)</label>
+              <div class="relative">
+                <input type="number" formControlName="tempoArcoMinutos" class="w-full bg-slate-50 text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 focus:border-indigo-600 transition-all font-industrial-mono font-black text-xl shadow-inner pr-16" placeholder="0">
+                <span class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase">min</span>
               </div>
-              <div class="flex items-center justify-between group/kpi">
-                <div class="flex items-center gap-3 text-xs font-black text-slate-400 uppercase tracking-widest font-mono group-hover/kpi:text-emerald-600 transition-colors">
-                  <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                  IC+DC+AC Active
-                </div>
-                <i class="pi pi-check text-emerald-600 text-xl"></i>
+            </div>
+
+            <!-- Tempo de Setup -->
+            <div class="space-y-4">
+              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Setup e Preparação (IC)</label>
+              <div class="relative">
+                <input type="number" formControlName="tempoPreparacaoMinutos" class="w-full bg-slate-50 text-slate-900 px-6 py-5 rounded-2xl border border-slate-200 focus:border-indigo-600 transition-all font-industrial-mono font-black text-xl shadow-inner pr-16">
+                <span class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase">min</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Meta Info Light -->
-        <div class="p-10 bg-blue-50/50 border border-blue-100 rounded-[2.5rem] text-center shadow-inner">
-          <i class="pi pi-shield text-blue-600 text-2xl mb-4 block"></i>
-          <p class="text-xs font-black text-blue-900 uppercase tracking-[0.2em] leading-relaxed">
-            {{ 'B2B.MOTOR.SEC_INTELLECTUAL' | translate }}<br>
-            <span class="opacity-50 text-[11px]">{{ 'B2B.MOTOR.VERSION' | translate }}</span>
-          </p>
+        <!-- Seção 2: Serviços Adicionais (AC) -->
+        <div class="bg-white border border-slate-200 rounded-[2.5rem] p-12 shadow-sm">
+           <div class="flex items-center mb-10 pb-6 border-b border-slate-100">
+              <div class="w-2 h-8 bg-emerald-600 rounded-full mr-4"></div>
+              <h2 class="text-xl font-black text-slate-900 tracking-tight uppercase">Intenções Adicionais (Fase AC)</h2>
+           </div>
+
+           <div class="space-y-8">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <label class="flex items-center gap-6 p-8 bg-slate-50 rounded-[2rem] border border-slate-200 cursor-pointer group hover:border-emerald-500 transition-all">
+                  <div class="relative w-12 h-6 bg-slate-200 rounded-full transition-all peer-checked:bg-emerald-600">
+                    <input type="checkbox" formControlName="requerProjetoCAD" class="absolute inset-0 opacity-0 cursor-pointer z-10 peer">
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7"></div>
+                  </div>
+                  <span class="text-xs font-black text-slate-700 uppercase tracking-tight">Projeto CAD/CAM</span>
+                </label>
+
+                <label class="flex items-center gap-6 p-8 bg-slate-50 rounded-[2rem] border border-slate-200 cursor-pointer group hover:border-emerald-500 transition-all">
+                  <div class="relative w-12 h-6 bg-slate-200 rounded-full transition-all peer-checked:bg-emerald-600">
+                    <input type="checkbox" formControlName="requerUsinagemFinal" class="absolute inset-0 opacity-0 cursor-pointer z-10 peer">
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7"></div>
+                  </div>
+                  <span class="text-xs font-black text-slate-700 uppercase tracking-tight">Usinagem CNC</span>
+                </label>
+             </div>
+
+             @if (orcamentoForm.controls.requerUsinagemFinal.value) {
+                <div class="p-8 bg-emerald-50/50 border border-emerald-100 rounded-3xl animate-in slide-in-from-top-4 duration-500 space-y-4">
+                   <label class="block text-[11px] font-black text-emerald-700 uppercase tracking-widest">Tempo Estimado de Usinagem Final</label>
+                   <div class="relative max-w-[300px]">
+                      <input type="number" formControlName="tempoUsinagemMinutos" class="w-full bg-white text-emerald-900 px-6 py-4 rounded-xl border border-emerald-200 font-bold focus:border-emerald-500 transition-all pr-16" placeholder="0">
+                      <span class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-emerald-400 uppercase">min</span>
+                   </div>
+                </div>
+             }
+           </div>
         </div>
-      </div>
+
+        @if (erroApi()) {
+           <div class="p-6 bg-rose-50 border border-rose-100 rounded-[1.5rem] flex items-center gap-4 animate-bounce">
+              <i class="pi pi-exclamation-triangle text-rose-500"></i>
+              <p class="text-xs font-black text-rose-600 uppercase tracking-widest">{{ erroApi() }}</p>
+           </div>
+        }
+
+        <div class="flex justify-end pt-4">
+           <button type="submit" [disabled]="orcamentoForm.invalid || isSubmitting() || !rfqSelecionado"
+                   class="px-24 py-8 bg-slate-900 hover:bg-black text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-2xl transition-all flex items-center gap-6 active:scale-95 disabled:opacity-40 min-w-[400px]">
+              @if(isSubmitting()) { <i class="pi pi-spin pi-spinner text-xl"></i> }
+              {{ isSubmitting() ? 'PROCESSANDO CÁLCULO...' : 'GERAR ORÇAMENTO FINAL' }}
+           </button>
+        </div>
+
+      </form>
     </div>
-  </main>
+
+  </div>
 </div>

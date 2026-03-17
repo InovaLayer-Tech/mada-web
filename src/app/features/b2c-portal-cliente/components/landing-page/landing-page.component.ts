@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../../../core/services/language.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -10,16 +11,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './landing-page.component.html'
 })
 export class LandingPagePolishedComponent {
-  private translate = inject(TranslateService);
-  idiomaAtivo = 'PT';
+  protected languageService = inject(LanguageService);
 
-  constructor(private router: Router) {
-    this.translate.setDefaultLang('pt');
-  }
+  constructor(private router: Router) {}
 
   setIdioma(idioma: string) {
-    this.idiomaAtivo = idioma;
-    this.translate.use(idioma.toLowerCase());
+    this.languageService.setLanguage(idioma);
   }
 
   irParaLogin() {

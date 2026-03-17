@@ -37,7 +37,9 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('mada_user');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('mada_user');
+    }
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }

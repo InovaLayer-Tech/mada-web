@@ -5,7 +5,13 @@
     "B2B_LOGIN": "Acesso Administrativo",
     "B2C_LOGIN": "Acesso Cliente",
     "LOGIN": "Portal InovaLayer3D",
-    "SIGNUP": "Cadastrar Empresa"
+    "SIGNUP": "Cadastrar Empresa",
+    "NAV_DOCS": "Documentação",
+    "NAV_SUPPORT": "Suporte",
+    "NAV_ABOUT": "Sobre",
+    "NAV_CONTACT": "Contato",
+    "NAV_COMPANY": "Empresa",
+    "NAV_NAVIGATION": "Navegação"
   },
   "LANDING": {
     "ECOSYSTEM": "The WAAM Ecosystem",
@@ -153,7 +159,14 @@
       "PROFIT": "Margem de Lucro Industrial",
       "TAX": "Taxa de Impostos (Média)",
       "SAVING": "Salvando Dados...",
-      "SAVE": "Salvar Alterações"
+      "SAVE": "Salvar Alterações",
+      "CANCEL": "Cancelar"
+    },
+      "PERFIL_EDIT": {
+        "TITLE": "Editar Perfil Técnico",
+        "NAME": "Nome Completo",
+        "BIO": "Bio Corporativa",
+        "SAVE_SUCCESS": "Perfil atualizado com sucesso!"
     },
     "PERFIL": {
       "TITLE": "Perfil Executivo",
@@ -236,6 +249,21 @@
       "DISCARD": "DESCARTAR SOLICITAÇÃO",
       "SEND": "CONFIRMAR ENVIO RFQ",
       "SENDING": "PROCESSANDO..."
+    },
+    "CADASTRO": {
+      "TITLE": "CRIAR CONTA CORPORATIVA",
+      "SUBTITLE": "Inicie sua jornada na manufatura aditiva",
+      "ALREADY_HAVE": "Já possui conta?",
+      "ENTER_HERE": "Entre aqui",
+      "NAME": "Nome Completo",
+      "COMPANY": "Razão Social / Empresa",
+      "EMAIL": "E-mail Corporativo",
+      "PASSWORD": "Senha",
+      "CONFIRM_PASSWORD": "Confirmar",
+      "MISMATCH": "As senhas não coincidem",
+      "PROCESS": "PROCESSANDO...",
+      "FINISH": "FINALIZAR CADASTRO",
+      "SUCCESS": "Cadastro realizado com sucesso! Bem-vindo à InovaLayer3D."
     }
   }
 }
