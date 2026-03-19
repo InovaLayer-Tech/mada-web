@@ -41,9 +41,13 @@ export class SolicitacaoRfqComponent implements OnInit {
     tolerancia: ['Bruta', Validators.required],
     acabamento: ['Bruto', Validators.required],
     nivelInspecao: ['Visual', Validators.required],
-    tratamentoTermico: [false, Validators.required],
-    canaisInternos: [false]
+    tratamentoTermico: [true, Validators.required],
+    canaisInternos: [false],
+    arquivoUrl: ['']
   });
+
+  selectedFile = signal<File | null>(null);
+  selectedFileName = signal<string>('');
 
   ngOnInit() {
     this.carregarMateriais();
@@ -110,6 +114,7 @@ export class SolicitacaoRfqComponent implements OnInit {
     const formValue = this.rfqForm.getRawValue();
     const payload = {
       nomeProjeto: formValue.nomeProjeto,
+      nomeEmpresa: formValue.nomeEmpresa,
       quantidade: formValue.quantidade,
       dimensaoX: formValue.dimensaoX,
       dimensaoY: formValue.dimensaoY,
@@ -137,7 +142,26 @@ export class SolicitacaoRfqComponent implements OnInit {
   }
 
   onFileSelected(event: Event) {
-    // Simulação de upload para feedback visual
-    console.log('Arquivo selecionado para processamento 3D');
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
+      // Restrição para ZIP conforme solicitado
+      if (!file.name.toLowerCase().endsWith('.zip')) {
+        alert('Por favor, envie o projeto no formato .ZIP para garantir a integridade dos arquivos 3D.');
+        input.value = '';
+        this.selectedFile.set(null);
+        this.selectedFileName.set('');
+        return;
+      }
+
+      this.selectedFile.set(file);
+      this.selectedFileName.set(file.name);
+      
+      // Simulação de preenchimento do path (em prod seria o retorno do S3/Blob Storage)
+      this.rfqForm.patchValue({ arquivoUrl: `uploads/3d/${file.name}` });
+      
+      console.log('Arquivo ZIP selecionado e validado:', file.name);
+    }
   }
 }

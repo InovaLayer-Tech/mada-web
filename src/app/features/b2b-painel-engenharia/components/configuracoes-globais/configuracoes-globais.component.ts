@@ -28,6 +28,7 @@ export class ConfiguracoesGlobaisComponent implements OnInit {
     taxaUsinagemHora: [0, [Validators.required, Validators.min(0)]],
     custoTratamentoTermicoFixo: [0, [Validators.required, Validators.min(0)]],
     margemLucroPercentual: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+    taxaImpostos: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
     taxaDepreciacaoMaquinaHora: [0, [Validators.required, Validators.min(0)]],
     fatorRiscoK1: [1.2, [Validators.required, Validators.min(1)]],
     fatorRiscoK2: [1.1, [Validators.required, Validators.min(1)]],
@@ -57,6 +58,7 @@ export class ConfiguracoesGlobaisComponent implements OnInit {
       next: () => {
         this.isSaving = false;
         alert('Configurações salvas com sucesso!');
+        this.carregarConfiguracoes();
       },
       error: () => {
         this.isSaving = false;

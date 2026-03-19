@@ -1,8 +1,101 @@
+<p-toast></p-toast>
 <div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-600">
+  
+  <!-- LISTA DE APROVADOS (Visão Inicial se não vier da Fila) -->
+  <main class="max-w-7xl mx-auto mt-12 px-8" *ngIf="!orcamento()">
+    <div class="mb-12 border-b border-slate-200 pb-10 flex justify-between items-end">
+      <div>
+        <h1 class="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">{{ 'B2B.AUDIT.TITLE' | translate }}</h1>
+        <p class="text-xs font-black text-blue-600 uppercase tracking-[0.4em] mt-3 font-industrial-mono opacity-80">DESEMPENHO E HISTÓRICO DE AUDITORIA</p>
+      </div>
+      
+      <div class="flex gap-4">
+        <div class="px-6 py-4 bg-white border border-slate-200 rounded-3xl shadow-sm text-center min-w-[140px]">
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Geral</span>
+          <span class="text-2xl font-black text-slate-700 font-mono">{{ kpis().totalGeral }}</span>
+        </div>
+        <div class="px-6 py-4 bg-white border border-slate-200 rounded-3xl shadow-sm text-center min-w-[140px]">
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Aprovados</span>
+          <span class="text-2xl font-black text-emerald-600 font-mono">{{ kpis().totalAprovados }}</span>
+        </div>
+        <div class="px-6 py-4 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl text-center min-w-[180px]">
+          <span class="text-[9px] font-black text-blue-300 uppercase tracking-widest block mb-1">Ticket Médio</span>
+          <span class="text-xl font-black text-white font-mono">{{ kpis().mediaValor | currency:'BRL' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela de Histórico -->
+    <div class="bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-sm">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-slate-100 bg-slate-50/50">
+            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono">ID / Projeto</th>
+            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono">Data Aprovação</th>
+            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono text-right">Valor Final</th>
+            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono text-center">Status</th>
+            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-industrial-mono text-right">Ação</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @if (carregando()) {
+            <tr>
+              <td colspan="5" class="px-8 py-12 text-center">
+                <i class="pi pi-spin pi-spinner text-4xl text-blue-600"></i>
+                <p class="mt-4 text-xs font-black text-slate-400 uppercase tracking-widest">Carregando histórico...</p>
+              </td>
+            </tr>
+          } @else if (listaAprovados().length === 0) {
+            <tr>
+              <td colspan="5" class="px-8 py-12 text-center">
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Nenhum orçamento aprovado encontrado.</p>
+              </td>
+            </tr>
+          } @else {
+            @for (item of listaAprovados(); track item.id) {
+              <tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer" (click)="selecionarOrcamento(item)">
+                <td class="px-8 py-6">
+                  <p class="text-[12px] font-black text-slate-900 uppercase">#{{ item.id.substring(0,8) }}</p>
+                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 font-industrial-mono">{{ item.nomeProjeto || 'Sem Nome' }}</p>
+                </td>
+                <td class="px-8 py-6 text-xs font-black text-slate-500 uppercase tracking-widest font-industrial-mono">
+                  {{ item.dataEmissao | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+                <td class="px-8 py-6 text-right font-industrial-mono">
+                  <span class="text-sm font-black text-slate-900">{{ item.precoFinalSugerido | currency:'BRL' }}</span>
+                </td>
+                <td class="px-8 py-6 text-center">
+                  <span class="px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm font-industrial-mono">
+                    {{ item.status }}
+                  </span>
+                </td>
+                <td class="px-8 py-6 text-right">
+                  <div class="flex items-center gap-2 justify-end">
+                    <button class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                      Visualizar
+                    </button>
+                    <button (click)="excluirOrcamento(item.id, $event)" class="p-2.5 bg-rose-50 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl transition-all border border-rose-100">
+                      <i class="pi pi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- DETALHES DO ORÇAMENTO (Visão quando selecionado) -->
   <main class="max-w-6xl mx-auto mt-12 px-8" *ngIf="orcamento() as o">
     
     <div class="mb-12 flex justify-between items-end">
       <div>
+        <button (click)="voltarLista()" class="flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4 hover:translate-x-[-4px] transition-transform">
+          <i class="pi pi-arrow-left"></i>
+          Voltar para Lista
+        </button>
         <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.AUDIT.TITLE' | translate }}</h1>
         <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-2">{{ 'B2B.AUDIT.SUBTITLE' | translate }}</p>
       </div>
@@ -68,7 +161,7 @@
             </div>
             <div class="pt-4 border-t border-slate-800 text-right">
                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">{{ 'B2B.MOTOR.STATUS_TITLE' | translate }}</p>
-               <p class="text-xs font-black text-blue-400 uppercase mt-1">CALCULADO / PENDENTE ADMIN</p>
+               <p class="text-xs font-black text-blue-400 uppercase mt-1">{{ o.status }}</p>
             </div>
           </div>
         </div>
@@ -98,7 +191,15 @@
                    <span class="text-sm font-black text-slate-900">{{ o.custoPreparacaoIC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100 italic">
-                   <span class="text-xs font-bold text-slate-500">{{ 'B2B.AUDIT.IC_ENGINEERING' | translate }}</span>
+                   <span class="text-xs font-bold text-slate-500">Cálculo de Engenharia</span>
+                   <span class="text-sm font-black text-slate-900">{{ o.custoEngenhariaIC | currency:'BRL' }}</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100 italic">
+                   <span class="text-xs font-bold text-slate-500">Pós-Processo e Remoção</span>
+                   <span class="text-sm font-black text-slate-900">{{ o.custoRemocaoIC | currency:'BRL' }}</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100 italic">
+                   <span class="text-xs font-bold text-slate-500">Preparação de Substrato</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoSubstratoIC | currency:'BRL' }}</span>
                 </div>
                 <!-- Nota: o Backend usa SubstratoIC para o valor fixo por enquanto no DTO -->
@@ -120,24 +221,33 @@
           </button>
           
           @if (faseAberta() === 'dc') {
-            <div class="p-8 pt-0 space-y-3 animate-in slide-in-from-top-4 duration-300">
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_MATERIAL' | translate }} ({{ o.nomeArameMetalico }})</span>
+                   <span class="text-xs font-bold text-slate-600">Massa Real ({{ o.massaEstimadaKg }} kg)</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoMaterialDC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_GAS' | translate }}</span>
+                   <span class="text-xs font-bold text-slate-600">Tempo de Arco ({{ o.tempoArcoMinutos }} min)</span>
+                   <span class="text-sm font-black text-slate-900">{{ o.custoEnergiaDC | currency:'BRL' }}</span>
+                </div>
+                <!-- Detalhes de Tempos Auxiliares -->
+                <div class="grid grid-cols-2 gap-3 px-2">
+                   <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 italic">
+                      <p class="text-[9px] font-bold text-slate-400 uppercase">Tempo Morto (S2)</p>
+                      <p class="text-xs font-black text-slate-700">{{ o.tempoMortoMinutos || 0 }} min</p>
+                   </div>
+                   <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 italic">
+                      <p class="text-[9px] font-bold text-slate-400 uppercase">Setup (S3)</p>
+                      <p class="text-xs font-black text-slate-700">{{ o.tempoPreparacaoMinutos || 0 }} min</p>
+                   </div>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
+                   <span class="text-xs font-bold text-slate-600">Gás & Consumíveis (WAAM)</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoGasDC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_ENERGY' | translate }}</span>
-                   <span class="text-sm font-black text-slate-900">{{ o.custoEnergiaDC | currency:'BRL' }}</span>
-                </div>
-                <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_ROBOT' | translate }}</span>
+                   <span class="text-xs font-bold text-slate-600">Operação Célula Robótica</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoMaquinaDC | currency:'BRL' }}</span>
                 </div>
-            </div>
           }
         </div>
 
@@ -158,15 +268,27 @@
             <div class="p-8 pt-0 space-y-3 animate-in slide-in-from-top-4 duration-300">
                 <div class="flex justify-between items-center p-4 bg-emerald-50/20 rounded-2xl border border-emerald-50">
                    <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.AC_SERVICES' | translate }}</span>
-                   <span class="text-sm font-black text-slate-900">{{ o.servicosAC | currency:'BRL' }}</span>
+                   <span class="text-sm font-black text-slate-900">{{ o.custoTotalAC | currency:'BRL' }}</span>
                 </div>
+                @for (servico of o.servicosAC; track servico.descricaoServico) {
+                  <div class="flex justify-between items-center p-4 bg-emerald-50/10 rounded-2xl border border-emerald-50/50 italic ml-4">
+                    <span class="text-[11px] font-bold text-slate-500">{{ servico.descricaoServico }} ({{ servico.quantidadeHoras }}h)</span>
+                    <span class="text-xs font-black text-slate-700">{{ servico.custoServico | currency:'BRL' }}</span>
+                  </div>
+                }
             </div>
           }
         </div>
 
-        <button (click)="aprovarOrcamento()" class="w-full py-8 bg-blue-600 hover:bg-blue-700 text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-2xl transition-all active:scale-95 mt-4">
+        <button *ngIf="o.status !== 'APROVADO'" (click)="aprovarOrcamento()" class="w-full py-8 bg-blue-600 hover:bg-blue-700 text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-2xl transition-all active:scale-95 mt-4 flex items-center justify-center gap-4">
+          <i class="pi pi-check-circle text-xl"></i>
           {{ 'B2B.AUDIT.APPROVE_BTN' | translate }}
         </button>
+
+        <div *ngIf="o.status === 'APROVADO'" class="w-full py-8 bg-emerald-500 text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-lg flex items-center justify-center gap-4 opacity-80 cursor-default mt-4 animate-in zoom-in duration-300">
+          <i class="pi pi-verified text-xl"></i>
+          AUDITORIA CONCLUÍDA
+        </div>
 
       </div>
     </div>

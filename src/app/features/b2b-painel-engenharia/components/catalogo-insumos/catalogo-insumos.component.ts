@@ -20,6 +20,7 @@ export class CatalogoInsumosComponent implements OnInit {
   
   showModal = false;
   tipoInsumo: 'arame' | 'gas' = 'arame';
+  editingId: string | null = null;
 
   arames: ArameMetalicoResponseDTO[] = [];
   gases: GasProtecaoResponseDTO[] = [];
@@ -29,31 +30,69 @@ export class CatalogoInsumosComponent implements OnInit {
   }
 
   carregarDados() {
-    this.arameService.listarTodos().subscribe((data: ArameMetalicoResponseDTO[]) => this.arames = data);
-    this.gasService.listarTodos().subscribe((data: GasProtecaoResponseDTO[]) => this.gases = data);
+    this.arameService.listarTodos().subscribe((data) => this.arames = data);
+    this.gasService.listarTodos().subscribe((data) => this.gases = data);
   }
 
   insumoForm = this.fb.group({
     nome: ['', Validators.required],
-    sigla: ['', Validators.required],
-    preco: [0, [Validators.required, Validators.min(0.01)]],
-    densidade: [0], 
+    codigoProduto: ['', Validators.required],
+    fornecedor: ['', Validators.required],
+    precoUnitarioBase: [0, [Validators.required, Validators.min(0.01)]],
+    densidadeGcm3: [0], 
     eficiencia: [100], 
-    vazaoGas: [15], 
-    ativo: [true]
+    vazaoPadrao: [0], 
+    ativo: [true],
+    tipoGas: [''],
+    ligaMetalica: [''],
+    tipoMaterial: ['']
   });
 
   abrirModal() {
+    this.editingId = null;
     this.showModal = true;
-    this.insumoForm.reset({ preco: 0, densidade: 0, eficiencia: 100, vazaoGas: 15, ativo: true });
+    this.insumoForm.reset({ 
+      nome: '',
+      codigoProduto: '',
+      fornecedor: '',
+      precoUnitarioBase: 0, 
+      densidadeGcm3: 0, 
+      eficiencia: 100, 
+      vazaoPadrao: 0, 
+      ativo: true,
+      tipoGas: '',
+      ligaMetalica: '',
+      tipoMaterial: ''
+    });
   }
 
   fecharModal() {
     this.showModal = false;
+    this.editingId = null;
   }
 
   setTipo(tipo: 'arame' | 'gas') {
+    if (this.editingId) return; // Não mudar tipo ao editar
     this.tipoInsumo = tipo;
+  }
+
+  editarInsumo(item: any, tipo: 'arame' | 'gas') {
+    this.editingId = item.id;
+    this.tipoInsumo = tipo;
+    this.showModal = true;
+    this.insumoForm.patchValue(item);
+  }
+
+  toggleStatus(id: string, tipo: 'arame' | 'gas') {
+    const service: any = tipo === 'arame' ? this.arameService : this.gasService;
+    service.alterarStatus(id).subscribe(() => this.carregarDados());
+  }
+
+  excluirInsumo(id: string, tipo: 'arame' | 'gas') {
+    if (confirm('Deseja realmente excluir este insumo?')) {
+      const service: any = tipo === 'arame' ? this.arameService : this.gasService;
+      service.excluir(id).subscribe(() => this.carregarDados());
+    }
   }
 
   salvarInsumo() {
@@ -61,6 +100,20 @@ export class CatalogoInsumosComponent implements OnInit {
       this.insumoForm.markAllAsTouched();
       return;
     }
-    this.fecharModal();
+
+    const dados = this.insumoForm.value;
+    const service: any = this.tipoInsumo === 'arame' ? this.arameService : this.gasService;
+
+    if (this.editingId) {
+      service.atualizar(this.editingId, dados).subscribe(() => {
+        this.carregarDados();
+        this.fecharModal();
+      });
+    } else {
+      service.salvar(dados).subscribe(() => {
+        this.carregarDados();
+        this.fecharModal();
+      });
+    }
   }
 }

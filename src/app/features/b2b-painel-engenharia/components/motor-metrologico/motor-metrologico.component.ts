@@ -32,6 +32,7 @@ export class MotorMetrologicoComponent implements OnInit {
   
   isSubmitting = signal(false);
   erroApi = signal<string | null>(null);
+  uploadedFileName = signal<string | null>(null);
 
   orcamentoForm = this.fb.group({
     orcamentoId: ['', Validators.required],
@@ -40,16 +41,14 @@ export class MotorMetrologicoComponent implements OnInit {
     // Dados Metrológicos (Engenharia)
     massaEstimadaKg: [0, [Validators.required, Validators.min(0.01)]],
     tempoArcoMinutos: [0, [Validators.required, Validators.min(0.01)]],
+    tempoMortoMinutos: [0, [Validators.required, Validators.min(0)]],
     tempoPreparacaoMinutos: [60, [Validators.required, Validators.min(1)]],
     tempoRemocaoMinutos: [30, [Validators.required, Validators.min(1)]],
     
     // Serviços Adicionais
     requerProjetoCAD: [true],
-    requerUsinagemFinal: [false],
-    tempoUsinagemMinutos: this.fb.control({ value: 0, disabled: true }, [Validators.min(1)]),
-    
-    // Auxiliar para JSON
-    jsonInput: ['']
+    requerUsinagemFinal: [true],
+    tempoUsinagemMinutos: this.fb.control({ value: 30, disabled: true }, [Validators.min(1)])
   });
 
   rfqSelecionado: OrcamentoResponseDTO | null = null;
@@ -57,7 +56,22 @@ export class MotorMetrologicoComponent implements OnInit {
   ngOnInit() {
     this.carregarDados();
     this.monitorarUsinagem();
-    this.monitorarJson();
+    this.checkRouterState();
+  }
+
+  private checkRouterState() {
+    // Tenta ler o RFQ vindo da fila de solicitações
+    const state = window.history.state;
+    if (state && state.rfq) {
+      const rfq = state.rfq as OrcamentoResponseDTO;
+      console.log('RFQ recebido via Navegação:', rfq);
+      this.rfqSelecionado = rfq;
+      this.orcamentoForm.patchValue({ 
+        orcamentoId: rfq.id,
+        arameId: rfq.materialDesejadoId || '',
+        requerProjetoCAD: !rfq.arquivoUrl
+      });
+    }
   }
 
   carregarDados() {
@@ -71,7 +85,10 @@ export class MotorMetrologicoComponent implements OnInit {
     const id = (event.target as HTMLSelectElement).value;
     this.rfqSelecionado = this.pendingRfqs.find(r => r.id === id) || null;
     if (this.rfqSelecionado) {
-       this.orcamentoForm.patchValue({ orcamentoId: id });
+       this.orcamentoForm.patchValue({ 
+         orcamentoId: id,
+         requerProjetoCAD: !this.rfqSelecionado.arquivoUrl
+       });
     }
   }
 
@@ -84,21 +101,6 @@ export class MotorMetrologicoComponent implements OnInit {
       });
   }
 
-  private monitorarJson() {
-    this.orcamentoForm.controls.jsonInput.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(val => {
-        try {
-          if (!val) return;
-          const data = JSON.parse(val);
-          this.orcamentoForm.patchValue({
-            massaEstimadaKg: data.massa || data.mass_kg || data.weight || 0,
-            tempoArcoMinutos: data.tempo_arco || data.arc_time || 0,
-            tempoPreparacaoMinutos: data.setup_time || 60
-          });
-        } catch(e) {}
-      });
-  }
 
   onFileUpload(event: Event): void {
     const element = event.target as HTMLInputElement;
@@ -119,6 +121,8 @@ export class MotorMetrologicoComponent implements OnInit {
           this.orcamentoForm.patchValue({ 
             tempoArcoMinutos: valorCalculado 
           });
+
+          this.uploadedFileName.set(file.name);
 
           this.messageService.add({ 
             severity: 'success', 

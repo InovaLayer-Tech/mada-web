@@ -10,4 +10,5 @@ export interface ParametroGlobal {
   fatorRiscoK2: number;
   consumoPotenciaKw: number;
   margemLucroPercentual: number;
+  taxaImpostos: number;
 }

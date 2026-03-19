@@ -8,19 +8,42 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import 'chart.js/auto';
 
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-dashboard-auditoria',
   standalone: true,
-  imports: [CommonModule, TranslateModule, BaseChartDirective],
+  imports: [CommonModule, TranslateModule, BaseChartDirective, ToastModule],
+  providers: [MessageService],
   templateUrl: './dashboard-auditoria.component.html'
 })
 export class DashboardAuditoriaComponent implements OnInit {
   private router = inject(Router);
   private orcamentoService = inject(OrcamentoService);
   private translate = inject(TranslateService);
+  private messageService = inject(MessageService);
 
   orcamento = signal<OrcamentoResponseDTO | null>(null);
+  todosOrcamentos = signal<OrcamentoResponseDTO[]>([]);
+  
+  listaAprovados = computed(() => 
+    this.todosOrcamentos().filter(o => o.status === 'APROVADO')
+  );
+
+  kpis = computed(() => {
+    const todos = this.todosOrcamentos();
+    const aprovados = todos.filter(o => o.status === 'APROVADO');
+    const totalValor = aprovados.reduce((acc, curr) => acc + curr.precoFinalSugerido, 0);
+    
+    return {
+      totalGeral: todos.length,
+      totalAprovados: aprovados.length,
+      mediaValor: aprovados.length > 0 ? totalValor / aprovados.length : 0
+    };
+  });
   faseAberta = signal<string | null>('dc');
+  carregando = signal<boolean>(false);
 
   // Chart.js Configuration
   public doughnutChartOptions: ChartConfiguration['options'] = {
@@ -61,8 +84,31 @@ export class DashboardAuditoriaComponent implements OnInit {
     if (state && state.rfq) {
       this.orcamento.set(state.rfq);
     } else {
-      this.router.navigate(['/b2b/pedidos']);
+      this.carregarAprovados();
     }
+  }
+
+  carregarAprovados() {
+    this.carregando.set(true);
+    this.orcamentoService.listarTodos().subscribe({
+      next: (data) => {
+        this.todosOrcamentos.set(data);
+        this.carregando.set(false);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar aprovados:', err);
+        this.carregando.set(false);
+      }
+    });
+  }
+
+  selecionarOrcamento(o: OrcamentoResponseDTO) {
+    this.orcamento.set(o);
+  }
+
+  voltarLista() {
+    this.orcamento.set(null);
+    this.carregarAprovados();
   }
 
   toggleFase(fase: string) {
@@ -74,7 +120,31 @@ export class DashboardAuditoriaComponent implements OnInit {
   }
 
   aprovarOrcamento() {
-    alert(this.translate.instant('B2B.AUDIT.APPROVE_SUCCESS'));
-    this.router.navigate(['/b2b/fila']);
+    const o = this.orcamento();
+    if (!o) return;
+
+    this.orcamentoService.aprovar(o.id).subscribe({
+      next: () => {
+        alert(this.translate.instant('B2B.AUDIT.APPROVE_SUCCESS'));
+        this.router.navigate(['/b2b/pedidos']);
+      },
+      error: (err) => {
+        console.error('Erro ao aprovar orçamento:', err);
+        alert('Erro ao aprovar orçamento. Verifique os logs.');
+      }
+    });
+  }
+
+  excluirOrcamento(id: string, event: Event) {
+    event.stopPropagation();
+    if (confirm('Tem certeza que deseja excluir este orçamento permanentemente?')) {
+      this.orcamentoService.excluir(id).subscribe({
+        next: () => {
+          this.carregarAprovados();
+          this.messageService?.add({ severity: 'success', summary: 'Excluído', detail: 'Orçamento removido com sucesso' });
+        },
+        error: (err) => console.error('Erro ao excluir:', err)
+      });
+    }
   }
 }

@@ -92,12 +92,16 @@
           <div class="space-y-12">
             <!-- Upload 3D Mock -->
             <div class="relative border-4 border-dashed border-slate-100 bg-slate-50/50 rounded-[3rem] p-12 flex flex-col items-center justify-center transition-all hover:bg-white hover:border-indigo-100 group cursor-pointer shadow-inner">
-              <input type="file" (change)="onFileSelected($event)" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept=".stl,.obj,.step,.iges">
+              <input type="file" (change)="onFileSelected($event)" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept=".zip">
               <div class="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-6 border border-slate-50">
                 <i class="pi pi-cloud-upload text-3xl text-indigo-600"></i>
               </div>
-              <p class="text-sm font-black text-slate-900 mb-1">Upload de Arquivo 3D</p>
-              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Suportado: STL, STEP, OBJ (Máx 20MB)</p>
+              <p class="text-sm font-black text-slate-900 mb-1">
+                {{ selectedFileName() || 'Upload de Arquivo ZIP' }}
+              </p>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                {{ selectedFileName() ? 'Arquivo Selecionado com Sucesso' : 'Obrigatório: Arquivo .ZIP consolidado' }}
+              </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -173,8 +177,9 @@
 
             <div class="flex items-center gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
               <label class="flex items-center gap-4 cursor-pointer">
-                <div class="relative w-12 h-6 bg-slate-200 rounded-full transition-all peer-checked:bg-blue-600">
-                  <input type="checkbox" formControlName="tratamentoTermico" class="absolute inset-0 opacity-0 cursor-pointer z-10 peer">
+                <div class="relative">
+                  <input type="checkbox" formControlName="tratamentoTermico" class="peer sr-only">
+                  <div class="w-12 h-6 bg-slate-200 rounded-full transition-all peer-checked:bg-blue-600"></div>
                   <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7"></div>
                 </div>
                 <span class="text-sm font-black text-slate-700 uppercase">Tratamento Térmico de Alívio</span>

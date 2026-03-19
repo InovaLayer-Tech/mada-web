@@ -1,7 +1,7 @@
 export interface GasProtecaoResponseDTO {
   id: string;
   nome: string;
-  fabricante: string;
+  fornecedor: string;
   codigoProduto: string;
   precoUnitarioBase: number;
   tipoGas: string;

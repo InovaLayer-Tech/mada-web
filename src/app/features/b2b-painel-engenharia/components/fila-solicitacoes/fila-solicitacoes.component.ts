@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -16,47 +16,85 @@ export class FilaSolicitacoesComponent implements OnInit {
   private orcamentoService = inject(OrcamentoService);
   private router = inject(Router);
   protected authService = inject(AuthService);
-
-  rfqs: OrcamentoResponseDTO[] = [];
+  private pollingId: any;
+  rfqs = signal<OrcamentoResponseDTO[]>([]);
+  todosOrcamentos = signal<OrcamentoResponseDTO[]>([]);
+  
+  // KPIs do Dashboard Auditoria também aqui
+  kpisAuditoria = computed(() => {
+    const todos = this.todosOrcamentos();
+    const aprovados = todos.filter(o => o.status === 'APROVADO');
+    const totalValor = aprovados.reduce((acc, curr) => acc + curr.precoFinalSugerido, 0);
+    
+    return {
+      totalGeral: todos.length,
+      totalAprovados: aprovados.length,
+      mediaValor: aprovados.length > 0 ? totalValor / aprovados.length : 0
+    };
+  });
 
   // KPIs dinâmicos baseados no estado atual
-  totalPendentes = computed(() => this.rfqs.length);
+  totalPendentes = computed(() => this.rfqs().filter(r => r.status === 'PENDENTE').length);
   
   pipelineEstimado = computed(() => {
-    const total = this.rfqs.reduce((acc, rfq) => acc + (rfq.precoFinalSugerido || 0), 0);
+    const total = this.rfqs()
+      .filter(r => r.status === 'CALCULADO' || r.status === 'APROVADO')
+      .reduce((acc, rfq) => acc + (rfq.precoFinalSugerido || 0), 0);
     return total > 1000 ? `R$ ${(total/1000).toFixed(0)}k` : `R$ ${total.toFixed(0)}`;
   });
 
   novosHoje = computed(() => {
-    return this.rfqs.length > 0 ? (this.rfqs.length < 10 ? `0${this.rfqs.length}` : `${this.rfqs.length}`) : '00';
+    return this.rfqs().length > 0 ? (this.rfqs().length < 10 ? `0${this.rfqs().length}` : `${this.rfqs().length}`) : '00';
   });
 
   leadTimeMedio = computed(() => {
-    if (this.rfqs.length === 0) return '0.0h';
-    const totalMinutos = this.rfqs.reduce((acc, rfq) => acc + (rfq.tempoArcoMinutos || 0), 0);
-    const mediaHoras = (totalMinutos / (this.rfqs.length * 60)) + 1.2; // 1.2h de setup base
+    if (this.rfqs().length === 0) return '0.0h';
+    const totalMinutos = this.rfqs().reduce((acc, rfq) => acc + (rfq.tempoArcoMinutos || 0), 0);
+    const mediaHoras = (totalMinutos / (this.rfqs().length * 60)) + 1.2; 
     return `${mediaHoras.toFixed(1)}h`;
   });
 
   taxaConversao = computed(() => {
-    // Simulação baseada no status: CALCULADO/APROVADO vs total
-    if (this.rfqs.length === 0) return '0%';
-    const processados = this.rfqs.filter(r => r.status !== 'PENDENTE').length;
-    const taxa = (processados / this.rfqs.length) * 100;
-    return taxa > 0 ? `${taxa.toFixed(0)}%` : '65%'; // Fallback realista se tudo estiver pendente
+    if (this.rfqs().length === 0) return '0%';
+    const aprovados = this.rfqs().filter(r => r.status === 'APROVADO').length;
+    const taxa = (aprovados / this.rfqs().length) * 100;
+    return `${taxa.toFixed(0)}%`; 
   });
 
   ngOnInit() {
     this.carregarDados();
+    // Atualiza automaticamente a cada 30 segundos
+    this.pollingId = setInterval(() => this.carregarDados(), 30000);
+  }
+
+  ngOnDestroy() {
+    if (this.pollingId) clearInterval(this.pollingId);
   }
 
   carregarDados() {
     this.orcamentoService.listarTodos().subscribe((data: OrcamentoResponseDTO[]) => {
-      this.rfqs = data;
+      this.todosOrcamentos.set(data);
+      // Filtramos para a fila apenas o que é acionável: PENDENTE (novo) e CALCULADO (aguarda revisão)
+      const filaAtiva = data.filter(o => o.status === 'PENDENTE' || o.status === 'CALCULADO');
+      this.rfqs.set(filaAtiva);
     });
   }
 
   iniciarMetrologia(rfq: OrcamentoResponseDTO) {
     this.router.navigate(['/b2b/motor'], { state: { rfq } });
+  }
+
+  excluirOrcamento(id: string) {
+    if (confirm('Deseja realmente excluir esta solicitação? Esta ação é irreversível.')) {
+      this.orcamentoService.excluir(id).subscribe({
+        next: () => {
+          this.carregarDados();
+        },
+        error: (err) => {
+          console.error('Erro ao excluir orçamento:', err);
+          alert('Erro ao excluir. Verifique se tem permissão.');
+        }
+      });
+    }
   }
 }

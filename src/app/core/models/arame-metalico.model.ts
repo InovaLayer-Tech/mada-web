@@ -1,7 +1,7 @@
 export interface ArameMetalicoResponseDTO {
   id: string;
   nome: string;
-  fabricante: string;
+  fornecedor: string;
   codigoProduto: string;
   precoUnitarioBase: number;
   ligaMetalica: string;

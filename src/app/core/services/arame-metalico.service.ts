@@ -14,4 +14,20 @@ export class ArameMetalicoService {
   listarTodos(): Observable<ArameMetalicoResponseDTO[]> {
     return this.http.get<ArameMetalicoResponseDTO[]>(this.API);
   }
+
+  salvar(arame: any): Observable<ArameMetalicoResponseDTO> {
+    return this.http.post<ArameMetalicoResponseDTO>(this.API, arame);
+  }
+
+  atualizar(id: string, arame: any): Observable<ArameMetalicoResponseDTO> {
+    return this.http.put<ArameMetalicoResponseDTO>(`${this.API}/${id}`, arame);
+  }
+
+  excluir(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
+  alterarStatus(id: string): Observable<ArameMetalicoResponseDTO> {
+    return this.http.patch<ArameMetalicoResponseDTO>(`${this.API}/${id}/status`, {});
+  }
 }

@@ -26,4 +26,12 @@ export class OrcamentoService {
   processarCalculo(id: string, dadosCalculo: Partial<OrcamentoRequestDTO>): Observable<OrcamentoResponseDTO> {
     return this.http.put<OrcamentoResponseDTO>(`${this.apiUrl}/${id}/calcular`, dadosCalculo);
   }
+
+  aprovar(id: string): Observable<OrcamentoResponseDTO> {
+    return this.http.patch<OrcamentoResponseDTO>(`${this.apiUrl}/${id}/aprovar`, {});
+  }
+
+  excluir(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
