@@ -81,12 +81,12 @@ import { LanguageService } from '../../../core/services/language.service';
           <div class="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-mono">
             <span class="text-blue-600">Back-Office</span>
             <span class="text-slate-200">/</span>
-            <span>Unidade Engenharia Matriz</span>
+            <span>{{ 'SIDEBAR.ENGINEERING_UNIT' | translate }} {{ 'SIDEBAR.MATRIX' | translate }}</span>
           </div>
           <div class="flex items-center gap-6">
              <div class="px-4 py-2 bg-blue-50 border border-blue-100 text-blue-600 text-[9px] font-black rounded-lg flex items-center gap-2 tracking-[0.2em]">
                <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shadow-sm"></div>
-               SISTEMA OPERACIONAL
+               {{ 'SIDEBAR.OPERATING_SYSTEM' | translate }}
              </div>
              
              <div class="h-8 w-px bg-slate-200 mx-2"></div>
@@ -95,11 +95,11 @@ import { LanguageService } from '../../../core/services/language.service';
              <div class="flex items-center gap-4">
                 <a routerLink="/b2b/perfil" class="flex items-center gap-3 group px-4 py-2 hover:bg-slate-50 rounded-xl transition-all">
                   <div class="text-right">
-                    <p class="text-[13px] font-black text-slate-900 leading-none">{{ authService.currentUser()?.email || 'Engenharia' }}</p>
+                    <p class="text-[13px] font-black text-slate-900 leading-none">{{ authService.currentUser()?.nomeCompleto || authService.currentUser()?.email || 'Engenharia' }}</p>
                     <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest mt-1">{{ authService.currentUser()?.role || 'Admin' }}</p>
                   </div>
                   <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-[10px] shadow-md">
-                    {{ (authService.currentUser()?.email?.substring(0, 2) || 'IN').toUpperCase() }}
+                    {{ (authService.currentUser()?.nomeCompleto?.substring(0, 2) || authService.currentUser()?.email?.substring(0, 2) || 'IN').toUpperCase() }}
                   </div>
                 </a>
 

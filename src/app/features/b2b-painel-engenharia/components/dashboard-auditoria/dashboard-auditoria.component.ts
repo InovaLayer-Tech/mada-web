@@ -1,46 +1,58 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
-import { TranslateModule } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import 'chart.js/auto';
 
 @Component({
   selector: 'app-dashboard-auditoria',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, BaseChartDirective],
   templateUrl: './dashboard-auditoria.component.html'
 })
 export class DashboardAuditoriaComponent implements OnInit {
   private router = inject(Router);
   private orcamentoService = inject(OrcamentoService);
+  private translate = inject(TranslateService);
 
   orcamento = signal<OrcamentoResponseDTO | null>(null);
   faseAberta = signal<string | null>('dc');
 
-  // SVG Chart Utils
-  circunferencia = 2 * Math.PI * 40; // R=40 para viewBox 100x100
-  
-  chartData = computed(() => {
+  // Chart.js Configuration
+  public doughnutChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    }
+  };
+
+  public doughnutChartType: ChartType = 'doughnut';
+
+  public doughnutChartData = computed<ChartData<'doughnut'>>(() => {
     const o = this.orcamento();
-    if (!o) return { ic: 0, dc: 0, ac: 0 };
-    const total = (o.custoTotalIC || 0) + (o.custoTotalDC || 0) + (o.custoTotalAC || 0);
-    if (total === 0) return { ic: 0, dc: 0, ac: 0 };
+    if (!o) return { labels: [], datasets: [] };
     
     return {
-      ic: (o.custoTotalIC / total) * this.circunferencia,
-      dc: (o.custoTotalDC / total) * this.circunferencia,
-      ac: (o.custoTotalAC / total) * this.circunferencia,
-      total: total
-    };
-  });
-
-  offsets = computed(() => {
-    const d = this.chartData();
-    return {
-      ic: 0,
-      dc: -d.ic,
-      ac: -(d.ic + d.dc)
+      labels: [
+        this.translate.instant('B2B.AUDIT.DESC_IC'),
+        this.translate.instant('B2B.AUDIT.DESC_DC'),
+        this.translate.instant('B2B.AUDIT.DESC_AC')
+      ],
+      datasets: [
+        {
+          data: [o.custoTotalIC || 0, o.custoTotalDC || 0, o.custoTotalAC || 0],
+          backgroundColor: ['#94a3b8', '#2563eb', '#10b981'],
+          hoverBackgroundColor: ['#64748b', '#1d4ed8', '#059669'],
+          borderWidth: 0,
+          weight: 12,
+          cutout: '75%'
+        }
+      ]
     };
   });
 
@@ -62,7 +74,7 @@ export class DashboardAuditoriaComponent implements OnInit {
   }
 
   aprovarOrcamento() {
-    alert('Orçamento aprovado! Proposta comercial enviada automaticamente para o Portal do Cliente.');
+    alert(this.translate.instant('B2B.AUDIT.APPROVE_SUCCESS'));
     this.router.navigate(['/b2b/fila']);
   }
 }

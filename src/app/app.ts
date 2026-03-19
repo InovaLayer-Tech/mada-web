@@ -1,5 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from './core/services/language.service';
 
 @Component({

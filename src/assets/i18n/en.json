@@ -11,7 +11,8 @@
     "NAV_ABOUT": "About",
     "NAV_CONTACT": "Contact",
     "NAV_COMPANY": "Company",
-    "NAV_NAVIGATION": "Navigation"
+    "NAV_NAVIGATION": "Navigation",
+    "NAV_BACK": "Back"
   },
   "LANDING": {
     "ECOSYSTEM": "The WAAM Ecosystem",
@@ -43,10 +44,14 @@
     "B2C_BILLING": "Billing",
     "B2B_QUEUE": "RFQ Queue",
     "B2B_MOTOR": "Metrological Engine",
-    "B2B_AUDIT": "Metrological Audit",
-    "B2B_CATALOG": "Supplies Catalog",
-    "B2B_SETTINGS": "Global Rules & Rates",
-    "INFRASTRUCTURE": "INFRASTRUCTURE",
+    "B2B_AUDIT": "Cost Audit",
+    "B2B_CATALOG": "Materials Catalog",
+    "B2B_SETTINGS": "Rates & Margins",
+    "INFRASTRUCTURE": "Critical Infrastructure",
+    "ENGINEERING_UNIT": "Engineering Unit",
+    "MATRIX": "Matrix",
+    "OPERATING_SYSTEM": "OPERATING SYSTEM",
+    "CUSTOMER_PORTAL": "Customer Portal",
     "LOGOUT": "Log Out"
   },
   "COMMON": {
@@ -70,7 +75,12 @@
       "ANALYTICS": "Operational Analytics",
       "PANEL": "Performance Panel",
       "PENDING": "Pending RFQs",
-      "PIPELINE": "Estimated Pipeline"
+      "PIPELINE": "Estimated Pipeline",
+      "OPERATIONAL_CAPACITY": "Team Operational Capacity",
+      "SECURITY_MSG": "System protected by InovaLayer3D end-to-end encryption.",
+      "DENSITY": "DENSITY",
+      "HIGH_RATE": "high rate",
+      "LOAD": "LOAD"
     },
     "MOTOR": {
       "TITLE": "Metrological Engine (WAAM)",
@@ -110,7 +120,10 @@
       "STATUS_DESC_READY": "Metrological engine calibrated and ready for cost synthesis.",
       "STATUS_DESC_WAITING": "Technical validation of mandatory fields (*) required to release calculation.",
       "SEC_INTELLECTUAL": "Intellectual property protected.",
-      "VERSION": "InovaLayer Metrological Algorithm v4.2"
+      "VERSION": "InovaLayer Metrological Algorithm v4.2",
+      "SERVER_ONLINE": "Server Online",
+      "UNITS": "units",
+      "PROCESSING": "PROCESSING CALCULATION..."
     },
     "AUDITORIA": {
       "TITLE": "Metrological Audit",
@@ -121,8 +134,23 @@
       "MARGIN": "Margin",
       "DESC_IC": "Setup and Base Substrate",
       "DESC_DC": "Deposition and WAAM Core",
-      "DESC_AC": "Finishing and Quality",
-      "FOOTER": "InovaLayer3D - Metrological Audit Unit WAAM v2.4"
+      "DESC_AC": "AC (Additional)",
+      "COMPOSITION": "Cost Composition",
+      "TOTAL": "Total",
+      "PERFORMANCE": "Mada IQ Performance",
+      "DESC_IC_LONG": "IC - Indirect Costs",
+      "IC_SETUP": "Machine Setup and Industrial Preparation",
+      "IC_ENGINEERING": "Engineering and CAD/CAM (Allocation)",
+      "DESC_DC_LONG": "DC - Direct Costs (Core)",
+      "DC_MATERIAL": "Metallic Material",
+      "DC_GAS": "Shielding Gas",
+      "DC_ENERGY": "Electrical Energy Consumption",
+      "DC_ROBOT": "Robotic Cell Operation",
+      "DESC_AC_LONG": "AC - Additional",
+      "AC_SERVICES": "Additional Services (CAD/CNC/HT)",
+      "APPROVE_BTN": "Approve and Publish Proposal",
+      "APPROVE_SUCCESS": "Budget approved! Commercial proposal automatically sent to the Client Portal.",
+      "FOOTER": "InovaLayer3D - WAAM Metrological Audit Unit v2.4"
     },
     "CATALOGO": {
       "TITLE": "Supplies Catalog",
@@ -166,7 +194,8 @@
         "TITLE": "Edit Technical Profile",
         "NAME": "Full Name",
         "BIO": "Corporate Bio",
-        "SAVE_SUCCESS": "Profile updated successfully!"
+        "SAVE_SUCCESS": "Profile updated successfully!",
+        "SAVE_ERROR": "Error saving profile"
     },
     "PERFIL": {
       "TITLE": "Executive Profile",
@@ -177,7 +206,19 @@
       "PAPERS": "Papers",
       "QUOTE": "\"Our mission is to democratize high-performance metallic deposition, uniting metrological precision and operational efficiency.\"",
       "LEADERSHIP": "Executive Leadership",
-      "TECHNICAL_SPECIALIST": "Technical Specialist"
+      "TECHNICAL_SPECIALIST": "Technical Specialist",
+      "NEW_ADMIN": "New Administrator",
+      "ADMIN_SUCCESS": "Administrator created successfully!",
+      "ADMIN_ERROR": "Error creating administrator",
+      "DEFAULT_USER": "InovaLayer User",
+      "CREATE_ADMIN_BTN": "Create Admin",
+      "NEW_ADMIN_BTN": "+ NEW ADMINISTRATOR",
+      "EDIT_BTN": "Edit My Profile",
+      "NEW_PASSWORD": "New Password",
+      "CURRENT_PASSWORD": "Current Password",
+      "CONFIRM_NEW_PASSWORD": "Confirm New Password",
+      "PASSWORD_SUCCESS": "Password changed successfully!",
+      "OPTIONAL": "Optional"
     }
   },
   "B2C": {
@@ -265,5 +306,9 @@
       "FINISH": "FINISH REGISTRATION",
       "SUCCESS": "Registration successful! Welcome to InovaLayer3D."
     }
+  },
+  "AUTH": {
+    "ACCESS_DENIED_TITLE": "Access Denied",
+    "ACCESS_DENIED_DETAIL": "Your session has expired or you do not have permission to access this resource. Please login again."
   }
 }

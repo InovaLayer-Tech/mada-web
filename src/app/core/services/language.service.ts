@@ -13,17 +13,23 @@ export class LanguageService {
   idiomaAtivo = signal('PT');
 
   constructor() {
+    this.translate.setDefaultLang('pt');
+    
     if (isPlatformBrowser(this.platformId)) {
       const saved = localStorage.getItem('mada_lang');
       if (saved) {
-        this.idiomaAtivo.set(saved.toUpperCase());
-        this.translate.use(saved.toLowerCase());
+        const lang = saved.toLowerCase();
+        this.idiomaAtivo.set(lang.toUpperCase());
+        this.translate.use(lang);
       } else {
         const browserLang = this.translate.getBrowserLang();
         const initial = browserLang?.match(/en|pt/) ? browserLang : 'pt';
         this.idiomaAtivo.set(initial.toUpperCase());
         this.translate.use(initial);
       }
+    } else {
+      // No servidor, usar PT por padrão
+      this.translate.use('pt');
     }
 
     // Opcional: Efeito para persistir mudança

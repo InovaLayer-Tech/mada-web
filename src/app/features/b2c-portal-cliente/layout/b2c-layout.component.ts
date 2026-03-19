@@ -63,16 +63,18 @@ import { LanguageService } from '../../../core/services/language.service';
       <main class="flex-1 overflow-y-auto relative bg-slate-50">
         <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between px-10">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">InovaLayer3D Portal do Cliente</span>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">InovaLayer3D {{ 'SIDEBAR.CUSTOMER_PORTAL' | translate }}</span>
           </div>
           <div class="flex items-center gap-6">
             <a routerLink="/cliente/perfil" class="flex items-center gap-3 group px-4 py-2 hover:bg-slate-50 rounded-xl transition-all">
               <div class="text-right hidden sm:block">
-                <p class="text-xs font-black text-slate-900 leading-none">{{ authService.currentUser()?.email || 'Cliente' }}</p>
+                <p class="text-xs font-black text-slate-900 leading-none">{{ authService.currentUser()?.nomeCompleto || authService.currentUser()?.email || 'Cliente' }}</p>
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Portal Corporativo</p>
               </div>
               <div class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100 group-hover:border-blue-500 transition-all">
-                <img src="assets/images/inovalayer-circulada.png" class="w-6 h-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity">
+                <div class="text-[10px] font-black text-blue-600">
+                  {{ (authService.currentUser()?.nomeCompleto?.substring(0, 2) || authService.currentUser()?.email?.substring(0, 2) || 'CL').toUpperCase() }}
+                </div>
               </div>
             </a>
             

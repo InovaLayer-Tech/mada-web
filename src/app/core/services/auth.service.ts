@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 export interface AuthResponse {
   token: string;
   email: string;
+  nomeCompleto: string;
   role: string;
   expiresAt: number;
 }
@@ -25,8 +26,16 @@ export class AuthService {
   currentUser = signal<AuthResponse | null>(this.getUserFromStorage());
 
   login(credentials: any) {
+    console.log('DEBUG [AuthService] Iniciando tentativa de login para:', credentials.email);
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => this.saveUser(response))
+      tap(response => {
+        console.log('DEBUG [AuthService] Login realizado com sucesso:', response.email);
+        this.saveUser(response);
+      }),
+      catchError(error => {
+        console.error('DEBUG [AuthService] Erro na tentativa de login:', error);
+        throw error;
+      })
     );
   }
 
@@ -49,6 +58,14 @@ export class AuthService {
       localStorage.setItem('mada_user', JSON.stringify(user));
     }
     this.currentUser.set(user);
+  }
+
+  updateUser(partial: Partial<AuthResponse>) {
+    const current = this.currentUser();
+    if (current) {
+      const updated = { ...current, ...partial };
+      this.saveUser(updated);
+    }
   }
 
   private getUserFromStorage(): AuthResponse | null {

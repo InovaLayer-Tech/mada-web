@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-fila-solicitacoes',
@@ -14,6 +15,7 @@ import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
 export class FilaSolicitacoesComponent implements OnInit {
   private orcamentoService = inject(OrcamentoService);
   private router = inject(Router);
+  protected authService = inject(AuthService);
 
   rfqs: OrcamentoResponseDTO[] = [];
 

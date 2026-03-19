@@ -19,14 +19,6 @@ export class LandingPagePolishedComponent {
     this.languageService.setLanguage(idioma);
   }
 
-  irParaLogin() {
-    this.router.navigate(['/login']);
-  }
-
-  irParaCadastro() {
-    this.router.navigate(['/cadastro']);
-  }
-
   login(type: 'b2b' | 'cliente') {
     if (type === 'cliente') this.router.navigate(['/cliente/dashboard']);
     else this.router.navigate(['/b2b/pedidos']);

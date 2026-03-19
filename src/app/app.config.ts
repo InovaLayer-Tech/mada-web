@@ -7,19 +7,24 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 
 registerLocaleData(localePt);
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Observable, lastValueFrom } from 'rxjs';
+import { APP_INITIALIZER } from '@angular/core';
 import { routes } from './app.routes';
+import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
-export class CustomTranslateLoader implements TranslateLoader {
-  constructor(private http: HttpClient) {}
-  getTranslation(lang: string): Observable<any> {
-    return this.http.get(`./assets/i18n/${lang}.json`);
-  }
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
+
+export function HttpLoaderFactory() {
+  return new TranslateHttpLoader();
 }
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new CustomTranslateLoader(http);
+export function translateInitializer(translate: TranslateService) {
+  return () => lastValueFrom(translate.use('pt'));
 }
 
 export const appConfig: ApplicationConfig = {
@@ -29,16 +34,22 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        },
-        useDefaultLang: false,
-        isolate: false
-      })
-    )
+    importProvidersFrom(TranslateModule.forRoot()),
+    provideTranslateHttpLoader({
+      prefix: '/assets/i18n/',
+      suffix: '.json'
+    }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (translate: TranslateService) => () => lastValueFrom(translate.use('pt')),
+      deps: [TranslateService],
+      multi: true
+    },
+    MessageService,
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    })
   ],
 };

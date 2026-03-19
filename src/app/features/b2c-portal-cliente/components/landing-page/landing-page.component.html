@@ -23,12 +23,12 @@
 
       <!-- Simplified Login/Signup buttons -->
       <div class="flex items-center gap-4">
-        <button (click)="irParaCadastro()" class="px-6 py-3 border-2 border-slate-200 text-slate-600 text-xs font-black rounded-xl hover:bg-slate-100 transition-all uppercase tracking-tight">
+        <a routerLink="/cadastro" class="px-6 py-3 border-2 border-slate-200 text-slate-600 text-xs font-black rounded-xl hover:bg-slate-100 transition-all uppercase tracking-tight text-center">
           {{ 'NAV.SIGNUP' | translate }}
-        </button>
-        <button (click)="irParaLogin()" class="px-8 py-3 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 uppercase tracking-tight">
+        </a>
+        <a routerLink="/login" class="px-8 py-3 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 uppercase tracking-tight text-center">
           {{ 'NAV.LOGIN' | translate }}
-        </button>
+        </a>
       </div>
     </div>
   </nav>
@@ -48,9 +48,9 @@
         </p>
 
         <div class="flex justify-center gap-6">
-           <button (click)="irParaLogin()" class="px-12 py-5 bg-blue-600 text-white text-sm font-black rounded-2xl hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 uppercase tracking-widest">
+           <a routerLink="/login" class="px-12 py-5 bg-blue-600 text-white text-sm font-black rounded-2xl hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 uppercase tracking-widest text-center">
               {{ 'NAV.LOGIN' | translate }}
-           </button>
+           </a>
         </div>
     </div>
 

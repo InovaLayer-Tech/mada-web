@@ -97,10 +97,10 @@
                     <p class="text-xs font-black text-slate-700 uppercase">{{ rfq.nomeArameMetalico }}</p>
                   </div>
                   <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 font-mono">DENSIDADE</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 font-mono">{{ 'B2B.FILA.DENSITY' | translate }}</p>
                     <div class="flex items-center gap-2">
                       <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>
-                      <p class="text-xs font-black text-slate-700 uppercase">{{ rfq.nomeArameMetalico }} de alta taxa</p>
+                      <p class="text-xs font-black text-slate-700 uppercase">{{ rfq.nomeArameMetalico }} {{ 'B2B.FILA.HIGH_RATE' | translate }}</p>
                     </div>
                   </div>
                 </div>
@@ -144,9 +144,9 @@
                 <div class="flex justify-between items-center mb-3">
                    <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-mono flex items-center gap-2">
                      <i class="pi pi-user text-blue-600"></i>
-                     VINICIUS RAFAEL
+                     {{ authService.currentUser()?.nomeCompleto || authService.currentUser()?.email || 'ADMIN' }}
                    </span>
-                   <span class="text-[10px] font-black text-blue-600 font-mono px-2 py-0.5 bg-blue-50 rounded border border-blue-200 uppercase">85% LOAD</span>
+                   <span class="text-[10px] font-black text-blue-600 font-mono px-2 py-0.5 bg-blue-50 rounded border border-blue-200 uppercase">85% {{ 'B2B.FILA.LOAD' | translate }}</span>
                 </div>
                 <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div class="w-[85%] h-full bg-slate-900 rounded-full"></div>

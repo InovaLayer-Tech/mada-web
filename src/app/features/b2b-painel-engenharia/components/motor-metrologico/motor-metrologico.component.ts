@@ -9,11 +9,14 @@ import { ProblemDetail } from '../../../../core/models/problem-detail';
 import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
 import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
 import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-motor-metrologico',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastModule],
+  providers: [MessageService],
   templateUrl: './motor-metrologico.component.html'
 })
 export class MotorMetrologicoComponent implements OnInit {
@@ -22,6 +25,7 @@ export class MotorMetrologicoComponent implements OnInit {
   private arameService = inject(ArameMetalicoService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private messageService = inject(MessageService);
 
   arames: ArameMetalicoResponseDTO[] = [];
   pendingRfqs: OrcamentoResponseDTO[] = [];
@@ -94,6 +98,53 @@ export class MotorMetrologicoComponent implements OnInit {
           });
         } catch(e) {}
       });
+  }
+
+  onFileUpload(event: Event): void {
+    const element = event.target as HTMLInputElement;
+    const file = element.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const data = JSON.parse(content);
+
+        // Extrai TEMPO_ATIVO_TOTAL (em segundos)
+        if (data && data.TEMPO_ATIVO_TOTAL !== undefined) {
+          // Converte para minutos e arredonda para 2 casas decimais
+          const valorCalculado = Number((data.TEMPO_ATIVO_TOTAL / 60).toFixed(2));
+          
+          this.orcamentoForm.patchValue({ 
+            tempoArcoMinutos: valorCalculado 
+          });
+
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Sucesso', 
+            detail: 'Dados metrológicos importados com sucesso' 
+          });
+        } else {
+          this.messageService.add({ 
+            severity: 'warn', 
+            summary: 'Aviso', 
+            detail: 'JSON lido, mas a chave TEMPO_ATIVO_TOTAL não foi encontrada' 
+          });
+        }
+      } catch (error) {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Erro', 
+          detail: 'O ficheiro JSON é inválido ou está corrompido' 
+        });
+      } finally {
+        // Limpa o input para permitir uploads consecutivos do mesmo ficheiro
+        element.value = '';
+      }
+    };
+
+    reader.readAsText(file);
   }
 
   onSubmit() {

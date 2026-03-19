@@ -3,11 +3,11 @@
     
     <div class="mb-12 flex justify-between items-end">
       <div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">Auditoria WAAM</h1>
-        <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-2">Validação Financeira de Projeto</p>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">{{ 'B2B.AUDIT.TITLE' | translate }}</h1>
+        <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-2">{{ 'B2B.AUDIT.SUBTITLE' | translate }}</p>
       </div>
       <div class="text-right">
-        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono block mb-1">REQ_ID</span>
+        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono block mb-1">{{ 'B2B.AUDIT.ID_LABEL' | translate }}</span>
         <span class="text-xs font-black text-blue-600 font-mono bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">#{{ o.id.substring(0,8) }}</span>
       </div>
     </div>
@@ -21,38 +21,18 @@
           <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl"></div>
           
           <div class="relative z-10">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10 block font-mono">Composição de Custos</span>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10 block font-mono">{{ 'B2B.AUDIT.COMPOSITION' | translate }}</span>
             
-            <!-- SVG Donut Chart -->
+            <!-- ng2-charts Donut -->
             <div class="relative w-64 h-64 mx-auto mb-12">
-              <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-                <!-- Background Circle -->
-                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f1f5f9" stroke-width="12"></circle>
-                
-                <!-- IC Path (Slate) -->
-                <circle cx="50" cy="50" r="40" fill="transparent" 
-                        stroke="#94a3b8" 
-                        stroke-width="12"
-                        [attr.stroke-dasharray]="chartData().ic + ' ' + circunferencia"
-                        [attr.stroke-dashoffset]="offsets().ic"></circle>
-                
-                <!-- DC Path (Blue) -->
-                <circle cx="50" cy="50" r="40" fill="transparent" 
-                        stroke="#2563eb" 
-                        stroke-width="12"
-                        [attr.stroke-dasharray]="chartData().dc + ' ' + circunferencia"
-                        [attr.stroke-dashoffset]="offsets().dc"></circle>
-
-                <!-- AC Path (Emerald) -->
-                <circle cx="50" cy="50" r="40" fill="transparent" 
-                        stroke="#10b981" 
-                        stroke-width="12"
-                        [attr.stroke-dasharray]="chartData().ac + ' ' + circunferencia"
-                        [attr.stroke-dashoffset]="offsets().ac"></circle>
-              </svg>
+              <canvas baseChart 
+                [data]="doughnutChartData()"
+                [options]="doughnutChartOptions"
+                [type]="doughnutChartType">
+              </canvas>
               
               <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total</span>
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ 'B2B.AUDIT.TOTAL' | translate }}</span>
                 <span class="text-3xl font-black text-slate-900 tracking-tighter">R$ {{ o.precoFinalSugerido | number:'1.2-2' }}</span>
               </div>
             </div>
@@ -61,33 +41,33 @@
             <div class="space-y-4 max-w-[200px] mx-auto text-left">
               <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full bg-slate-400"></div>
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">IC (Indiretos)</span>
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ 'B2B.AUDIT.DESC_IC' | translate }}</span>
               </div>
               <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full bg-blue-600"></div>
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">DC (Diretos)</span>
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ 'B2B.AUDIT.DESC_DC' | translate }}</span>
               </div>
               <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">AC (Adicionais)</span>
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ 'B2B.AUDIT.DESC_AC' | translate }}</span>
               </div>
             </div>
           </div>
         </div>
 
         <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl">
-          <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6">Mada IQ Performance</p>
+          <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6">{{ 'B2B.AUDIT.PERFORMANCE' | translate }}</p>
           <div class="space-y-6">
             <div class="flex justify-between items-center text-sm font-bold opacity-80">
-              <span class="text-slate-400">Margem Comercial</span>
+              <span class="text-slate-400">{{ 'B2B.AUDIT.MARGIN' | translate }}</span>
               <span class="text-emerald-400">+{{ o.margemComercialAplicada }}%</span>
             </div>
             <div class="flex justify-between items-center text-sm font-bold opacity-80">
-              <span class="text-slate-400">Custo de Fab.</span>
+              <span class="text-slate-400">{{ 'B2B.AUDIT.BASE_COST' | translate }}</span>
               <span>{{ o.custoDiretoFabricacao | currency:'BRL' }}</span>
             </div>
             <div class="pt-4 border-t border-slate-800 text-right">
-               <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">Status Pipeline</p>
+               <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">{{ 'B2B.MOTOR.STATUS_TITLE' | translate }}</p>
                <p class="text-xs font-black text-blue-400 uppercase mt-1">CALCULADO / PENDENTE ADMIN</p>
             </div>
           </div>
@@ -103,7 +83,7 @@
           <button (click)="toggleFase('ic')" class="w-full px-8 py-6 flex justify-between items-center hover:bg-slate-50 transition-all text-left">
              <div class="flex items-center gap-5">
                <div class="w-1.5 h-6 bg-slate-400 rounded-full"></div>
-               <span class="text-[10px] font-black text-slate-900 tracking-widest uppercase">IC - Custos Indiretos</span>
+               <span class="text-[10px] font-black text-slate-900 tracking-widest uppercase">{{ 'B2B.AUDIT.DESC_IC_LONG' | translate }}</span>
              </div>
              <div class="flex items-center gap-6">
                <span class="text-xs font-black text-slate-600 font-industrial-mono bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">{{ o.custoTotalIC | currency:'BRL' }}</span>
@@ -114,11 +94,11 @@
           @if (faseAberta() === 'ic') {
             <div class="p-8 pt-0 space-y-3 animate-in slide-in-from-top-4 duration-300">
                 <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100 italic">
-                   <span class="text-xs font-bold text-slate-500">Setup de Máquina e Preparação Industrial</span>
+                   <span class="text-xs font-bold text-slate-500">{{ 'B2B.AUDIT.IC_SETUP' | translate }}</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoPreparacaoIC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100 italic">
-                   <span class="text-xs font-bold text-slate-500">Engenharia e CAD/CAM (Rateio)</span>
+                   <span class="text-xs font-bold text-slate-500">{{ 'B2B.AUDIT.IC_ENGINEERING' | translate }}</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoSubstratoIC | currency:'BRL' }}</span>
                 </div>
                 <!-- Nota: o Backend usa SubstratoIC para o valor fixo por enquanto no DTO -->
@@ -131,7 +111,7 @@
           <button (click)="toggleFase('dc')" class="w-full px-8 py-6 flex justify-between items-center bg-blue-50/30 hover:bg-white transition-all text-left">
              <div class="flex items-center gap-5">
                <div class="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-               <span class="text-[10px] font-black text-blue-600 tracking-widest uppercase">DC - Custos Diretos (Core)</span>
+               <span class="text-[10px] font-black text-blue-600 tracking-widest uppercase">{{ 'B2B.AUDIT.DESC_DC_LONG' | translate }}</span>
              </div>
              <div class="flex items-center gap-6">
                <span class="text-xs font-black text-blue-600 font-industrial-mono bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">{{ o.custoTotalDC | currency:'BRL' }}</span>
@@ -142,19 +122,19 @@
           @if (faseAberta() === 'dc') {
             <div class="p-8 pt-0 space-y-3 animate-in slide-in-from-top-4 duration-300">
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">Material Metálico ({{ o.nomeArameMetalico }})</span>
+                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_MATERIAL' | translate }} ({{ o.nomeArameMetalico }})</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoMaterialDC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">Gás de Proteção</span>
+                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_GAS' | translate }}</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoGasDC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">Consumo de Energia Elétrica</span>
+                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_ENERGY' | translate }}</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoEnergiaDC | currency:'BRL' }}</span>
                 </div>
                 <div class="flex justify-between items-center p-4 bg-blue-50/20 rounded-2xl border border-blue-50">
-                   <span class="text-xs font-bold text-slate-600">Operacional da Célula Robótica</span>
+                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.DC_ROBOT' | translate }}</span>
                    <span class="text-sm font-black text-slate-900">{{ o.custoMaquinaDC | currency:'BRL' }}</span>
                 </div>
             </div>
@@ -166,7 +146,7 @@
           <button (click)="toggleFase('ac')" class="w-full px-8 py-6 flex justify-between items-center bg-emerald-50/30 hover:bg-white transition-all text-left">
              <div class="flex items-center gap-5">
                <div class="w-1.5 h-6 bg-emerald-600 rounded-full"></div>
-               <span class="text-[10px] font-black text-emerald-600 tracking-widest uppercase">AC - Adicionais</span>
+               <span class="text-[10px] font-black text-emerald-600 tracking-widest uppercase">{{ 'B2B.AUDIT.DESC_AC_LONG' | translate }}</span>
              </div>
              <div class="flex items-center gap-6">
                <span class="text-xs font-black text-emerald-600 font-industrial-mono bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100">{{ o.custoTotalAC | currency:'BRL' }}</span>
@@ -177,7 +157,7 @@
           @if (faseAberta() === 'ac') {
             <div class="p-8 pt-0 space-y-3 animate-in slide-in-from-top-4 duration-300">
                 <div class="flex justify-between items-center p-4 bg-emerald-50/20 rounded-2xl border border-emerald-50">
-                   <span class="text-xs font-bold text-slate-600">Serviços Adicionais (CAD/CNC/TT)</span>
+                   <span class="text-xs font-bold text-slate-600">{{ 'B2B.AUDIT.AC_SERVICES' | translate }}</span>
                    <span class="text-sm font-black text-slate-900">{{ o.servicosAC | currency:'BRL' }}</span>
                 </div>
             </div>
@@ -185,7 +165,7 @@
         </div>
 
         <button (click)="aprovarOrcamento()" class="w-full py-8 bg-blue-600 hover:bg-blue-700 text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-2xl transition-all active:scale-95 mt-4">
-          Aprovar e Publicar Proposta
+          {{ 'B2B.AUDIT.APPROVE_BTN' | translate }}
         </button>
 
       </div>
