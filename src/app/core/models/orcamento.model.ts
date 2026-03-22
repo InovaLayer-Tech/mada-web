@@ -18,6 +18,12 @@ export interface OrcamentoRequestDTO {
   nivelInspecao?: string;
   tratamentoTermico?: boolean;
 
+  // Novos Campos Agente MADA
+  aplicacaoPeca?: string;
+  solicitacaoMecanica?: string;
+  solicitacaoAmbiental?: string;
+  normasTecnicas?: string;
+
   // Dados Metrológicos (Motor B2B)
   arameId?: string;
   massaEstimadaKg?: number;
@@ -58,6 +64,12 @@ export interface OrcamentoResponseDTO {
   nivelInspecao: string;
   tratamentoTermico: boolean;
 
+  // Novos Campos Agente MADA
+  aplicacaoPeca: string;
+  solicitacaoMecanica: string;
+  solicitacaoAmbiental: string;
+  normasTecnicas: string;
+
   // FASE 1: IC
   tempoPreparacaoMinutos: number;
   tempoRemocaoMinutos: number;
@@ -72,6 +84,7 @@ export interface OrcamentoResponseDTO {
   tempoMortoMinutos: number;
   massaEstimadaKg: number;
   nomeArameMetalico: string;
+  nomeGasProtecao: string;
   custoMaterialDC: number;
   custoGasDC: number;
   custoEnergiaDC: number;

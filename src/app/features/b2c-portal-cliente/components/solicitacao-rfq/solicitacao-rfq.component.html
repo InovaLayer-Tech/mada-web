@@ -77,6 +77,37 @@
                 <option value="Reparo">Reparo / Manutenção</option>
               </select>
             </div>
+
+            <!-- NOVOS CAMPOS AGENTE MADA (SELECTS) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+              <div class="space-y-3">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Aplicação da Peça <span class="text-blue-600">*</span></label>
+                <select formControlName="aplicacaoPeca" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 transition-all font-black appearance-none cursor-pointer">
+                  <option value="" disabled selected>Selecione a aplicação</option>
+                  @for (opt of OPCOES_APLICACAO; track opt) {
+                    <option [value]="opt">{{ opt }}</option>
+                  }
+                </select>
+              </div>
+              <div class="space-y-3">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Solicitação Mecânica <span class="text-blue-600">*</span></label>
+                <select formControlName="solicitacaoMecanica" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 transition-all font-black appearance-none cursor-pointer">
+                  <option value="" disabled selected>Selecione o esforço</option>
+                  @for (opt of OPCOES_MECANICA; track opt) {
+                    <option [value]="opt">{{ opt }}</option>
+                  }
+                </select>
+              </div>
+              <div class="space-y-3 md:col-span-2">
+                <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Solicitação Ambiental <span class="text-blue-600">*</span></label>
+                <select formControlName="solicitacaoAmbiental" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-blue-600 transition-all font-black appearance-none cursor-pointer">
+                  <option value="" disabled selected>Selecione o ambiente</option>
+                  @for (opt of OPCOES_AMBIENTAL; track opt) {
+                    <option [value]="opt">{{ opt }}</option>
+                  }
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       }
@@ -109,6 +140,7 @@
                 <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Material Desejado <span class="text-blue-600">*</span></label>
                 <select formControlName="materialDesejadoId" class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:border-indigo-600 transition-all font-black shadow-inner">
                   <option value="" disabled selected>Selecione o material</option>
+                  <option value="HELP">⚠️ Preciso de ajuda técnica com o material</option>
                   @for (arame of arames; track arame.id) {
                     <option [value]="arame.id">{{ arame.nome }} ({{ arame.ligaMetalica }})</option>
                   }
@@ -173,6 +205,12 @@
                 <option value="Faceado">Faceamento de Bases</option>
                 <option value="Integral">Usinagem Total CNC</option>
               </select>
+            </div>
+
+            <div class="space-y-3">
+              <label class="block text-[11px] font-black text-slate-700 uppercase tracking-widest ml-1">Normas e Critérios de Aceitação</label>
+              <textarea formControlName="normasTecnicas" rows="3" placeholder="Ex: ISO 9001, ASME, Normas de projeto específicas..." 
+                        class="w-full bg-slate-50 text-slate-900 px-6 py-4 rounded-2xl border border-slate-200 focus:border-emerald-600 transition-all font-bold shadow-inner resize-none"></textarea>
             </div>
 
             <div class="flex items-center gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">

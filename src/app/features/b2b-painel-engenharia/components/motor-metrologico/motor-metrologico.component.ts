@@ -2,7 +2,7 @@ import { Component, inject, DestroyRef, OnInit, signal } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { ProblemDetail } from '../../../../core/models/problem-detail';
@@ -15,7 +15,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-motor-metrologico',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastModule, RouterModule],
   providers: [MessageService],
   templateUrl: './motor-metrologico.component.html'
 })
@@ -33,6 +33,8 @@ export class MotorMetrologicoComponent implements OnInit {
   isSubmitting = signal(false);
   erroApi = signal<string | null>(null);
   uploadedFileName = signal<string | null>(null);
+  orcamentoCalculado = signal<OrcamentoResponseDTO | null>(null);
+  margemExibicao = signal<number>(0);
 
   orcamentoForm = this.fb.group({
     orcamentoId: ['', Validators.required],
@@ -164,12 +166,24 @@ export class MotorMetrologicoComponent implements OnInit {
     this.orcamentoService.processarCalculo(id, payload as any).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/b2b/auditoria'], { state: { rfq: res } });
+        this.orcamentoCalculado.set(res);
+        
+        // Cálculo dinâmico da margem solicitado pelo usuário
+        if (res.custoDiretoFabricacao > 0) {
+          const margem = ((res.precoFinalSugerido - res.custoDiretoFabricacao) / res.custoDiretoFabricacao) * 100;
+          this.margemExibicao.set(margem);
+        }
+        
+        this.messageService.add({ severity: 'success', summary: 'Cálculo Concluído', detail: 'O orçamento metrológico foi sintetizado com sucesso' });
       },
       error: (err) => {
         this.isSubmitting.set(false);
         this.erroApi.set(err.error?.message || 'Erro ao processar cálculo WAAM');
       }
     });
+  }
+
+  downloadPDF() {
+    window.print();
   }
 }

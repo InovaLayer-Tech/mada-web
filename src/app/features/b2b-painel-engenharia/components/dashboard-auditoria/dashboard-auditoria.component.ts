@@ -147,4 +147,8 @@ export class DashboardAuditoriaComponent implements OnInit {
       });
     }
   }
+
+  downloadPDF() {
+    window.print();
+  }
 }

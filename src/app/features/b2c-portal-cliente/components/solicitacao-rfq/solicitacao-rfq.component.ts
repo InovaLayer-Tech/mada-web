@@ -23,6 +23,22 @@ export class SolicitacaoRfqComponent implements OnInit {
   isSending = signal(false);
   currentStep = signal(1);
   totalSteps = 3;
+  
+  // Opções Metodologia Agente MADA
+  readonly OPCOES_APLICACAO = [
+    'Aeroespacial', 'Defesa', 'Oil & Gas', 'Automotivo', 
+    'Ferramentaria', 'Industrial Geral', 'Outro', 'Nenhum / Não sei'
+  ];
+
+  readonly OPCOES_MECANICA = [
+    'Alta pressão', 'Fadiga', 'Impacto', 'Tração / Compressão', 
+    'Carga Estática', 'Desgaste / Atrito', 'Nenhum / Não sei'
+  ];
+
+  readonly OPCOES_AMBIENTAL = [
+    'Corrosão salina', 'Alta temperatura', 'Criogênico', 
+    'Meio Químico / Ácido', 'Neutro / Atmosférico', 'Nenhum / Não sei'
+  ];
 
   rfqForm = this.fb.group({
     // Step 1: Identificação
@@ -43,7 +59,11 @@ export class SolicitacaoRfqComponent implements OnInit {
     nivelInspecao: ['Visual', Validators.required],
     tratamentoTermico: [true, Validators.required],
     canaisInternos: [false],
-    arquivoUrl: ['']
+    arquivoUrl: [''],
+    aplicacaoPeca: ['', Validators.required],
+    solicitacaoMecanica: ['', Validators.required],
+    solicitacaoAmbiental: ['', Validators.required],
+    normasTecnicas: ['']
   });
 
   selectedFile = signal<File | null>(null);
@@ -78,7 +98,9 @@ export class SolicitacaoRfqComponent implements OnInit {
   private canGoNext(): boolean {
     const controls = this.rfqForm.controls;
     if (this.currentStep() === 1) {
-      return !!(controls.nomeProjeto.valid && controls.nomeEmpresa.valid && controls.finalidadePeca.valid);
+      return !!(controls.nomeProjeto.valid && controls.nomeEmpresa.valid && 
+             controls.finalidadePeca.valid && controls.aplicacaoPeca.valid &&
+             controls.solicitacaoMecanica.valid && controls.solicitacaoAmbiental.valid);
     }
     if (this.currentStep() === 2) {
       return !!(controls.dimensaoX.valid && controls.dimensaoY.valid && controls.dimensaoZ.valid && controls.quantidade.valid && controls.materialDesejadoId.valid);
@@ -92,6 +114,9 @@ export class SolicitacaoRfqComponent implements OnInit {
       controls.nomeProjeto.markAsTouched();
       controls.nomeEmpresa.markAsTouched();
       controls.finalidadePeca.markAsTouched();
+      controls.aplicacaoPeca.markAsTouched();
+      controls.solicitacaoMecanica.markAsTouched();
+      controls.solicitacaoAmbiental.markAsTouched();
     }
     if (this.currentStep() === 2) {
       controls.dimensaoX.markAsTouched();
@@ -124,7 +149,11 @@ export class SolicitacaoRfqComponent implements OnInit {
       nivelInspecao: formValue.nivelInspecao,
       tratamentoTermico: formValue.tratamentoTermico,
       finalidadePeca: formValue.finalidadePeca,
-      materialDesejadoId: formValue.materialDesejadoId
+      materialDesejadoId: formValue.materialDesejadoId === 'HELP' ? null : formValue.materialDesejadoId,
+      aplicacaoPeca: formValue.aplicacaoPeca,
+      solicitacaoMecanica: formValue.solicitacaoMecanica,
+      solicitacaoAmbiental: formValue.solicitacaoAmbiental,
+      normasTecnicas: formValue.normasTecnicas
     };
     
     this.orcamentoService.criar(payload as any).subscribe({
