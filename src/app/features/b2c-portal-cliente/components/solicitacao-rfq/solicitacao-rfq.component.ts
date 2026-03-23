@@ -149,6 +149,7 @@ export class SolicitacaoRfqComponent implements OnInit {
       nivelInspecao: formValue.nivelInspecao,
       tratamentoTermico: formValue.tratamentoTermico,
       finalidadePeca: formValue.finalidadePeca,
+      arquivoUrl: formValue.arquivoUrl,
       materialDesejadoId: formValue.materialDesejadoId === 'HELP' ? null : formValue.materialDesejadoId,
       aplicacaoPeca: formValue.aplicacaoPeca,
       solicitacaoMecanica: formValue.solicitacaoMecanica,
