@@ -28,31 +28,34 @@ export interface OrcamentoRequestDTO {
 /**
  * DTO para a fase de Processamento Metrológico (Stage II/III).
  * Reconciliado com a Planilha de Validação Industrial.
+ *
+ * LINGUAGEM UBÍQUA MADA: Todos os campos refletem as siglas matemáticas
+ * da metodologia para facilitar debugging financeiro sem consulta a docs externos.
  */
 export interface OrcamentoCalculoRequestDTO {
   orcamentoId: string;
   arameId: string;
   
-  // Variáveis de Processo (Planilha Industrial)
-  nCamadas: number;              // n
-  tempoArcoTotalS1: number;      // S1 (min)
-  tempoMortoTotalS2: number;     // S2 (min)
-  tempoMortoIntercamadaP11: number; // P11 (min)
-  velocidadeArameP9: number;     // P9 (m/min)
-  vazaoGasP2: number;            // P2 (m³/min)
+  // ─── Classe S: Variáveis de Trajetória (provenientes do Slicer) ──────────
+  nCamadas: number;                  // n  — Número de camadas
+  tempoArcoTotalS1: number;          // S1 — Tempo TOTAL de arco ativo (min) — JÁ CONSOLIDADO (n × tempo/camada)
+  tempoMortoTotalS2: number;         // S2 — Tempo TOTAL morto (partidas/paradas) (min) — JÁ CONSOLIDADO
+  tempoMortoIntercamadaP11: number;  // P11 — Tempo morto intercamada por camada (min)
+
+  // ─── Classe P: Parâmetros do Processo ────────────────────────────────────
+  velocidadeArameP9: number;         // P9 — Velocidade de alimentação do arame (m/min)
+  vazaoGasP2: number;                // P2 — Vazão do gás de proteção (m³/min) — Backend usa m³/min
+
+  // ─── Classe O: Parâmetros de Setup e Insumos ─────────────────────────────
+  tempoPreparacaoO6: number;         // O6 — Tempo de preparação/setup (min)
+  tempoDesmontagemO7: number;        // O7 — Tempo de desmontagem/remoção (min)
+  custoSubstratoO10: number;         // O10 — Custo direto do substrato (R$)
   
-  // Parâmetros de Setup (Classe O)
-  tempoPreparacaoO6: number;     // O6
-  tempoDesmontagemO7: number;    // O7
-  
-  // Insumos Adicionais
-  custoSubstratoO10: number;     // O10
-  
-  // Flags de Controle
-  requerProjetoCAD: boolean;     // AC4
-  requerUsinagemFinal: boolean;  // AC8
-  tempoUsinagemMinutos?: number;
-  requerTratamentoTermico?: boolean; // AC9
+  // ─── Flags de Controle — Serviços Adicionais (AC) ────────────────────────
+  requerProjetoCAD: boolean;         // AC4 — Desenvolvimento CAD/CAM
+  requerUsinagemFinal: boolean;      // AC8 — Usinagem geométrica final
+  tempoUsinagemMinutos?: number;     // Tempo estimado para AC8
+  requerTratamentoTermico?: boolean; // AC9 — Tratamento Térmico pós-deposição
 }
 
 export interface ServicoAdicionalDTO {
