@@ -24,46 +24,32 @@ export class SolicitacaoRfqComponent implements OnInit {
   currentStep = signal(1);
   totalSteps = 3;
   
-  // Opções Metodologia Agente MADA
-  readonly OPCOES_APLICACAO = [
-    'Aeroespacial', 'Defesa', 'Oil & Gas', 'Automotivo', 
-    'Ferramentaria', 'Industrial Geral', 'Outro', 'Nenhum / Não sei'
-  ];
-
-  readonly OPCOES_MECANICA = [
-    'Alta pressão', 'Fadiga', 'Impacto', 'Tração / Compressão', 
-    'Carga Estática', 'Desgaste / Atrito', 'Nenhum / Não sei'
-  ];
-
-  readonly OPCOES_AMBIENTAL = [
-    'Corrosão salina', 'Alta temperatura', 'Criogênico', 
-    'Meio Químico / Ácido', 'Neutro / Atmosférico', 'Nenhum / Não sei'
-  ];
-
   rfqForm = this.fb.group({
-    // Step 1: Identificação
-    nomeProjeto: ['', Validators.required],
-    nomeEmpresa: ['', Validators.required], // Mapeado para o backend via perfil ou manual
-    finalidadePeca: ['', Validators.required],
+    // Tudo opcional conforme orientação: Validação é feita pela engenharia depois
+    nomeProjeto: [''],
+    nomeEmpresa: [''], 
+    finalidadePeca: [''],
     
     // Step 2: Envelope Físico
-    dimensaoX: [null as number | null, [Validators.required, Validators.min(1)]],
-    dimensaoY: [null as number | null, [Validators.required, Validators.min(1)]],
-    dimensaoZ: [null as number | null, [Validators.required, Validators.min(1)]],
-    quantidade: [1, [Validators.required, Validators.min(1)]],
-    materialDesejadoId: ['', Validators.required],
+    dimensaoX: [null as number | null],
+    dimensaoY: [null as number | null],
+    dimensaoZ: [null as number | null],
+    quantidade: [1],
+    materialDesejadoId: [''],
     
     // Step 3: Requisitos
-    tolerancia: ['Bruta', Validators.required],
-    acabamento: ['Bruto', Validators.required],
-    nivelInspecao: ['Visual', Validators.required],
-    tratamentoTermico: [true, Validators.required],
-    canaisInternos: [false],
+    tolerancia: [''],
+    acabamento: [''],
+    criteriosAceitacao: [''],
+    detalhesInspecao: [''],
+    tratamentoTermico: [false],
     arquivoUrl: [''],
-    aplicacaoPeca: ['', Validators.required],
-    solicitacaoMecanica: ['', Validators.required],
-    solicitacaoAmbiental: ['', Validators.required],
-    normasTecnicas: ['']
+    aplicacaoPeca: [''],
+    solicitacaoMecanica: [''],
+    solicitacaoAmbiental: [''],
+    normasTecnicas: [''],
+    tempoEntregaC9: [''],
+    economiaPerdaLucroC10: [0]
   });
 
   selectedFile = signal<File | null>(null);
@@ -79,12 +65,8 @@ export class SolicitacaoRfqComponent implements OnInit {
 
   nextStep() {
     if (this.currentStep() < this.totalSteps) {
-      if (this.canGoNext()) {
-        this.currentStep.update(s => s + 1);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        this.markStepAsTouched();
-      }
+      this.currentStep.update(s => s + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -96,16 +78,7 @@ export class SolicitacaoRfqComponent implements OnInit {
   }
 
   private canGoNext(): boolean {
-    const controls = this.rfqForm.controls;
-    if (this.currentStep() === 1) {
-      return !!(controls.nomeProjeto.valid && controls.nomeEmpresa.valid && 
-             controls.finalidadePeca.valid && controls.aplicacaoPeca.valid &&
-             controls.solicitacaoMecanica.valid && controls.solicitacaoAmbiental.valid);
-    }
-    if (this.currentStep() === 2) {
-      return !!(controls.dimensaoX.valid && controls.dimensaoY.valid && controls.dimensaoZ.valid && controls.quantidade.valid && controls.materialDesejadoId.valid);
-    }
-    return true;
+    return true; // Navegação livre conforme orientação do usuário
   }
 
   private markStepAsTouched() {
@@ -125,14 +98,15 @@ export class SolicitacaoRfqComponent implements OnInit {
       controls.quantidade.markAsTouched();
       controls.materialDesejadoId.markAsTouched();
     }
+    if (this.currentStep() === 3) {
+      controls.tolerancia.markAsTouched();
+      controls.acabamento.markAsTouched();
+      controls.detalhesInspecao.markAsTouched();
+      controls.criteriosAceitacao.markAsTouched();
+    }
   }
 
   enviarSolicitacao() {
-    if (this.rfqForm.invalid) {
-      this.rfqForm.markAllAsTouched();
-      return;
-    }
-
     this.isSending.set(true);
     
     // Mapeamento para o DTO do backend
@@ -141,12 +115,15 @@ export class SolicitacaoRfqComponent implements OnInit {
       nomeProjeto: formValue.nomeProjeto,
       nomeEmpresa: formValue.nomeEmpresa,
       quantidade: formValue.quantidade,
-      dimensaoX: formValue.dimensaoX,
-      dimensaoY: formValue.dimensaoY,
-      dimensaoZ: formValue.dimensaoZ,
+      dimensaoX: formValue.dimensaoX || 0,
+      dimensaoY: formValue.dimensaoY || 0,
+      dimensaoZ: formValue.dimensaoZ || 0,
       tolerancia: formValue.tolerancia,
       acabamento: formValue.acabamento,
-      nivelInspecao: formValue.nivelInspecao,
+      detalhesInspecao: formValue.detalhesInspecao,
+      criteriosAceitacao: formValue.criteriosAceitacao,
+      tempoEntregaC9: formValue.tempoEntregaC9,
+      economiaPerdaLucroC10: formValue.economiaPerdaLucroC10,
       tratamentoTermico: formValue.tratamentoTermico,
       finalidadePeca: formValue.finalidadePeca,
       arquivoUrl: formValue.arquivoUrl,

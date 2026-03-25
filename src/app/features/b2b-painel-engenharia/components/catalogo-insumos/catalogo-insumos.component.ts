@@ -38,14 +38,18 @@ export class CatalogoInsumosComponent implements OnInit {
     nome: ['', Validators.required],
     codigoProduto: ['', Validators.required],
     fornecedor: ['', Validators.required],
-    precoUnitarioBase: [0, [Validators.required, Validators.min(0.01)]],
-    densidadeGcm3: [0], 
-    eficiencia: [100], 
-    vazaoPadrao: [0], 
+    precoUnitarioBase: [0, [Validators.required, Validators.min(0.01)]], // O9 ou O13
+    
+    // CAMPOS MADA RECONCILIADOS
+    diametroM: [0.0012, [Validators.min(0.0001)]],      // P8
+    densidadeKgM3: [7750, [Validators.min(1000)]],     // P5
+    eficienciaP6: [90, [Validators.min(10), Validators.max(100)]], // P6
+    massaBobinaO1: [15, [Validators.min(1)]],         // O1
+    perdaBobinaO8: [0.03, [Validators.min(0), Validators.max(1)]], // O8 (decimal)
+    
     ativo: [true],
     tipoGas: [''],
-    ligaMetalica: [''],
-    tipoMaterial: ['']
+    ligaMetalica: ['']
   });
 
   abrirModal() {
@@ -56,13 +60,14 @@ export class CatalogoInsumosComponent implements OnInit {
       codigoProduto: '',
       fornecedor: '',
       precoUnitarioBase: 0, 
-      densidadeGcm3: 0, 
-      eficiencia: 100, 
-      vazaoPadrao: 0, 
+      diametroM: 0.0012,
+      densidadeKgM3: 7750,
+      eficienciaP6: 90,
+      massaBobinaO1: 15,
+      perdaBobinaO8: 0.03,
       ativo: true,
       tipoGas: '',
-      ligaMetalica: '',
-      tipoMaterial: ''
+      ligaMetalica: ''
     });
   }
 
@@ -72,7 +77,7 @@ export class CatalogoInsumosComponent implements OnInit {
   }
 
   setTipo(tipo: 'arame' | 'gas') {
-    if (this.editingId) return; // Não mudar tipo ao editar
+    if (this.editingId) return;
     this.tipoInsumo = tipo;
   }
 
@@ -101,7 +106,7 @@ export class CatalogoInsumosComponent implements OnInit {
       return;
     }
 
-    const dados = this.insumoForm.value;
+    const { ...dados } = this.insumoForm.getRawValue();
     const service: any = this.tipoInsumo === 'arame' ? this.arameService : this.gasService;
 
     if (this.editingId) {

@@ -62,15 +62,19 @@ export class DashboardAuditoriaComponent implements OnInit {
     
     return {
       labels: [
-        this.translate.instant('B2B.AUDIT.DESC_IC'),
-        this.translate.instant('B2B.AUDIT.DESC_DC'),
-        this.translate.instant('B2B.AUDIT.DESC_AC')
+        'IC - Intrínsecos',
+        'AC - Adicionais',
+        'PM/TR - Lucro/Imp.'
       ],
       datasets: [
         {
-          data: [o.custoTotalIC || 0, o.custoTotalDC || 0, o.custoTotalAC || 0],
-          backgroundColor: ['#94a3b8', '#2563eb', '#10b981'],
-          hoverBackgroundColor: ['#64748b', '#1d4ed8', '#059669'],
+          data: [
+            o.custoTotalIC || 0, 
+            o.custoTotalAC || 0, 
+            (o.precoFinalSugerido - (o.custoTotalIC + o.custoTotalAC)) || 0
+          ],
+          backgroundColor: ['#94a3b8', '#10b981', '#2563eb'],
+          hoverBackgroundColor: ['#64748b', '#059669', '#1d4ed8'],
           borderWidth: 0,
           weight: 12,
           cutout: '75%'
@@ -80,9 +84,8 @@ export class DashboardAuditoriaComponent implements OnInit {
   });
 
   ngOnInit() {
-    const state = history.state as { rfq: OrcamentoResponseDTO };
-    if (state && state.rfq) {
-      this.orcamento.set(state.rfq);
+    if (typeof window !== 'undefined' && window.history.state && window.history.state.rfq) {
+      this.orcamento.set(window.history.state.rfq);
     } else {
       this.carregarAprovados();
     }

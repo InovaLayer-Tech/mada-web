@@ -5,8 +5,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
-import { ProblemDetail } from '../../../../core/models/problem-detail';
-import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
+import { OrcamentoResponseDTO, OrcamentoCalculoRequestDTO } from '../../../../core/models/orcamento.model';
 import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
 import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
 import { MessageService } from 'primeng/api';
@@ -40,17 +39,26 @@ export class MotorMetrologicoComponent implements OnInit {
     orcamentoId: ['', Validators.required],
     arameId: ['', Validators.required],
     
-    // Dados Metrológicos (Engenharia)
-    massaEstimadaKg: [0, [Validators.required, Validators.min(0.01)]],
-    tempoArcoMinutos: [0, [Validators.required, Validators.min(0.01)]],
-    tempoMortoMinutos: [0, [Validators.required, Validators.min(0)]],
-    tempoPreparacaoMinutos: [60, [Validators.required, Validators.min(1)]],
-    tempoRemocaoMinutos: [30, [Validators.required, Validators.min(1)]],
+    // Variáveis Cinéticas (S e P) - Sincronizado com a Planilha INDUSTRIAL
+    nCamadas: [1, [Validators.required, Validators.min(1)]],           // n
+    tempoArcoTotalS1: [0, [Validators.required, Validators.min(0.01)]], // S1 (min)
+    tempoMortoTotalS2: [0, [Validators.required, Validators.min(0)]],    // S2 (min)
+    tempoMortoIntercamadaP11: [0, [Validators.required, Validators.min(0)]], // P11 (min)
+    velocidadeArameP9: [5.2, [Validators.required, Validators.min(0.1)]], // P9 (m/min)
+    vazaoGasP2: [0.015, [Validators.required, Validators.min(0)]],      // P2 (m³/min)
     
-    // Serviços Adicionais
-    requerProjetoCAD: [true],
-    requerUsinagemFinal: [true],
-    tempoUsinagemMinutos: this.fb.control({ value: 30, disabled: true }, [Validators.min(1)])
+    // Parâmetros de Setup (O)
+    tempoPreparacaoO6: [120, [Validators.required, Validators.min(1)]], // O6 (min)
+    tempoDesmontagemO7: [120, [Validators.required, Validators.min(1)]], // O7 (min)
+    
+    // Insumos Adicionais
+    custoSubstratoO10: [0, [Validators.required, Validators.min(0)]],   // O10 (R$)
+    
+    // Flags de Serviços (AC)
+    requerProjetoCAD: [true],            // AC4
+    requerUsinagemFinal: [true],         // AC8
+    tempoUsinagemMinutos: [30, [Validators.min(1)]],
+    requerTratamentoTermico: [false]     // AC9
   });
 
   rfqSelecionado: OrcamentoResponseDTO | null = null;
@@ -62,11 +70,9 @@ export class MotorMetrologicoComponent implements OnInit {
   }
 
   private checkRouterState() {
-    // Tenta ler o RFQ vindo da fila de solicitações
     const state = window.history.state;
     if (state && state.rfq) {
       const rfq = state.rfq as OrcamentoResponseDTO;
-      console.log('RFQ recebido via Navegação:', rfq);
       this.rfqSelecionado = rfq;
       this.orcamentoForm.patchValue({ 
         orcamentoId: rfq.id,
@@ -79,7 +85,7 @@ export class MotorMetrologicoComponent implements OnInit {
   carregarDados() {
     this.arameService.listarTodos().subscribe(data => this.arames = data);
     this.orcamentoService.listarTodos().subscribe(data => {
-      this.pendingRfqs = data.filter(r => r.status === 'PENDENTE' || r.status === 'CALCULADO');
+      this.pendingRfqs = data.filter(r => r.status === 'PENDENTE' || r.status === 'CALCULADO' || r.status === 'INCOMPLETE_RFQ');
     });
   }
 
@@ -103,7 +109,6 @@ export class MotorMetrologicoComponent implements OnInit {
       });
   }
 
-
   onFileUpload(event: Event): void {
     const element = event.target as HTMLInputElement;
     const file = element.files?.[0];
@@ -115,41 +120,21 @@ export class MotorMetrologicoComponent implements OnInit {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
 
-        // Extrai TEMPO_ATIVO_TOTAL (em segundos)
-        if (data && data.TEMPO_ATIVO_TOTAL !== undefined) {
-          // Converte para minutos e arredonda para 2 casas decimais
-          const valorCalculado = Number((data.TEMPO_ATIVO_TOTAL / 60).toFixed(2));
-          
+        // Se o JSON contiver P0/S1 consolidados
+        if (data && (data.TEMPO_ATIVO_TOTAL !== undefined || data.S1 !== undefined)) {
+          const valorS1 = data.TEMPO_ATIVO_TOTAL ? (data.TEMPO_ATIVO_TOTAL / 60) : data.S1;
           this.orcamentoForm.patchValue({ 
-            tempoArcoMinutos: valorCalculado 
+            tempoArcoTotalS1: Number(valorS1.toFixed(2))
           });
-
           this.uploadedFileName.set(file.name);
-
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Sucesso', 
-            detail: 'Dados metrológicos importados com sucesso' 
-          });
-        } else {
-          this.messageService.add({ 
-            severity: 'warn', 
-            summary: 'Aviso', 
-            detail: 'JSON lido, mas a chave TEMPO_ATIVO_TOTAL não foi encontrada' 
-          });
+          this.messageService.add({ severity: 'success', summary: 'Dados de Trajetória', detail: 'S1 importado via Slicer' });
         }
       } catch (error) {
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Erro', 
-          detail: 'O ficheiro JSON é inválido ou está corrompido' 
-        });
+        this.messageService.add({ severity: 'error', summary: 'Erro JSON', detail: 'Script incompatível' });
       } finally {
-        // Limpa o input para permitir uploads consecutivos do mesmo ficheiro
         element.value = '';
       }
     };
-
     reader.readAsText(file);
   }
 
@@ -167,18 +152,11 @@ export class MotorMetrologicoComponent implements OnInit {
       next: (res) => {
         this.isSubmitting.set(false);
         this.orcamentoCalculado.set(res);
-        
-        // Cálculo dinâmico da margem solicitado pelo usuário
-        if (res.custoDiretoFabricacao > 0) {
-          const margem = ((res.precoFinalSugerido - res.custoDiretoFabricacao) / res.custoDiretoFabricacao) * 100;
-          this.margemExibicao.set(margem);
-        }
-        
-        this.messageService.add({ severity: 'success', summary: 'Cálculo Concluído', detail: 'O orçamento metrológico foi sintetizado com sucesso' });
+        this.messageService.add({ severity: 'success', summary: 'Síntese MADA', detail: 'Cálculo reconciliado com sucesso' });
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.erroApi.set(err.error?.message || 'Erro ao processar cálculo WAAM');
+        this.erroApi.set(err.error?.message || 'Erro no Motor Metrológico');
       }
     });
   }
