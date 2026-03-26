@@ -31,61 +31,70 @@ export class DashboardAuditoriaComponent implements OnInit {
     this.todosOrcamentos().filter(o => o.status === 'APROVADO')
   );
 
+  // KPIs atualizados para foco em Engenharia e Produção
   kpis = computed(() => {
     const todos = this.todosOrcamentos();
-    const aprovados = todos.filter(o => o.status === 'APROVADO');
+    const aprovados = this.listaAprovados();
     const totalValor = aprovados.reduce((acc, curr) => acc + curr.precoFinalSugerido, 0);
+    // Assumindo que o tempo total venha no DTO em minutos
+    const tempoTotalMada = aprovados.reduce((acc, curr) => acc + (curr.fase1IC.tempoTotalDeposicaoMinutos || 0), 0);
     
     return {
       totalGeral: todos.length,
-      totalAprovados: aprovados.length,
-      mediaValor: aprovados.length > 0 ? totalValor / aprovados.length : 0
+      taxaAprovacao: todos.length > 0 ? ((aprovados.length / todos.length) * 100).toFixed(1) : 0,
+      mediaValor: aprovados.length > 0 ? totalValor / aprovados.length : 0,
+      tempoMedioFab: aprovados.length > 0 ? (tempoTotalMada / aprovados.length) / 60 : 0 // Convertido para horas
     };
   });
-  faseAberta = signal<string | null>('dc');
+
+  faseAberta = signal<string | null>('ic'); // Abre IC por padrão
   carregando = signal<boolean>(false);
 
-  // Chart.js Configuration
-  public doughnutChartOptions: ChartConfiguration['options'] = {
+  // Chart.js Configuration - Estética Corporativa
+  public doughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false }
-    }
+    plugins: { legend: { display: false } },
+    cutout: '70%'
   };
 
-  public doughnutChartType: ChartType = 'doughnut';
+  public doughnutChartType: 'doughnut' = 'doughnut';
 
+  // Mapeamento estrito da Metodologia MADA (IC1, IC2, IC3, IC4, AC)
   public doughnutChartData = computed<ChartData<'doughnut'>>(() => {
     const o = this.orcamento();
-    if (!o) return { labels: [], datasets: [] };
+    if (!o || !o.fase1IC) return { labels: [], datasets: [] };
     
     return {
       labels: [
-        'IC - Intrínsecos',
-        'AC - Adicionais',
-        'PM/TR - Lucro/Imp.'
+        'Arame (IC1)', 
+        'Gás (IC2)', 
+        'Equipamento/Setup (IC3)', 
+        'Substrato (IC4)', 
+        'Serviços Adicionais (AC)'
       ],
       datasets: [
         {
           data: [
-            o.custoTotalIC || 0, 
-            o.custoTotalAC || 0, 
-            (o.precoFinalSugerido - (o.custoTotalIC + o.custoTotalAC)) || 0
+            o.fase1IC.ic1Arame || 0,
+            o.fase1IC.ic2Gas || 0,
+            o.fase1IC.ic3Equipamento || 0,
+            o.fase1IC.ic4Substrato || 0,
+            o.custoTotalAC || 0
           ],
-          backgroundColor: ['#94a3b8', '#10b981', '#2563eb'],
-          hoverBackgroundColor: ['#64748b', '#059669', '#1d4ed8'],
-          borderWidth: 0,
-          weight: 12,
-          cutout: '75%'
+          // Cores Sóbrias: Aço, Azul Corporativo, Ardósia, Cinza Claro, Esmeralda
+          backgroundColor: ['#64748b', '#0f172a', '#3b82f6', '#cbd5e1', '#10b981'],
+          borderWidth: 2,
+          borderColor: '#ffffff'
         }
       ]
     };
   });
 
   ngOnInit() {
-    if (typeof window !== 'undefined' && window.history.state && window.history.state.rfq) {
-      this.orcamento.set(window.history.state.rfq);
+    const state = history.state as { rfq: OrcamentoResponseDTO };
+    if (state && state.rfq) {
+      this.orcamento.set(state.rfq);
     } else {
       this.carregarAprovados();
     }
@@ -99,7 +108,7 @@ export class DashboardAuditoriaComponent implements OnInit {
         this.carregando.set(false);
       },
       error: (err) => {
-        console.error('Erro ao carregar aprovados:', err);
+        console.error('Erro ao carregar dados:', err);
         this.carregando.set(false);
       }
     });
@@ -115,11 +124,7 @@ export class DashboardAuditoriaComponent implements OnInit {
   }
 
   toggleFase(fase: string) {
-    if (this.faseAberta() === fase) {
-      this.faseAberta.set(null);
-    } else {
-      this.faseAberta.set(fase);
-    }
+    this.faseAberta.set(this.faseAberta() === fase ? null : fase);
   }
 
   aprovarOrcamento() {
@@ -128,27 +133,11 @@ export class DashboardAuditoriaComponent implements OnInit {
 
     this.orcamentoService.aprovar(o.id).subscribe({
       next: () => {
-        alert(this.translate.instant('B2B.AUDIT.APPROVE_SUCCESS'));
+        this.messageService.add({ severity: 'success', summary: 'Aprovado', detail: 'Auditoria concluída com sucesso.' });
         this.router.navigate(['/b2b/pedidos']);
       },
-      error: (err) => {
-        console.error('Erro ao aprovar orçamento:', err);
-        alert('Erro ao aprovar orçamento. Verifique os logs.');
-      }
+      error: (err) => console.error(err)
     });
-  }
-
-  excluirOrcamento(id: string, event: Event) {
-    event.stopPropagation();
-    if (confirm('Tem certeza que deseja excluir este orçamento permanentemente?')) {
-      this.orcamentoService.excluir(id).subscribe({
-        next: () => {
-          this.carregarAprovados();
-          this.messageService?.add({ severity: 'success', summary: 'Excluído', detail: 'Orçamento removido com sucesso' });
-        },
-        error: (err) => console.error('Erro ao excluir:', err)
-      });
-    }
   }
 
   downloadPDF() {

@@ -85,7 +85,7 @@ import { UsuarioService } from '../../../../core/services/usuario.service';
                       <option value="Energia">Energia</option>
                       <option value="Médico / Dental">Médico / Dental</option>
                     </select>
-                    <input *ngIf="!editMode" type="text" readonly [value]="cliente?.setorAtuacao" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
+                    <input *ngIf="!editMode" type="text" readonly [value]="cliente.setorAtuacao" class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-sm font-bold text-slate-800 focus:outline-none">
                   </div>
                 </div>
               </div>

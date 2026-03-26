@@ -1,83 +1,68 @@
 <p-toast></p-toast>
-<div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-600">
+<div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
   
-  <!-- LISTA DE APROVADOS (Visão Inicial se não vier da Fila) -->
-  <main class="max-w-7xl mx-auto mt-12 px-8" *ngIf="!orcamento()">
-    <div class="mb-12 border-b border-slate-200 pb-10 flex justify-between items-end">
+  <main class="max-w-[90rem] mx-auto mt-8 px-8" *ngIf="!orcamento()">
+    <div class="mb-8 border-b border-slate-300 pb-6 flex justify-between items-end">
       <div>
-        <h1 class="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">Auditoria MADA</h1>
-        <p class="text-xs font-black text-blue-600 uppercase tracking-[0.4em] mt-3 font-mono opacity-80">Rastreabilidade de Custos e Coeficientes de Risco</p>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Painel de Auditoria de Custos MADA</h1>
+        <p class="text-sm font-medium text-slate-500 mt-1">Gestão Analítica de Produção Aditiva</p>
       </div>
       
       <div class="flex gap-4">
-        <div class="px-6 py-4 bg-white border border-slate-200 rounded-3xl shadow-sm text-center min-w-[140px]">
-          <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Geral</span>
-          <span class="text-2xl font-black text-slate-700 font-mono">{{ kpis().totalGeral }}</span>
+        <div class="px-5 py-3 bg-white border border-slate-300 rounded-lg shadow-sm text-left min-w-[150px]">
+          <span class="text-[10px] font-bold text-slate-500 uppercase">Volume de Projetos</span>
+          <span class="text-xl font-bold text-slate-800 block mt-1">{{ kpis().totalGeral }} <span class="text-xs text-slate-400 font-normal">solicitações</span></span>
         </div>
-        <div class="px-6 py-4 bg-white border border-slate-200 rounded-3xl shadow-sm text-center min-w-[140px]">
-          <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Aprovados</span>
-          <span class="text-2xl font-black text-emerald-600 font-mono">{{ kpis().totalAprovados }}</span>
+        <div class="px-5 py-3 bg-white border border-slate-300 rounded-lg shadow-sm text-left min-w-[150px]">
+          <span class="text-[10px] font-bold text-slate-500 uppercase">Taxa de Conversão</span>
+          <span class="text-xl font-bold text-emerald-600 block mt-1">{{ kpis().taxaAprovacao }}%</span>
         </div>
-        <div class="px-6 py-4 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl text-center min-w-[180px]">
-          <span class="text-[9px] font-black text-blue-300 uppercase tracking-widest block mb-1">Ticket Médio (TC)</span>
-          <span class="text-xl font-black text-white font-mono">{{ kpis().mediaValor | currency:'BRL' }}</span>
+        <div class="px-5 py-3 bg-slate-900 border border-slate-800 rounded-lg shadow-sm text-left min-w-[150px]">
+          <span class="text-[10px] font-bold text-slate-400 uppercase">Tempo Médio de Deposição</span>
+          <span class="text-xl font-bold text-white block mt-1">{{ kpis().tempoMedioFab | number:'1.1-1' }} <span class="text-xs text-slate-400 font-normal">horas/peça</span></span>
         </div>
       </div>
     </div>
 
-    <!-- Tabela de Histórico -->
-    <div class="bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-sm">
-      <table class="w-full text-left border-collapse">
+    <div class="bg-white border border-slate-300 rounded-xl shadow-sm overflow-hidden">
+      <table class="w-full text-left text-sm">
         <thead>
-          <tr class="border-b border-slate-100 bg-slate-50/50">
-            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Projeto e Cliente <small class="opacity-40">(D3)</small></th>
-            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Data do RFQ</th>
-            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono text-right">Investimento Final <small class="opacity-40">(TC)</small></th>
-            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono text-center">Status</th>
-            <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono text-right">Ações</th>
+          <tr class="bg-slate-100 border-b border-slate-300 text-slate-600 font-semibold">
+            <th class="px-6 py-4 w-1/4">ID do Projeto</th>
+            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4 text-right">Tempo Deposição ($Tdt$)</th>
+            <th class="px-6 py-4 text-right">Custo IC + AC</th>
+            <th class="px-6 py-4 text-right">Preço Final</th>
+            <th class="px-6 py-4 text-center">Ações</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-slate-200">
           @if (carregando()) {
-            <tr>
-              <td colspan="5" class="px-8 py-12 text-center">
-                <i class="pi pi-spin pi-spinner text-4xl text-blue-600"></i>
-                <p class="mt-4 text-xs font-black text-slate-400 uppercase tracking-widest">Carregando histórico MADA...</p>
-              </td>
-            </tr>
-          } @else if (listaAprovados().length === 0) {
-            <tr>
-              <td colspan="5" class="px-8 py-12 text-center">
-                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Nenhum orçamento aprovado encontrado.</p>
-              </td>
-            </tr>
+            <tr><td colspan="6" class="px-6 py-8 text-center"><i class="pi pi-spin pi-spinner text-2xl"></i></td></tr>
           } @else {
-            @for (item of listaAprovados(); track item.id) {
-              <tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer" (click)="selecionarOrcamento(item)">
-                <td class="px-8 py-6">
-                  <p class="text-[12px] font-black text-slate-900 uppercase">#{{ item.id.substring(0,8) }}</p>
-                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 font-mono">{{ item.nomeProjeto }} | {{ item.nomeEmpresa }}</p>
+            @for (item of todosOrcamentos(); track item.id) {
+              <tr class="hover:bg-slate-50 cursor-pointer transition-colors" (click)="selecionarOrcamento(item)">
+                <td class="px-6 py-4">
+                  <div class="font-mono text-slate-900 font-medium">#{{ item.id.substring(0,8) }}</div>
+                  <div class="text-xs text-slate-500">{{ item.nomeProjeto }}</div>
                 </td>
-                <td class="px-8 py-6 text-xs font-black text-slate-500 uppercase tracking-widest font-mono">
-                  {{ item.dataEmissao | date:'dd/MM/yyyy' }}
-                </td>
-                <td class="px-8 py-6 text-right font-mono">
-                  <span class="text-sm font-black text-slate-900">{{ item.precoFinalSugerido | currency:'BRL' }}</span>
-                </td>
-                <td class="px-8 py-6 text-center">
-                  <span class="px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm font-mono">
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase"
+                        [ngClass]="item.status === 'APROVADO' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'">
                     {{ item.status }}
                   </span>
                 </td>
-                <td class="px-8 py-6 text-right">
-                  <div class="flex items-center gap-2 justify-end">
-                    <button class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
-                      Detalhes
-                    </button>
-                    <button (click)="excluirOrcamento(item.id, $event)" class="p-2.5 bg-rose-50 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl transition-all border border-rose-100">
-                      <i class="pi pi-trash"></i>
-                    </button>
-                  </div>
+                <td class="px-6 py-4 text-right font-mono text-slate-600">
+                  {{ item.fase1IC.tempoTotalDeposicaoMinutos || 0 }} min
+                </td>
+                <td class="px-6 py-4 text-right font-mono text-slate-600">
+                  {{ (item.custoTotalIC + item.custoTotalAC) | currency:'BRL' }}
+                </td>
+                <td class="px-6 py-4 text-right font-mono font-bold text-slate-900">
+                  {{ item.precoFinalSugerido | currency:'BRL' }}
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <button class="text-blue-600 hover:text-blue-800 text-sm font-semibold">Auditar <i class="pi pi-angle-right"></i></button>
                 </td>
               </tr>
             }
@@ -87,216 +72,144 @@
     </div>
   </main>
 
-  <!-- DETALHES DO ORÇAMENTO (Visão quando selecionado) -->
-  <main class="max-w-6xl mx-auto mt-12 px-8" *ngIf="orcamento() as o">
-    
-    <div class="mb-12 flex justify-between items-end">
+  <main class="max-w-[90rem] mx-auto mt-8 px-8" *ngIf="orcamento() as o">
+    <div class="mb-6 flex justify-between items-center border-b border-slate-300 pb-4">
       <div>
-        <button (click)="voltarLista()" class="flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4 hover:translate-x-[-4px] transition-transform">
-          <i class="pi pi-arrow-left"></i>
-          Voltar para Auditoria
+        <button (click)="voltarLista()" class="text-sm font-semibold text-blue-600 hover:underline mb-2 flex items-center gap-1">
+          <i class="pi pi-arrow-left"></i> Voltar
         </button>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">Detalhe do Orçamento MADA</h1>
-        <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-2">{{ o.nomeProjeto }} | {{ o.nomeEmpresa }} <small class="opacity-40 font-mono">(D3)</small></p>
+        <h1 class="text-2xl font-bold text-slate-900">Relatório de Custo de Fabricação</h1>
+        <p class="text-sm text-slate-500">Projeto: {{ o.nomeProjeto }} | Ref: #{{ o.id }}</p>
       </div>
-      <div class="text-right flex flex-col items-end gap-3">
-        <div>
-          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono block mb-1">ID AUDITORIA</span>
-          <span class="text-xs font-black text-blue-600 font-mono bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">#{{ o.id.substring(0,8) }}</span>
-        </div>
-        <button (click)="downloadPDF()" class="flex items-center gap-3 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100 text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
-          <i class="pi pi-file-pdf text-lg"></i>
-          Baixar Relatório MADA
-        </button>
-      </div>
+      <button (click)="downloadPDF()" class="px-4 py-2 bg-white border border-slate-300 rounded-lg shadow-sm text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <i class="pi pi-file-pdf"></i> Exportar PDF
+      </button>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       
-      <!-- LADO ESQUERDO: Gráfico e KPIs -->
-      <div class="lg:col-span-5 space-y-10">
-        
-        <div class="bg-white border border-slate-200 rounded-[3.5rem] p-12 shadow-sm text-center relative overflow-hidden group">
-          <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl"></div>
+      <div class="lg:col-span-4 space-y-6">
+        <div class="bg-white border border-slate-300 rounded-xl p-6 shadow-sm">
+          <h3 class="text-sm font-bold uppercase text-slate-500 mb-6 border-b border-slate-100 pb-2">Composição de Custo (TC)</h3>
           
-          <div class="relative z-10">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-10 block font-mono">Síntese de Custos (TC)</span>
-            
-            <div class="relative w-64 h-64 mx-auto mb-12">
-              <canvas baseChart 
-                [data]="doughnutChartData()"
-                [options]="doughnutChartOptions"
-                [type]="doughnutChartType">
-              </canvas>
-              
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Preço Final (TC)</span>
-                <span class="text-3xl font-black text-slate-900 tracking-tighter">{{ o.precoFinalSugerido | currency:'BRL' }}</span>
-              </div>
+          <div class="relative w-56 h-56 mx-auto mb-8">
+            <canvas baseChart [data]="doughnutChartData()" [options]="doughnutChartOptions" [type]="doughnutChartType"></canvas>
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span class="text-xs font-bold text-slate-400 uppercase">Custo Total ($TC$)</span>
+              <span class="text-xl font-bold text-slate-900">{{ (o.custoTotalIC + o.custoTotalAC) | currency:'BRL' }}</span>
             </div>
+          </div>
 
-            <div class="space-y-4 max-w-[200px] mx-auto text-left">
-              <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-slate-400"></div>
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">IC - Intrínsecos</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">AC - Adicionais</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-blue-600"></div>
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">PM/TR - Margem/Imp</span>
-              </div>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
+              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-slate-500 rounded-sm"></div> Arame ($IC_1$)</span>
+              <span class="font-mono font-medium">{{ o.fase1IC.ic1Arame | currency:'BRL' }}</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
+              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-slate-900 rounded-sm"></div> Gás ($IC_2$)</span>
+              <span class="font-mono font-medium">{{ o.fase1IC.ic2Gas | currency:'BRL' }}</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
+              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-blue-500 rounded-sm"></div> Equipamento ($IC_3$)</span>
+              <span class="font-mono font-medium">{{ o.fase1IC.ic3Equipamento | currency:'BRL' }}</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
+              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-slate-300 rounded-sm"></div> Substrato ($IC_4$)</span>
+              <span class="font-mono font-medium">{{ o.fase1IC.ic4Substrato | currency:'BRL' }}</span>
+            </div>
+            <div class="flex justify-between items-center pb-1">
+              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-emerald-500 rounded-sm"></div> Serviços ($AC$)</span>
+              <span class="font-mono font-medium">{{ o.custoTotalAC | currency:'BRL' }}</span>
             </div>
           </div>
         </div>
 
-        <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl space-y-8 animate-in slide-in-from-left-8 duration-700">
-          <div>
-            <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4">Classe C - Contexto do Cliente</p>
-            <div class="space-y-4">
-              <div class="flex flex-col gap-1">
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Aplicação do Projeto <small class="opacity-40">(C2)</small></span>
-                <span class="text-xs font-black text-white uppercase italic">{{ o.aplicacaoPeca }}</span>
-              </div>
-              <div class="flex flex-col gap-1">
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Requisitos Mecânicos <small class="opacity-40">(C3)</small></span>
-                <span class="text-xs font-black text-slate-100 uppercase">{{ o.solicitacaoMecanica }}</span>
-              </div>
-              <div class="flex flex-col gap-1">
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Tolerância e Inspeção <small class="opacity-40">(C5/C13)</small></span>
-                <span class="text-xs font-black text-slate-100 uppercase">{{ o.tolerancia }} | {{ o.detalhesInspecao }}</span>
-              </div>
-              @if (o.normasTecnicas) {
-                <div class="flex flex-col gap-1 pt-2 border-t border-slate-700">
-                  <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Padrão de Fabricação <small class="opacity-40">(C8)</small></span>
-                  <span class="text-[11px] font-black text-indigo-300 uppercase leading-relaxed font-mono">{{ o.normasTecnicas }}</span>
-                </div>
-              }
-            </div>
-          </div>
-          
-          <div class="p-6 bg-slate-800/50 rounded-3xl border border-slate-700/50 space-y-4">
-            <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Desempenho Financeiro</p>
-            <div class="flex justify-between items-center text-sm font-bold opacity-80">
-              <span class="text-slate-400">Margem de Lucro <small class="opacity-50">(PM)</small></span>
-              <span class="text-emerald-400">+{{ o.margemComercialAplicadaPM }}%</span>
-            </div>
-            <div class="flex justify-between items-center text-sm font-bold opacity-80">
-              <span class="text-slate-400">Impostos e Taxas <small class="opacity-50">(TR)</small></span>
-              <span class="text-rose-400">{{ o.taxaImpostoTR }}%</span>
-            </div>
-            <div class="flex justify-between items-center text-sm font-bold opacity-80">
-                <span class="text-slate-400">Fator de Risco Global <small class="opacity-50">(R)</small></span>
-                <span class="text-indigo-400">x {{ o.fatorRiscoGeral | number:'1.4-4' }}</span>
-            </div>
-          </div>
+        <div class="bg-slate-900 rounded-xl p-6 text-white shadow-sm">
+           <h3 class="text-sm font-bold uppercase text-slate-400 mb-4 border-b border-slate-700 pb-2">Preço Final (FC)</h3>
+           <div class="flex justify-between items-center mb-2 text-slate-300">
+             <span>Custo Total Fabricação ($TC$)</span>
+             <span class="font-mono">{{ (o.custoTotalIC + o.custoTotalAC) | currency:'BRL' }}</span>
+           </div>
+           <div class="flex justify-between items-center mb-4 text-slate-300">
+             <span>Margem de Risco Global ($RM$)</span>
+             <span>10.0%</span>
+           </div>
+           <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+             <span class="font-bold text-lg text-emerald-400">Preço Sugerido</span>
+             <span class="font-mono text-2xl font-bold">{{ o.precoFinalSugerido | currency:'BRL' }}</span>
+           </div>
         </div>
-
       </div>
 
-      <!-- LADO DIREITO: Accordion Detailed Costs (IC and AC) -->
-      <div class="lg:col-span-7 space-y-6">
+      <div class="lg:col-span-8 space-y-4">
         
-        <!-- STAGE II - CUSTOS INTRÍNSECOS (IC) -->
-        <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden">
-          <button (click)="toggleFase('ic')" class="w-full px-8 py-6 flex justify-between items-center bg-slate-50/30 hover:bg-white transition-all text-left">
-             <div class="flex items-center gap-5">
-               <div class="w-1.5 h-6 bg-slate-400 rounded-full"></div>
-               <span class="text-[10px] font-black text-slate-900 tracking-widest uppercase">Stage II - Custos Intrínsecos (IC1-IC4)</span>
+        <div class="bg-white border border-slate-300 rounded-xl shadow-sm">
+          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center rounded-t-xl">
+            <h3 class="font-bold text-slate-800">Custos Intrínsecos ($IC$)</h3>
+            <span class="font-mono font-bold text-slate-900">{{ o.custoTotalIC | currency:'BRL' }}</span>
+          </div>
+          <div class="p-6 grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+             <div class="flex flex-col border-b border-slate-100 pb-2">
+               <span class="text-slate-500 text-xs font-bold uppercase">Tempo de Arco ($S_1$)</span>
+               <span class="font-mono text-slate-900">{{ o.fase1IC.tempoArcoMinutos }} min</span>
              </div>
-             <div class="flex items-center gap-6">
-               <span class="text-xs font-black text-slate-600 font-mono bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">{{ o.custoTotalIC | currency:'BRL' }}</span>
-               <i class="pi pr-2 text-slate-300 transition-transform" [class.pi-chevron-down]="faseAberta() === 'ic'" [class.pi-chevron-right]="faseAberta() !== 'ic'"></i>
+             <div class="flex flex-col border-b border-slate-100 pb-2">
+               <span class="text-slate-500 text-xs font-bold uppercase">Tempo Morto ($S_2$)</span>
+               <span class="font-mono text-slate-900">{{ o.fase1IC.tempoMortoMinutos }} min</span>
              </div>
-          </button>
-          
-          @if (faseAberta() === 'ic') {
-            <div class="p-8 pt-0 space-y-3 animate-in fade-in duration-300">
-                <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                   <div class="flex flex-col">
-                        <span class="text-xs font-bold text-slate-600 uppercase">Custo do Arame <small class="opacity-50">(IC1)</small></span>
-                        <span class="text-[9px] text-slate-400">Consumo em Massa (kg)</span>
-                    </div>
-                    <span class="text-sm font-black text-slate-900">{{ o.ic1Arame | currency:'BRL' }}</span>
-                </div>
-                <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                   <div class="flex flex-col">
-                        <span class="text-xs font-bold text-slate-600 uppercase">Custo do Gás <small class="opacity-50">(IC2)</small></span>
-                        <span class="text-[9px] text-slate-400">Proteção Ar/Inerte</span>
-                    </div>
-                    <span class="text-sm font-black text-slate-900">{{ o.ic2Gas | currency:'BRL' }}</span>
-                </div>
-                <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                   <div class="flex flex-col">
-                        <span class="text-xs font-bold text-slate-600 uppercase">Operação do Equipamento <small class="opacity-50">(IC3)</small></span>
-                        <span class="text-[9px] text-slate-400">Depreciação + Energia</span>
-                    </div>
-                    <span class="text-sm font-black text-slate-900">{{ o.ic3Equipamento | currency:'BRL' }}</span>
-                </div>
-                <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100 font-bold">
-                   <div class="flex flex-col">
-                        <span class="text-xs font-bold text-blue-600 uppercase">Custo do Substrato <small class="opacity-50">(IC4)</small></span>
-                        <span class="text-[9px] text-slate-400">Base Metálica de Deposição</span>
-                    </div>
-                    <span class="text-sm font-black text-blue-600">{{ o.ic4Substrato | currency:'BRL' }}</span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mt-6">
-                   <div class="p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
-                       <p class="text-[9px] font-black text-blue-400 uppercase mb-1">Massa Estimada <small class="opacity-50">(P5)</small></p>
-                       <p class="text-sm font-black text-slate-700 font-mono">{{ o.massaEstimadaKg }} KG</p>
-                   </div>
-                   <div class="p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
-                       <p class="text-[9px] font-black text-blue-400 uppercase mb-1">Tempo de Arco <small class="opacity-50">(S1)</small></p>
-                       <p class="text-sm font-black text-slate-700 font-mono">{{ o.tempoArcoMinutos }} MIN</p>
-                   </div>
-                </div>
-            </div>
-          }
+             <div class="flex flex-col border-b border-slate-100 pb-2">
+               <span class="text-slate-500 text-xs font-bold uppercase">Massa Estimada</span>
+               <span class="font-mono text-slate-900">{{ o.fase1IC.massaEstimadaKg | number:'1.2-2' }} kg</span>
+             </div>
+             <div class="flex flex-col border-b border-slate-100 pb-2">
+               <span class="text-slate-500 text-xs font-bold uppercase">Tarifa Energia Snap ($O_5$)</span>
+               <span class="font-mono text-slate-900">{{ o.fase1IC.taxaEnergiaSnapshot | currency:'BRL' }}/kWh</span>
+             </div>
+          </div>
         </div>
 
-        <!-- STAGE III - CUSTOS ADICIONAIS (AC) -->
-        <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden">
-          <button (click)="toggleFase('ac')" class="w-full px-8 py-6 flex justify-between items-center bg-emerald-50/30 hover:bg-white transition-all text-left">
-             <div class="flex items-center gap-5">
-               <div class="w-1.5 h-6 bg-emerald-600 rounded-full"></div>
-               <span class="text-[10px] font-black text-emerald-600 tracking-widest uppercase">Stage III - Custos Adicionais (AC1-AC9)</span>
-             </div>
-             <div class="flex items-center gap-6">
-               <span class="text-xs font-black text-emerald-600 font-mono bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100">{{ o.custoTotalAC | currency:'BRL' }}</span>
-               <i class="pi pr-2 text-emerald-300 transition-transform" [class.pi-chevron-down]="faseAberta() === 'ac'" [class.pi-chevron-right]="faseAberta() !== 'ac'"></i>
-             </div>
-          </button>
-          
-          @if (faseAberta() === 'ac') {
-            <div class="p-8 pt-0 space-y-3 animate-in fade-in duration-300">
-                @if (o.servicosAC.length === 0) {
-                    <p class="p-4 text-center text-xs text-slate-400 uppercase font-black">Nenhum custo AC registrado</p>
+        <div class="bg-white border border-slate-300 rounded-xl shadow-sm">
+          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center rounded-t-xl">
+            <h3 class="font-bold text-slate-800">Custos Adicionais ($AC$)</h3>
+            <span class="font-mono font-bold text-slate-900">{{ o.custoTotalAC | currency:'BRL' }}</span>
+          </div>
+          <div class="p-6">
+            <table class="w-full text-sm text-left">
+              <thead>
+                <tr class="text-xs uppercase text-slate-500 border-b border-slate-200">
+                  <th class="pb-2">Descrição do Serviço</th>
+                  <th class="pb-2 text-right">Horas ($WT$)</th>
+                  <th class="pb-2 text-right">Custo ($)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                @if (!o.fase3AC || o.fase3AC.length === 0) {
+                  <tr>
+                    <td class="py-3 font-medium text-slate-700">Serviços Adicionais Consolidados</td>
+                    <td class="py-3 text-right font-mono text-slate-500">-</td>
+                    <td class="py-3 text-right font-mono font-bold text-slate-900">{{ o.custoTotalAC | currency:'BRL' }}</td>
+                  </tr>
                 } @else {
-                    @for (servico of o.servicosAC; track servico.descricaoServico) {
-                      <div class="flex justify-between items-center p-4 bg-emerald-50/20 rounded-2xl border border-emerald-100">
-                        <div class="flex flex-col">
-                            <span class="text-xs font-bold text-slate-700 uppercase">{{ servico.descricaoServico }}</span>
-                            <span class="text-[9px] text-slate-400">Duração: {{ servico.quantidadeHoras }} horas</span>
-                        </div>
-                        <span class="text-sm font-black text-slate-900">{{ servico.custoTotalAC | currency:'BRL' }}</span>
-                      </div>
-                    }
+                  @for (ac of o.fase3AC; track ac.id) {
+                    <tr>
+                      <td class="py-3 font-medium text-slate-700">{{ ac.descricaoServico }}</td>
+                      <td class="py-3 text-right font-mono text-slate-500">{{ ac.quantidadeHoras }}h</td>
+                      <td class="py-3 text-right font-mono font-bold text-slate-900">{{ ac.custoTotalAC | currency:'BRL' }}</td>
+                    </tr>
+                  }
                 }
-            </div>
-          }
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <button *ngIf="o.status !== 'APROVADO'" (click)="aprovarOrcamento()" class="w-full py-8 bg-blue-600 hover:bg-blue-700 text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-2xl transition-all active:scale-95 mt-4 flex items-center justify-center gap-4">
-          <i class="pi pi-check-circle text-xl"></i>
-          Finalizar Auditoria MADA
-        </button>
-
-        <div *ngIf="o.status === 'APROVADO'" class="w-full py-8 bg-emerald-500 text-white rounded-[2.5rem] text-[12px] font-black uppercase tracking-[0.5em] shadow-lg flex items-center justify-center gap-4 opacity-80 cursor-default mt-4 animate-in zoom-in duration-300">
-          <i class="pi pi-verified text-xl"></i>
-          AUDITORIA OFICIAL CONCLUÍDA
+        <div class="mt-6 flex justify-end">
+          <button *ngIf="o.status !== 'APROVADO'" (click)="aprovarOrcamento()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-sm transition-colors flex items-center gap-2">
+            <i class="pi pi-check"></i> Aprovar Custo e Gerar Proposta
+          </button>
+          <div *ngIf="o.status === 'APROVADO'" class="px-8 py-3 bg-emerald-100 text-emerald-800 rounded-lg font-bold border border-emerald-200 flex items-center gap-2 cursor-default">
+            <i class="pi pi-verified"></i> Orçamento Aprovado
+          </div>
         </div>
 
       </div>

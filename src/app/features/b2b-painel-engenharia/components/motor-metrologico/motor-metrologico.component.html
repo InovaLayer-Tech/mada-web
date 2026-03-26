@@ -76,9 +76,9 @@
 
             <!-- S1: Tempo Total de Arco -->
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">TEMPO TOTAL DE ARCO <small class="opacity-60 font-mono">(S1)</small></label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">TEMPO TOTAL DE ARCO (EM MINUTOS) <small class="opacity-60 font-mono">(S1)</small></label>
               <div class="relative">
-                <input type="number" formControlName="tempoArcoTotalS1"
+                <input type="number" formControlName="tempoArcoTotalS1" placeholder="Insira em minutos"
                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-mono text-blue-700 bg-blue-50/30 border-blue-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-12">
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">MIN</span>
               </div>
@@ -89,9 +89,9 @@
 
             <!-- S2: Tempo Morto Tot. (Partidas/Paradas) -->
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">TEMPO MORTO DAS PARTIDAS <small class="opacity-60 font-mono">(S2)</small></label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">TEMPO MORTO PARTIDAS (EM MINUTOS) <small class="opacity-60 font-mono">(S2)</small></label>
               <div class="relative">
-                <input type="number" formControlName="tempoMortoTotalS2"
+                <input type="number" formControlName="tempoMortoTotalS2" placeholder="Insira em minutos"
                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-12">
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">MIN</span>
               </div>
@@ -99,9 +99,9 @@
 
             <!-- P11: Tempo Morto Intercamadas -->
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">INTERVALO INTERCAMADAS <small class="opacity-60 font-mono">(P11)</small></label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">INTERVALO INTERCAMADAS (EM MINUTOS) <small class="opacity-60 font-mono">(P11)</small></label>
               <div class="relative">
-                <input type="number" formControlName="tempoMortoIntercamadaP11"
+                <input type="number" formControlName="tempoMortoIntercamadaP11" placeholder="Insira em minutos"
                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-12">
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">MIN</span>
               </div>
@@ -133,14 +133,14 @@
          <!-- Setup & Insumos Diretos Peça -->
          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">SETUP E PREPARAÇÃO <small class="opacity-60 font-mono">(O6)</small></label>
-              <input type="number" formControlName="tempoPreparacaoO6"
-                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-12">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">SETUP/PREPARAÇÃO EM MINUTOS <small class="opacity-60 font-mono">(O6)</small></label>
+              <input type="number" formControlName="tempoPreparacaoO6" placeholder="Minutos"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
             </div>
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">REMOÇÃO E DESMONTAGEM <small class="opacity-60 font-mono">(O7)</small></label>
-              <input type="number" formControlName="tempoDesmontagemO7"
-                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-12">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight">REMOÇÃO/DESMONTAGEM EM MINUTOS <small class="opacity-60 font-mono">(O7)</small></label>
+              <input type="number" formControlName="tempoDesmontagemO7" placeholder="Minutos"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-tight font-mono">CUSTO DO SUBSTRATO <small class="opacity-60 font-sans">(IC4)</small></label>
