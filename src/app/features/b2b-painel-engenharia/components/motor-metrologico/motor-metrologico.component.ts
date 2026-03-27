@@ -33,39 +33,46 @@ export class MotorMetrologicoComponent implements OnInit {
   erroApi = signal<string | null>(null);
   uploadedFileName = signal<string | null>(null);
   orcamentoCalculado = signal<OrcamentoResponseDTO | null>(null);
-  margemExibicao = signal<number>(0);
 
   orcamentoForm = this.fb.group({
     orcamentoId: ['', Validators.required],
     arameId: ['', Validators.required],
+    gasId: ['', Validators.required],
+    gasSuplementarId: [''],
     
-    // Variáveis Cinéticas (S e P) - Sincronizado com a Planilha INDUSTRIAL
-    nCamadas: [1, [Validators.required, Validators.min(1)]],           // n
-    tempoArcoTotalS1: [0, [Validators.required, Validators.min(0.01)]], // S1 (min)
-    tempoMortoTotalS2: [0, [Validators.required, Validators.min(0)]],    // S2 (min)
-    tempoMortoIntercamadaP11: [0, [Validators.required, Validators.min(0)]], // P11 (min)
-    velocidadeArameP9: [5.2, [Validators.required, Validators.min(0.1)]], // P9 (m/min)
-    vazaoGasP2: [0.015, [Validators.required, Validators.min(0)]],      // P2 (m³/min)
+    // Variáveis Cinéticas (S e P) - BUG F1: Expansão MADA
+    nCamadas: [40, [Validators.required, Validators.min(1)]],
+    tempoArcoTotalS1: [0, [Validators.required, Validators.min(0)]],
+    tempoMortoTotalS2: [0, [Validators.required, Validators.min(0)]],
+    tempoMortoIntercamadaP11: [0, [Validators.required, Validators.min(0)]],
+    velocidadeArameP9: [5.2, [Validators.required, Validators.min(0.1)]],
+    vazaoGasP2: [0.015, [Validators.required, Validators.min(0)]],
+    vazaoGasSuplementarP3: [0, [Validators.min(0)]],
+    volumeDepositadoO2: [0, [Validators.min(0)]],
     
     // Parâmetros de Setup (O)
-    tempoPreparacaoO6: [120, [Validators.required, Validators.min(1)]], // O6 (min)
-    tempoDesmontagemO7: [120, [Validators.required, Validators.min(1)]], // O7 (min)
+    tempoPreparacaoO6: [120, [Validators.required, Validators.min(0)]],
+    tempoDesmontagemO7: [120, [Validators.required, Validators.min(0)]],
+    custoSubstratoO10: [0, [Validators.required, Validators.min(0)]],
+    custoPreparacaoO11: [0, [Validators.min(0)]],
+    custoRemocaoO12: [0, [Validators.min(0)]],
     
-    // Insumos Adicionais
-    custoSubstratoO10: [0, [Validators.required, Validators.min(0)]],   // O10 (R$)
-    
-    // Flags de Serviços (AC)
-    requerProjetoCAD: [true],            // AC4
-    requerUsinagemFinal: [true],         // AC8
-    tempoUsinagemMinutos: [30, [Validators.min(1)]],
-    requerTratamentoTermico: [false]     // AC9
+    // Flags de Serviços (AC) - BUG F1: Detalhamento Industrial
+    requerProjetoCAD: [true],
+    tempoProjetoWT4: [10, [Validators.min(0)]],
+    requerParametrizacaoAC7: [false],
+    tempoParametrizacaoWT7: [5, [Validators.min(0)]],
+    requerUsinagemFinal: [true],
+    custoDiretoUsinagemAC8: [500, [Validators.min(0)]],
+    requerTratamentoTermico: [false],
+    custoDiretoTratamentoAC9: [300, [Validators.min(0)]],
+    rfGeral: [1.0, [Validators.required, Validators.min(0.5), Validators.max(2.0)]]
   });
 
   rfqSelecionado: OrcamentoResponseDTO | null = null;
 
   ngOnInit() {
     this.carregarDados();
-    this.monitorarUsinagem();
     this.checkRouterState();
   }
 
@@ -74,39 +81,21 @@ export class MotorMetrologicoComponent implements OnInit {
     if (state && state.rfq) {
       const rfq = state.rfq as OrcamentoResponseDTO;
       this.rfqSelecionado = rfq;
-      this.orcamentoForm.patchValue({ 
-        orcamentoId: rfq.id,
-        arameId: rfq.materialDesejadoId || '',
-        requerProjetoCAD: !rfq.arquivoUrl
-      });
+      this.orcamentoForm.patchValue({ orcamentoId: rfq.id, arameId: rfq.materialDesejadoId || '', requerProjetoCAD: !rfq.arquivoUrl });
     }
   }
 
   carregarDados() {
     this.arameService.listarTodos().subscribe(data => this.arames = data);
     this.orcamentoService.listarTodos().subscribe(data => {
-      this.pendingRfqs = data.filter(r => r.status === 'PENDENTE' || r.status === 'CALCULADO' || r.status === 'INCOMPLETE_RFQ');
+      this.pendingRfqs = data.filter(r => r.status === 'PENDENTE' || r.status === 'CALCULADO');
     });
   }
 
   onRfqChange(event: Event) {
     const id = (event.target as HTMLSelectElement).value;
     this.rfqSelecionado = this.pendingRfqs.find(r => r.id === id) || null;
-    if (this.rfqSelecionado) {
-       this.orcamentoForm.patchValue({ 
-         orcamentoId: id,
-         requerProjetoCAD: !this.rfqSelecionado.arquivoUrl
-       });
-    }
-  }
-
-  private monitorarUsinagem() {
-    this.orcamentoForm.controls.requerUsinagemFinal.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(active => {
-        const ctrl = this.orcamentoForm.controls.tempoUsinagemMinutos;
-        active ? ctrl.enable() : ctrl.disable();
-      });
+    if (this.rfqSelecionado) this.orcamentoForm.patchValue({ orcamentoId: id, requerProjetoCAD: !this.rfqSelecionado.arquivoUrl });
   }
 
   onFileUpload(event: Event): void {
@@ -119,21 +108,18 @@ export class MotorMetrologicoComponent implements OnInit {
       try {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
-
-        // Se o JSON contiver P0/S1 consolidados
+        // BUG F6: Correção de unidade na importação do Slicer
         if (data && (data.TEMPO_ATIVO_TOTAL !== undefined || data.S1 !== undefined)) {
-          const valorS1 = data.TEMPO_ATIVO_TOTAL ? (data.TEMPO_ATIVO_TOTAL / 60) : data.S1;
-          this.orcamentoForm.patchValue({ 
-            tempoArcoTotalS1: Number(valorS1.toFixed(2))
-          });
+          // Se TEMPO_ATIVO_TOTAL > 1000, assumimos que está em SEGUNDOS e dividimos por 60
+          const valorS1Raw = data.TEMPO_ATIVO_TOTAL || data.S1;
+          const valorS1 = valorS1Raw > 5000 ? (valorS1Raw / 60) : valorS1Raw;
+          this.orcamentoForm.patchValue({ tempoArcoTotalS1: Number(valorS1.toFixed(2)) });
           this.uploadedFileName.set(file.name);
-          this.messageService.add({ severity: 'success', summary: 'Dados de Trajetória', detail: 'S1 importado via Slicer' });
+          this.messageService.add({ severity: 'success', summary: 'Dados Importados', detail: 'S1 reconciliado via Slicer' });
         }
       } catch (error) {
-        this.messageService.add({ severity: 'error', summary: 'Erro JSON', detail: 'Script incompatível' });
-      } finally {
-        element.value = '';
-      }
+        this.messageService.add({ severity: 'error', summary: 'Erro JSON', detail: 'Slicer incompatible' });
+      } finally { element.value = ''; }
     };
     reader.readAsText(file);
   }
@@ -145,23 +131,32 @@ export class MotorMetrologicoComponent implements OnInit {
     }
 
     this.isSubmitting.set(true);
-    const id = this.orcamentoForm.getRawValue().orcamentoId;
-    const payload = this.orcamentoForm.getRawValue();
+    const formValue = this.orcamentoForm.getRawValue();
+    const id = formValue.orcamentoId;
 
-    this.orcamentoService.processarCalculo(id, payload as any).subscribe({
+    // BUG F5: Tipagem segura de acordo com o DTO Java
+    const payload: OrcamentoCalculoRequestDTO = {
+      ...formValue,
+      arameId: formValue.arameId,
+      gasId: formValue.gasId,
+      gasSuplementarId: formValue.gasSuplementarId || undefined,
+      rfGeral: formValue.rfGeral,
+      custoDiretoUsinagemAC8: formValue.custoDiretoUsinagemAC8,
+      custoDiretoTratamentoAC9: formValue.custoDiretoTratamentoAC9
+    };
+
+    this.orcamentoService.processarCalculo(id, payload).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
         this.orcamentoCalculado.set(res);
-        this.messageService.add({ severity: 'success', summary: 'Síntese MADA', detail: 'Cálculo reconciliado com sucesso' });
+        this.messageService.add({ severity: 'success', summary: 'Cálculo MADA', detail: 'Reconciliação industrial concluída' });
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.erroApi.set(err.error?.message || 'Erro no Motor Metrológico');
+        this.erroApi.set(err.error?.message || 'Erro no motor de cálculo');
       }
     });
   }
 
-  downloadPDF() {
-    window.print();
-  }
+  downloadPDF() { window.print(); }
 }

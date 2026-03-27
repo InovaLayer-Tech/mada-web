@@ -1,218 +1,74 @@
-<p-toast></p-toast>
-<div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
-  
-  <main class="max-w-[90rem] mx-auto mt-8 px-8" *ngIf="!orcamento()">
-    <div class="mb-8 border-b border-slate-300 pb-6 flex justify-between items-end">
-      <div>
-        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Painel de Auditoria de Custos MADA</h1>
-        <p class="text-sm font-medium text-slate-500 mt-1">Gestão Analítica de Produção Aditiva</p>
-      </div>
-      
-      <div class="flex gap-4">
-        <div class="px-5 py-3 bg-white border border-slate-300 rounded-lg shadow-sm text-left min-w-[150px]">
-          <span class="text-[10px] font-bold text-slate-500 uppercase">Volume de Projetos</span>
-          <span class="text-xl font-bold text-slate-800 block mt-1">{{ kpis().totalGeral }} <span class="text-xs text-slate-400 font-normal">solicitações</span></span>
-        </div>
-        <div class="px-5 py-3 bg-white border border-slate-300 rounded-lg shadow-sm text-left min-w-[150px]">
-          <span class="text-[10px] font-bold text-slate-500 uppercase">Taxa de Conversão</span>
-          <span class="text-xl font-bold text-emerald-600 block mt-1">{{ kpis().taxaAprovacao }}%</span>
-        </div>
-        <div class="px-5 py-3 bg-slate-900 border border-slate-800 rounded-lg shadow-sm text-left min-w-[150px]">
-          <span class="text-[10px] font-bold text-slate-400 uppercase">Tempo Médio de Deposição</span>
-          <span class="text-xl font-bold text-white block mt-1">{{ kpis().tempoMedioFab | number:'1.1-1' }} <span class="text-xs text-slate-400 font-normal">horas/peça</span></span>
-        </div>
-      </div>
-    </div>
+<div class="dashboard-container p-4">
+  <h1 class="text-2xl font-bold mb-6 text-indigo-900">Painel de Auditoria MADA (Industrialization Phase)</h1>
 
-    <div class="bg-white border border-slate-300 rounded-xl shadow-sm overflow-hidden">
-      <table class="w-full text-left text-sm">
-        <thead>
-          <tr class="bg-slate-100 border-b border-slate-300 text-slate-600 font-semibold">
-            <th class="px-6 py-4 w-1/4">ID do Projeto</th>
-            <th class="px-6 py-4">Status</th>
-            <th class="px-6 py-4 text-right">Tempo Deposição ($Tdt$)</th>
-            <th class="px-6 py-4 text-right">Custo IC + AC</th>
-            <th class="px-6 py-4 text-right">Preço Final</th>
-            <th class="px-6 py-4 text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-200">
-          @if (carregando()) {
-            <tr><td colspan="6" class="px-6 py-8 text-center"><i class="pi pi-spin pi-spinner text-2xl"></i></td></tr>
-          } @else {
-            @for (item of todosOrcamentos(); track item.id) {
-              <tr class="hover:bg-slate-50 cursor-pointer transition-colors" (click)="selecionarOrcamento(item)">
-                <td class="px-6 py-4">
-                  <div class="font-mono text-slate-900 font-medium">#{{ item.id.substring(0,8) }}</div>
-                  <div class="text-xs text-slate-500">{{ item.nomeProjeto }}</div>
+  <!-- KPIs Globais -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="kpi-card bg-white p-6 shadow-lg border-l-4 border-indigo-500">
+      <h3 class="text-gray-500 text-sm font-semibold uppercase">Total Investimento (Portfólio)</h3>
+      <p class="text-3xl font-bold text-indigo-700">{{ totalInvestimento() | currency:'BRL' }}</p>
+    </div>
+    <div class="kpi-card bg-white p-6 shadow-lg border-l-4 border-emerald-500">
+      <h3 class="text-gray-500 text-sm font-semibold uppercase">Massa Produzida (Acumulada)</h3>
+      <p class="text-3xl font-bold text-emerald-700">{{ massaTotalAcumulada() | number:'1.2-2' }} kg</p>
+    </div>
+    <div class="kpi-card bg-white p-6 shadow-lg border-l-4 border-amber-500">
+      <h3 class="text-gray-500 text-sm font-semibold uppercase">Tempo Operação (Total Processo)</h3>
+      <p class="text-3xl font-bold text-amber-700">{{ tempoTotalProcesso() | number:'1.0-0' }} min</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Lista Detalhada para Auditoria -->
+    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md overflow-hidden">
+      <h2 class="text-lg font-bold mb-4 text-slate-800">Detalhamento por Projeto (Breakdown IC/AC)</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="bg-slate-50 border-b">
+              <th class="p-3">Projeto</th>
+              <th class="p-3">IC1 (Arame)</th>
+              <th class="p-3">IC2 (Gás)</th>
+              <th class="p-3">IC3 (Máquina/MO)</th>
+              <th class="p-3">IC4 (Substrato)</th>
+              <th class="p-3">Serviços (AC)</th>
+              <th class="p-3 text-right">TOTAL (TC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (o of orcamentos(); track o.id) {
+              <tr class="border-b hover:bg-slate-50 transition-colors">
+                <td class="p-3 font-semibold">{{ o.nomeProjeto }}</td>
+                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic1Arame | currency:'BRL' }}</td>
+                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic2Gas | currency:'BRL' }}</td>
+                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic3Equipamento | currency:'BRL' }}</td>
+                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic4Substrato | currency:'BRL' }}</td>
+                <td class="p-3 text-emerald-600">
+                  @if (o.fase3AC && o.fase3AC.length > 0) {
+                     {{ o.fase3AC.length }} svcs
+                  } @else {
+                    - 
+                  }
                 </td>
-                <td class="px-6 py-4">
-                  <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase"
-                        [ngClass]="item.status === 'APROVADO' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'">
-                    {{ item.status }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 text-right font-mono text-slate-600">
-                  {{ item.fase1IC.tempoTotalDeposicaoMinutos || 0 }} min
-                </td>
-                <td class="px-6 py-4 text-right font-mono text-slate-600">
-                  {{ (item.custoTotalIC + item.custoTotalAC) | currency:'BRL' }}
-                </td>
-                <td class="px-6 py-4 text-right font-mono font-bold text-slate-900">
-                  {{ item.precoFinalSugerido | currency:'BRL' }}
-                </td>
-                <td class="px-6 py-4 text-center">
-                  <button class="text-blue-600 hover:text-blue-800 text-sm font-semibold">Auditar <i class="pi pi-angle-right"></i></button>
-                </td>
+                <td class="p-3 text-right font-bold text-slate-900">{{ o.custoTotalFinal | currency:'BRL' }}</td>
               </tr>
             }
-          }
-        </tbody>
-      </table>
-    </div>
-  </main>
-
-  <main class="max-w-[90rem] mx-auto mt-8 px-8" *ngIf="orcamento() as o">
-    <div class="mb-6 flex justify-between items-center border-b border-slate-300 pb-4">
-      <div>
-        <button (click)="voltarLista()" class="text-sm font-semibold text-blue-600 hover:underline mb-2 flex items-center gap-1">
-          <i class="pi pi-arrow-left"></i> Voltar
-        </button>
-        <h1 class="text-2xl font-bold text-slate-900">Relatório de Custo de Fabricação</h1>
-        <p class="text-sm text-slate-500">Projeto: {{ o.nomeProjeto }} | Ref: #{{ o.id }}</p>
-      </div>
-      <button (click)="downloadPDF()" class="px-4 py-2 bg-white border border-slate-300 rounded-lg shadow-sm text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-        <i class="pi pi-file-pdf"></i> Exportar PDF
-      </button>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      
-      <div class="lg:col-span-4 space-y-6">
-        <div class="bg-white border border-slate-300 rounded-xl p-6 shadow-sm">
-          <h3 class="text-sm font-bold uppercase text-slate-500 mb-6 border-b border-slate-100 pb-2">Composição de Custo (TC)</h3>
-          
-          <div class="relative w-56 h-56 mx-auto mb-8">
-            <canvas baseChart [data]="doughnutChartData()" [options]="doughnutChartOptions" [type]="doughnutChartType"></canvas>
-            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span class="text-xs font-bold text-slate-400 uppercase">Custo Total ($TC$)</span>
-              <span class="text-xl font-bold text-slate-900">{{ (o.custoTotalIC + o.custoTotalAC) | currency:'BRL' }}</span>
-            </div>
-          </div>
-
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
-              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-slate-500 rounded-sm"></div> Arame ($IC_1$)</span>
-              <span class="font-mono font-medium">{{ o.fase1IC.ic1Arame | currency:'BRL' }}</span>
-            </div>
-            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
-              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-slate-900 rounded-sm"></div> Gás ($IC_2$)</span>
-              <span class="font-mono font-medium">{{ o.fase1IC.ic2Gas | currency:'BRL' }}</span>
-            </div>
-            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
-              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-blue-500 rounded-sm"></div> Equipamento ($IC_3$)</span>
-              <span class="font-mono font-medium">{{ o.fase1IC.ic3Equipamento | currency:'BRL' }}</span>
-            </div>
-            <div class="flex justify-between items-center border-b border-slate-100 pb-1">
-              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-slate-300 rounded-sm"></div> Substrato ($IC_4$)</span>
-              <span class="font-mono font-medium">{{ o.fase1IC.ic4Substrato | currency:'BRL' }}</span>
-            </div>
-            <div class="flex justify-between items-center pb-1">
-              <span class="flex items-center gap-2 text-slate-600"><div class="w-3 h-3 bg-emerald-500 rounded-sm"></div> Serviços ($AC$)</span>
-              <span class="font-mono font-medium">{{ o.custoTotalAC | currency:'BRL' }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-slate-900 rounded-xl p-6 text-white shadow-sm">
-           <h3 class="text-sm font-bold uppercase text-slate-400 mb-4 border-b border-slate-700 pb-2">Preço Final (FC)</h3>
-           <div class="flex justify-between items-center mb-2 text-slate-300">
-             <span>Custo Total Fabricação ($TC$)</span>
-             <span class="font-mono">{{ (o.custoTotalIC + o.custoTotalAC) | currency:'BRL' }}</span>
-           </div>
-           <div class="flex justify-between items-center mb-4 text-slate-300">
-             <span>Margem de Risco Global ($RM$)</span>
-             <span>10.0%</span>
-           </div>
-           <div class="flex justify-between items-center pt-4 border-t border-slate-700">
-             <span class="font-bold text-lg text-emerald-400">Preço Sugerido</span>
-             <span class="font-mono text-2xl font-bold">{{ o.precoFinalSugerido | currency:'BRL' }}</span>
-           </div>
-        </div>
-      </div>
-
-      <div class="lg:col-span-8 space-y-4">
-        
-        <div class="bg-white border border-slate-300 rounded-xl shadow-sm">
-          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center rounded-t-xl">
-            <h3 class="font-bold text-slate-800">Custos Intrínsecos ($IC$)</h3>
-            <span class="font-mono font-bold text-slate-900">{{ o.custoTotalIC | currency:'BRL' }}</span>
-          </div>
-          <div class="p-6 grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
-             <div class="flex flex-col border-b border-slate-100 pb-2">
-               <span class="text-slate-500 text-xs font-bold uppercase">Tempo de Arco ($S_1$)</span>
-               <span class="font-mono text-slate-900">{{ o.fase1IC.tempoArcoMinutos }} min</span>
-             </div>
-             <div class="flex flex-col border-b border-slate-100 pb-2">
-               <span class="text-slate-500 text-xs font-bold uppercase">Tempo Morto ($S_2$)</span>
-               <span class="font-mono text-slate-900">{{ o.fase1IC.tempoMortoMinutos }} min</span>
-             </div>
-             <div class="flex flex-col border-b border-slate-100 pb-2">
-               <span class="text-slate-500 text-xs font-bold uppercase">Massa Estimada</span>
-               <span class="font-mono text-slate-900">{{ o.fase1IC.massaEstimadaKg | number:'1.2-2' }} kg</span>
-             </div>
-             <div class="flex flex-col border-b border-slate-100 pb-2">
-               <span class="text-slate-500 text-xs font-bold uppercase">Tarifa Energia Snap ($O_5$)</span>
-               <span class="font-mono text-slate-900">{{ o.fase1IC.taxaEnergiaSnapshot | currency:'BRL' }}/kWh</span>
-             </div>
-          </div>
-        </div>
-
-        <div class="bg-white border border-slate-300 rounded-xl shadow-sm">
-          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center rounded-t-xl">
-            <h3 class="font-bold text-slate-800">Custos Adicionais ($AC$)</h3>
-            <span class="font-mono font-bold text-slate-900">{{ o.custoTotalAC | currency:'BRL' }}</span>
-          </div>
-          <div class="p-6">
-            <table class="w-full text-sm text-left">
-              <thead>
-                <tr class="text-xs uppercase text-slate-500 border-b border-slate-200">
-                  <th class="pb-2">Descrição do Serviço</th>
-                  <th class="pb-2 text-right">Horas ($WT$)</th>
-                  <th class="pb-2 text-right">Custo ($)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                @if (!o.fase3AC || o.fase3AC.length === 0) {
-                  <tr>
-                    <td class="py-3 font-medium text-slate-700">Serviços Adicionais Consolidados</td>
-                    <td class="py-3 text-right font-mono text-slate-500">-</td>
-                    <td class="py-3 text-right font-mono font-bold text-slate-900">{{ o.custoTotalAC | currency:'BRL' }}</td>
-                  </tr>
-                } @else {
-                  @for (ac of o.fase3AC; track ac.id) {
-                    <tr>
-                      <td class="py-3 font-medium text-slate-700">{{ ac.descricaoServico }}</td>
-                      <td class="py-3 text-right font-mono text-slate-500">{{ ac.quantidadeHoras }}h</td>
-                      <td class="py-3 text-right font-mono font-bold text-slate-900">{{ ac.custoTotalAC | currency:'BRL' }}</td>
-                    </tr>
-                  }
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="mt-6 flex justify-end">
-          <button *ngIf="o.status !== 'APROVADO'" (click)="aprovarOrcamento()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-sm transition-colors flex items-center gap-2">
-            <i class="pi pi-check"></i> Aprovar Custo e Gerar Proposta
-          </button>
-          <div *ngIf="o.status === 'APROVADO'" class="px-8 py-3 bg-emerald-100 text-emerald-800 rounded-lg font-bold border border-emerald-200 flex items-center gap-2 cursor-default">
-            <i class="pi pi-verified"></i> Orçamento Aprovado
-          </div>
-        </div>
-
+          </tbody>
+        </table>
       </div>
     </div>
-  </main>
+
+    <!-- Breakdown Doughnut -->
+    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-600 flex flex-col items-center">
+      <h2 class="text-lg font-bold mb-6 text-slate-800">Mix de Custo (Último Cálculo)</h2>
+      <div style="display: block; width: 100%;">
+        <canvas baseChart
+          [data]="doughnutChartData"
+          [type]="doughnutChartType">
+        </canvas>
+      </div>
+      <p class="mt-4 text-xs text-slate-400 text-center italic">
+        *Relação percentual entre Custos Intrínsecos (IC) e Adicionais (AC) conforme gabarito industrial do LAPROSOLDA.
+      </p>
+    </div>
+  </div>
 </div>
