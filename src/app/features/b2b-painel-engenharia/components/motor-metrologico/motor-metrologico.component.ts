@@ -66,7 +66,13 @@ export class MotorMetrologicoComponent implements OnInit {
     custoDiretoUsinagemAC8: [500, [Validators.min(0)]],
     requerTratamentoTermico: [false],
     custoDiretoTratamentoAC9: [300, [Validators.min(0)]],
-    rfGeral: [1.0, [Validators.required, Validators.min(0.5), Validators.max(2.0)]]
+    rfGeral: [1.0, [Validators.required, Validators.min(0.5), Validators.max(2.0)]],
+    rfMaterialRfo9: [null],
+    rfGasRfo13: [null],
+    rfEnergiaRfo5: [null],
+    rfTempoRftdt: [null],
+    rfSubstratoRfo10: [null],
+    estrategia_o15: ['a', Validators.required]
   });
 
   rfqSelecionado: OrcamentoResponseDTO | null = null;

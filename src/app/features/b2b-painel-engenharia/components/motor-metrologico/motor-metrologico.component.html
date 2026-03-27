@@ -30,17 +30,27 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="md:col-span-2">
+          <div class="md:col-span-1">
             <label class="block text-xs font-bold text-slate-500 uppercase mb-1">VINCULAR ORÇAMENTO (RFQ)*</label>
             <select formControlName="orcamentoId" (change)="onRfqChange($event)"
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-              <option value="">SELECIONE O PROJETO PARA CALCULAR</option>
+              <option value="">SELECIONE O PROJETO</option>
               <option *ngFor="let rfq of pendingRfqs" [value]="rfq.id">
-                [{{ rfq.status }}] {{ rfq.nomeProjeto }} - {{ rfq.nomeEmpresa }}
+                [{{ rfq.status }}] {{ rfq.nomeProjeto }}
               </option>
             </select>
           </div>
-          <div>
+          <div class="md:col-span-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">ESTRATÉGIA (O15)*</label>
+            <select formControlName="estrategia_o15"
+                    class="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all text-amber-900 font-bold">
+              <option value="a">A - PADRÃO (LINEAL)</option>
+              <option value="b">B - MÉDIA (OSCILANTE)</option>
+              <option value="c">C - ZIG-ZAG (SISTEMÁTICA)</option>
+              <option value="d">D - HÍBRIDA (CURVADA)</option>
+            </select>
+          </div>
+          <div class="md:col-span-1">
             <label class="block text-xs font-bold text-slate-500 uppercase mb-1">ARAME METÁLICO (P5/O9)*</label>
             <select formControlName="arameId" 
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
@@ -50,10 +60,26 @@
               </option>
             </select>
           </div>
-          <div>
+          <div class="md:col-span-1">
             <label class="block text-xs font-bold text-slate-500 uppercase mb-1">CÓDIGO GÁS (P2/O13)*</label>
             <input type="text" formControlName="gasId" placeholder="ID do Gás Principal"
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+          
+          <!-- PARÂMETROS DE GÁS (P2, P3) -->
+          <div class="p-4 bg-blue-50/30 rounded-xl border border-blue-100 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+            <div>
+              <label class="block text-[10px] font-bold text-blue-600 uppercase mb-1">VAZÃO GÁS PRINCIPAL (P2)</label>
+              <input type="number" step="0.001" formControlName="vazaoGasP2" class="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-blue-600 uppercase mb-1">VAZÃO GÁS SUPLEMEN. (P3)</label>
+              <input type="number" step="0.001" formControlName="vazaoGasSuplementarP3" class="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-blue-600 uppercase mb-1">ID GÁS SUPLEMEN.</label>
+              <input type="text" formControlName="gasSuplementarId" placeholder="Opcional" class="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-xs">
+            </div>
           </div>
         </div>
       </div>
@@ -71,7 +97,7 @@
             </label>
          </div>
 
-         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div class="space-y-1">
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">CAMADAS <small class="opacity-60 font-mono">(n)</small></label>
               <input type="number" formControlName="nCamadas" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
@@ -84,23 +110,88 @@
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">TM PARTIDAS <small class="opacity-60 font-mono">(S2)</small></label>
               <input type="number" formControlName="tempoMortoTotalS2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
             </div>
+            
+            <!-- BUG P11: Trazer de volta o tempo intercamada -->
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter text-blue-600">TM INTERCAM. <small class="opacity-60 font-mono text-slate-500">(P11)</small></label>
+              <input type="number" formControlName="tempoMortoIntercamadaP11" class="w-full bg-blue-50 border border-blue-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
             <div class="space-y-1">
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">VELOC. ARAME <small class="opacity-60 font-mono">(P9)</small></label>
               <input type="number" step="0.1" formControlName="velocidadeArameP9" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
             </div>
             
-            <div class="space-y-1 col-span-2">
+            <div class="space-y-1 md:col-span-3">
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">VOLUME DEPOSITADO ESTIMADO <small class="opacity-60 font-mono">(O2)</small></label>
               <div class="relative">
                 <input type="number" formControlName="volumeDepositadoO2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm pr-12">
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">cm³</span>
               </div>
             </div>
-            <div class="space-y-1">
-               <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">FATOR DE RISCO RF</label>
-               <input type="number" step="0.05" formControlName="rfGeral" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 text-sm text-amber-700">
-            </div>
+             <div class="space-y-1 md:col-span-5 bg-amber-50/50 p-4 rounded-2xl border border-amber-200/50 mt-2">
+                <label class="block text-xs font-bold text-amber-700 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <i class="pi pi-shield"></i> AUDITORIA DE RISCO (OVERRIDE)
+                </label>
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+                  <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase">RF GERAL</label>
+                    <input type="number" step="0.05" formControlName="rfGeral" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase">RF MATER.</label>
+                    <input type="number" step="0.05" formControlName="rfMaterialRfo9" placeholder="Def" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase">RF GÁS</label>
+                    <input type="number" step="0.05" formControlName="rfGasRfo13" placeholder="Def" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase">RF ENERG.</label>
+                    <input type="number" step="0.05" formControlName="rfEnergiaRfo5" placeholder="Def" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase">RF TEMPO</label>
+                    <input type="number" step="0.05" formControlName="rfTempoRftdt" placeholder="Def" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-[9px] font-bold text-slate-400 uppercase">RF SUBST.</label>
+                    <input type="number" step="0.05" formControlName="rfSubstratoRfo10" placeholder="Def" class="w-full bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs">
+                  </div>
+                </div>
+             </div>
          </div>
+      </div>
+
+      <!-- SETUP E LOGÍSTICA (CLASSE O) - CAMPOS FANTASMAS RESOLVIDOS -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-1 h-6 bg-slate-400 rounded-full"></div>
+          <h2 class="text-lg font-semibold text-slate-800 uppercase tracking-wide">SETUP E PREPARAÇÃO (CLASSE O)</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">TEMPO PREPARAÇÃO <small class="opacity-60 font-mono">(O6)</small></label>
+            <input type="number" formControlName="tempoPreparacaoO6" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">TEMPO DESMONT. <small class="opacity-60 font-mono">(O7)</small></label>
+            <input type="number" formControlName="tempoDesmontagemO7" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter text-amber-600">CUSTO SUBSTRATO <small class="opacity-60 font-mono text-slate-500">(O10)</small></label>
+            <input type="number" formControlName="custoSubstratoO10" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 text-sm">
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">CUSTO PREPARAÇÃO <small class="opacity-60 font-mono">(O11)</small></label>
+            <input type="number" formControlName="custoPreparacaoO11" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-tighter">CUSTO REMOÇÃO <small class="opacity-60 font-mono">(O12)</small></label>
+            <input type="number" formControlName="custoRemocaoO12" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
+          </div>
+        </div>
       </div>
 
       <!-- Serviços Adicionais (AC - Stage III) -->
@@ -109,8 +200,7 @@
           <div class="w-1 h-6 bg-blue-600 rounded-full"></div>
           <h2 class="text-lg font-semibold text-slate-800 uppercase tracking-wide">STAGE III - CUSTOS ADICIONAIS (AC)</h2>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- AC4 CAD -->
           <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
             <div class="flex justify-between items-center mb-2">
@@ -123,6 +213,18 @@
             </div>
           </div>
 
+          <!-- AC7 PARAMETRIZAÇÃO -->
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-bold text-slate-700">PARAMETRIZAÇÃO IND. <small>(AC7)</small></span>
+              <input type="checkbox" formControlName="requerParametrizacaoAC7" class="w-4 h-4 accent-indigo-600">
+            </div>
+            <div class="flex items-center gap-2" *ngIf="orcamentoForm.get('requerParametrizacaoAC7')?.value">
+                <input type="number" formControlName="tempoParametrizacaoWT7" class="w-20 bg-white border border-slate-200 rounded px-2 py-1 text-xs">
+                <span class="text-[10px] uppercase font-bold text-slate-400">HORAS SETUP</span>
+            </div>
+          </div>
+
           <!-- AC8 USINAGEM -->
           <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
             <div class="flex justify-between items-center mb-2">
@@ -131,6 +233,18 @@
             </div>
             <div class="flex items-center gap-2" *ngIf="orcamentoForm.get('requerUsinagemFinal')?.value">
                 <input type="number" formControlName="custoDiretoUsinagemAC8" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs">
+                <span class="text-[10px] uppercase font-bold text-slate-400">R$ DIRETO</span>
+            </div>
+          </div>
+
+          <!-- AC9 TRATAMENTO TÉRMICO -->
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-bold text-slate-700">TRATAM. TÉRMICO <small>(AC9)</small></span>
+              <input type="checkbox" formControlName="requerTratamentoTermico" class="w-4 h-4 accent-red-600">
+            </div>
+            <div class="flex items-center gap-2" *ngIf="orcamentoForm.get('requerTratamentoTermico')?.value">
+                <input type="number" formControlName="custoDiretoTratamentoAC9" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs">
                 <span class="text-[10px] uppercase font-bold text-slate-400">R$ DIRETO</span>
             </div>
           </div>
