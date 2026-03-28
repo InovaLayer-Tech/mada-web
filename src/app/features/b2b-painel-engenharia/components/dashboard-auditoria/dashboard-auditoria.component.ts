@@ -1,14 +1,14 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrcamentoService } from '../../../services/orcamento.service';
-import { OrcamentoResponseDTO } from '../../../models/orcamento.model';
+import { OrcamentoService } from '../../../../core/services/orcamento.service';
+import { OrcamentoResponseDTO, Fase3ACDTO } from '../../../../core/models/orcamento.model';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { NgChartsModule } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-dashboard-auditoria',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './dashboard-auditoria.component.html',
   styles: [`
     .kpi-card { border-radius: 12px; transition: transform 0.2s; }
@@ -31,16 +31,16 @@ export class DashboardAuditoriaComponent implements OnInit {
   public doughnutChartType: ChartType = 'doughnut';
 
   ngOnInit() {
-    this.orcamentoService.listarTodos().subscribe(lista => {
+    this.orcamentoService.listarTodos().subscribe((lista: OrcamentoResponseDTO[]) => {
       this.orcamentos.set(lista);
       this.calcularKpis(lista);
     });
   }
 
   private calcularKpis(lista: OrcamentoResponseDTO[]) {
-    const total = lista.reduce((acc, curr) => acc + (curr.precoFinalSugerido || 0), 0);
-    const massa = lista.reduce((acc, curr) => acc + (curr.fase1IC?.massaEstimadaKg || 0), 0);
-    const tempo = lista.reduce((acc, curr) => acc + (curr.fase1IC?.tempoTotalDeposicaoMinutos || 0), 0);
+    const total = lista.reduce((acc: number, curr: OrcamentoResponseDTO) => acc + (curr.precoFinalSugerido || 0), 0);
+    const massa = lista.reduce((acc: number, curr: OrcamentoResponseDTO) => acc + (curr.fase1IC?.massaEstimadaKg || 0), 0);
+    const tempo = lista.reduce((acc: number, curr: OrcamentoResponseDTO) => acc + (curr.fase1IC?.tempoTotalDeposicaoMinutos || 0), 0);
     
     this.totalInvestimento.set(total);
     this.massaTotalAcumulada.set(massa);
@@ -49,7 +49,7 @@ export class DashboardAuditoriaComponent implements OnInit {
     // Atualiza gráfico com as parcelas reais do último orçamento calculado
     const ultimo = lista.find(o => o.status === 'CALCULADO');
     if (ultimo && ultimo.fase1IC) {
-      const somaAC = ultimo.fase3AC ? ultimo.fase3AC.reduce((a, c) => a + (c.custoTotalAC || 0), 0) : 0;
+      const somaAC = ultimo.fase3AC ? ultimo.fase3AC.reduce((a: number, c: Fase3ACDTO) => a + (c.custoTotalAC || 0), 0) : 0;
       this.doughnutChartData.datasets[0].data = [
         ultimo.fase1IC.ic1Arame || 0,
         ultimo.fase1IC.ic2Gas || 0,

@@ -14,6 +14,8 @@ import { PerfilClienteComponent } from './features/b2c-portal-cliente/components
 import { ConfiguracoesGlobaisComponent } from './features/b2b-painel-engenharia/components/configuracoes-globais/configuracoes-globais.component';
 import { CadastroClienteComponent } from './features/b2c-portal-cliente/components/cadastro-cliente/cadastro-cliente.component';
 
+import { MetodologiaComponent } from './features/b2b-painel-engenharia/components/metodologia/metodologia.component';
+
 export const routes: Routes = [
   // Rotas Públicas (Sem Sidebar)
   { path: '', component: LandingPagePolishedComponent },
@@ -41,6 +43,7 @@ export const routes: Routes = [
       { path: 'motor', component: MotorMetrologicoComponent },
       { path: 'auditoria', component: DashboardAuditoriaComponent },
       { path: 'perfil', component: PerfilComponent },
+      { path: 'metodologia', component: MetodologiaComponent },
       { path: 'catalogo', component: CatalogoInsumosComponent },
       { path: 'taxas', component: ConfiguracoesGlobaisComponent },
       { path: '', redirectTo: 'pedidos', pathMatch: 'full' }

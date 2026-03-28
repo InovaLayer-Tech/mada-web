@@ -30,29 +30,48 @@ export interface OrcamentoRequestDTO {
  * Reconciliado com a Planilha de Validação Industrial e Relatório de Aderência.
  */
 export interface OrcamentoCalculoRequestDTO {
-  orcamentoId: string; // UUID mapeado como string no TS
-  arameId: string;     // UUID mapeado como string no TS
+  orcamentoId: string;
+  arameId: string;
+  gasId: string;
+  gasSuplementarId?: string;
   
   // Variáveis Cinéticas e de Processo (Classe S e P)
-  nCamadas: number;                 // n
-  tempoArcoTotalS1: number;         // S1 (Minutos)
-  tempoMortoTotalS2: number;        // S2 (Minutos)
-  tempoMortoIntercamadaP11: number;  // P11 (Minutos)
-  velocidadeArameP9: number;        // P9 (m/min)
-  vazaoGasP2: number;               // P2 (m³/min)
+  nCamadas: number;
+  tempoArcoTotalS1: number;
+  tempoMortoTotalS2: number;
+  tempoMortoIntercamadaP11: number;
+  velocidadeArameP9: number;
+  vazaoGasP2: number;
+  vazaoGasSuplementarP3?: number;
+  volumeDepositadoO2?: number;
   
   // Parâmetros de Setup (Classe O)
-  tempoPreparacaoO6: number;        // O6 (Minutos)
-  tempoDesmontagemO7: number;       // O7 (Minutos)
-  
-  // Custos de Insumos Adicionais
-  custoSubstratoO10: number;        // O10 (R$)
+  tempoPreparacaoO6: number;
+  tempoDesmontagemO7: number;
+  custoSubstratoO10: number;
+  custoPreparacaoO11?: number;
+  custoRemocaoO12?: number;
   
   // Flags de Serviços Adicionais (AC)
-  requerProjetoCAD: boolean;        // AC4
-  requerUsinagemFinal: boolean;     // AC8
-  tempoUsinagemMinutos: number;     // Tempo p/ AC8
-  requerTratamentoTermico: boolean; // AC9
+  requerProjetoCAD: boolean;
+  tempoProjetoWT4?: number | null;
+  requerParametrizacaoAC7: boolean;
+  tempoParametrizacaoWT7?: number | null;
+  requerUsinagemFinal: boolean;
+  custoDiretoUsinagemAC8?: number | null;
+  requerTratamentoTermico: boolean;
+  custoDiretoTratamentoAC9?: number | null;
+
+  // Auditoria de Risco
+  rfMaterialRfo9?: number | null;
+  rfGasRfo13?: number | null;
+  rfEnergiaRfo5?: number | null;
+  rfTempoRftdt?: number | null;
+  rfSubstratoRfo10?: number | null;
+  rfGeral: number;
+
+  // Estratégia O15
+  estrategia_o15: string;
 }
 
 export interface ServicoAdicionalDTO {
@@ -95,8 +114,8 @@ export interface OrcamentoResponseDTO {
   materialDesejadoId: string;
   
   // --- Agrupamentos Metodológicos (Nest) ---
-  fase1IC: Fase1ICDTO;
-  fase3AC: Fase3ACDTO[];
+  fase1IC?: Fase1ICDTO | null;
+  fase3AC?: Fase3ACDTO[] | null;
   
   // --- Aliases de Compatibilidade (Legado/Atalhos) ---
   tempoArcoMinutos: number;

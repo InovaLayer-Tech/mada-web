@@ -8,8 +8,12 @@ import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { OrcamentoResponseDTO, OrcamentoCalculoRequestDTO } from '../../../../core/models/orcamento.model';
 import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
 import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
+import { GasProtecaoService } from '../../../../core/services/gas-protecao.service';
+import { GasProtecaoResponseDTO } from '../../../../core/models/gas-protecao.model';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ConfigService } from '../../../../core/services/config.service';
+import { EntradaPadrao } from '../../../../core/models/entrada-padrao.model';
 
 @Component({
   selector: 'app-motor-metrologico',
@@ -22,11 +26,14 @@ export class MotorMetrologicoComponent implements OnInit {
   private fb = inject(NonNullableFormBuilder);
   private orcamentoService = inject(OrcamentoService);
   private arameService = inject(ArameMetalicoService);
+  private gasService = inject(GasProtecaoService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
+  private configService = inject(ConfigService);
 
   arames: ArameMetalicoResponseDTO[] = [];
+  gases: GasProtecaoResponseDTO[] = [];
   pendingRfqs: OrcamentoResponseDTO[] = [];
   
   isSubmitting = signal(false);
@@ -67,12 +74,12 @@ export class MotorMetrologicoComponent implements OnInit {
     requerTratamentoTermico: [false],
     custoDiretoTratamentoAC9: [300, [Validators.min(0)]],
     rfGeral: [1.0, [Validators.required, Validators.min(0.5), Validators.max(2.0)]],
-    rfMaterialRfo9: [null],
-    rfGasRfo13: [null],
-    rfEnergiaRfo5: [null],
-    rfTempoRftdt: [null],
-    rfSubstratoRfo10: [null],
-    estrategia_o15: ['a', Validators.required]
+    rfMaterialRfo9: [{ value: 0, disabled: true }],
+    rfGasRfo13: [{ value: 0, disabled: true }],
+    rfEnergiaRfo5: [{ value: 0, disabled: true }],
+    rfTempoRftdt: [{ value: 0, disabled: true }],
+    rfSubstratoRfo10: [{ value: 0, disabled: true }],
+    estrategia_o15: ['a'] 
   });
 
   rfqSelecionado: OrcamentoResponseDTO | null = null;
@@ -93,8 +100,18 @@ export class MotorMetrologicoComponent implements OnInit {
 
   carregarDados() {
     this.arameService.listarTodos().subscribe(data => this.arames = data);
+    this.gasService.listarTodos().subscribe(data => this.gases = data);
     this.orcamentoService.listarTodos().subscribe(data => {
       this.pendingRfqs = data.filter(r => r.status === 'PENDENTE' || r.status === 'CALCULADO');
+    });
+    this.configService.obterConfiguracao().subscribe(config => {
+      this.orcamentoForm.patchValue({
+        rfMaterialRfo9: config.rfMaterialRfo9,
+        rfGasRfo13: config.rfGasRfo13,
+        rfEnergiaRfo5: config.rfEnergiaRfo5,
+        rfTempoRftdt: config.rfTempoRftdt,
+        rfSubstratoRfo10: config.rfSubstratoRfo10
+      });
     });
   }
 

@@ -38,10 +38,14 @@
             @for (o of orcamentos(); track o.id) {
               <tr class="border-b hover:bg-slate-50 transition-colors">
                 <td class="p-3 font-semibold">{{ o.nomeProjeto }}</td>
-                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic1Arame | currency:'BRL' }}</td>
-                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic2Gas | currency:'BRL' }}</td>
-                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic3Equipamento | currency:'BRL' }}</td>
-                <td class="p-3 text-slate-600">{{ o.fase1IC?.ic4Substrato | currency:'BRL' }}</td>
+                @if (o.fase1IC) {
+                  <td class="p-3 text-slate-600">{{ o.fase1IC.ic1Arame | currency:'BRL' }}</td>
+                  <td class="p-3 text-slate-600">{{ o.fase1IC.ic2Gas | currency:'BRL' }}</td>
+                  <td class="p-3 text-slate-600">{{ o.fase1IC.ic3Equipamento | currency:'BRL' }}</td>
+                  <td class="p-3 text-slate-600">{{ o.fase1IC.ic4Substrato | currency:'BRL' }}</td>
+                } @else {
+                  <td class="p-3 text-slate-400 italic text-center" colspan="4">Pendente de Processamento (Stage II)</td>
+                }
                 <td class="p-3 text-emerald-600">
                   @if (o.fase3AC && o.fase3AC.length > 0) {
                      {{ o.fase3AC.length }} svcs

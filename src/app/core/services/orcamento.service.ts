@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { OrcamentoRequestDTO, OrcamentoResponseDTO } from '../models/orcamento.model';
+import { OrcamentoRequestDTO, OrcamentoResponseDTO, OrcamentoCalculoRequestDTO } from '../models/orcamento.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class OrcamentoService {
     return this.http.get<OrcamentoResponseDTO>(`${this.apiUrl}/${id}`);
   }
 
-  processarCalculo(id: string, dadosCalculo: Partial<OrcamentoRequestDTO>): Observable<OrcamentoResponseDTO> {
+  processarCalculo(id: string, dadosCalculo: OrcamentoCalculoRequestDTO): Observable<OrcamentoResponseDTO> {
     return this.http.put<OrcamentoResponseDTO>(`${this.apiUrl}/${id}/calcular`, dadosCalculo);
   }
 
