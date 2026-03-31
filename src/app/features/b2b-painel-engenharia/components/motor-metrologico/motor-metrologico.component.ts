@@ -2,7 +2,7 @@ import { Component, inject, DestroyRef, OnInit, signal } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { OrcamentoResponseDTO, OrcamentoCalculoRequestDTO } from '../../../../core/models/orcamento.model';
@@ -12,13 +12,14 @@ import { GasProtecaoService } from '../../../../core/services/gas-protecao.servi
 import { GasProtecaoResponseDTO } from '../../../../core/models/gas-protecao.model';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfigService } from '../../../../core/services/config.service';
 import { EntradaPadrao } from '../../../../core/models/entrada-padrao.model';
 
 @Component({
   selector: 'app-motor-metrologico',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastModule, RouterModule, InputNumberModule],
   providers: [MessageService],
   templateUrl: './motor-metrologico.component.html'
 })
@@ -28,6 +29,7 @@ export class MotorMetrologicoComponent implements OnInit {
   private arameService = inject(ArameMetalicoService);
   private gasService = inject(GasProtecaoService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private configService = inject(ConfigService);
@@ -47,38 +49,38 @@ export class MotorMetrologicoComponent implements OnInit {
     gasId: ['', Validators.required],
     gasSuplementarId: [''],
     
-    // Variáveis Cinéticas (S e P) - BUG F1: Expansão MADA
-    nCamadas: [40, [Validators.required, Validators.min(1)]],
-    tempoArcoTotalS1: [0, [Validators.required, Validators.min(0)]],
-    tempoMortoTotalS2: [0, [Validators.required, Validators.min(0)]],
-    tempoMortoIntercamadaP11: [0, [Validators.required, Validators.min(0)]],
-    velocidadeArameP9: [5.2, [Validators.required, Validators.min(0.1)]],
-    vazaoGasP2: [0.015, [Validators.required, Validators.min(0)]],
-    vazaoGasSuplementarP3: [0, [Validators.min(0)]],
-    volumeDepositadoO2: [0, [Validators.min(0)]],
+    // Variáveis Cinéticas (S e P)
+    nCamadas: [null as number | null, [Validators.required, Validators.min(1)]],
+    tempoArcoTotalS1: [null as number | null, [Validators.required, Validators.min(0)]],
+    tempoMortoTotalS2: [null as number | null, [Validators.required, Validators.min(0)]],
+    tempoMortoIntercamadaP11: [null as number | null, [Validators.required, Validators.min(0)]],
+    velocidadeArameP9: [null as number | null, [Validators.required, Validators.min(0.1)]],
+    vazaoGasP2: [null as number | null, [Validators.required, Validators.min(0)]],
+    vazaoGasSuplementarP3: [null as number | null, [Validators.min(0)]],
+    volumeDepositadoO2: [null as number | null, [Validators.min(0)]],
     
     // Parâmetros de Setup (O)
-    tempoPreparacaoO6: [120, [Validators.required, Validators.min(0)]],
-    tempoDesmontagemO7: [120, [Validators.required, Validators.min(0)]],
-    custoSubstratoO10: [0, [Validators.required, Validators.min(0)]],
-    custoPreparacaoO11: [0, [Validators.min(0)]],
-    custoRemocaoO12: [0, [Validators.min(0)]],
+    tempoPreparacaoO6: [null as number | null, [Validators.required, Validators.min(0)]],
+    tempoDesmontagemO7: [null as number | null, [Validators.required, Validators.min(0)]],
+    custoSubstratoO10: [null as number | null, [Validators.required, Validators.min(0)]],
+    custoPreparacaoO11: [null as number | null, [Validators.min(0)]],
+    custoRemocaoO12: [null as number | null, [Validators.min(0)]],
     
-    // Flags de Serviços (AC) - BUG F1: Detalhamento Industrial
-    requerProjetoCAD: [true],
-    tempoProjetoWT4: [10, [Validators.min(0)]],
+    // Flags de Serviços (AC)
+    requerProjetoCAD: [false],
+    tempoProjetoWT4: [null as number | null, [Validators.min(0)]],
     requerParametrizacaoAC7: [false],
-    tempoParametrizacaoWT7: [5, [Validators.min(0)]],
-    requerUsinagemFinal: [true],
-    custoDiretoUsinagemAC8: [500, [Validators.min(0)]],
+    tempoParametrizacaoWT7: [null as number | null, [Validators.min(0)]],
+    requerUsinagemFinal: [false],
+    custoDiretoUsinagemAC8: [null as number | null, [Validators.min(0)]],
     requerTratamentoTermico: [false],
-    custoDiretoTratamentoAC9: [300, [Validators.min(0)]],
+    custoDiretoTratamentoAC9: [null as number | null, [Validators.min(0)]],
     rfGeral: [1.0, [Validators.required, Validators.min(0.5), Validators.max(2.0)]],
-    rfMaterialRfo9: [{ value: 0, disabled: true }],
-    rfGasRfo13: [{ value: 0, disabled: true }],
-    rfEnergiaRfo5: [{ value: 0, disabled: true }],
-    rfTempoRftdt: [{ value: 0, disabled: true }],
-    rfSubstratoRfo10: [{ value: 0, disabled: true }],
+    rfMaterialRfo9: [{ value: null as number | null, disabled: true }],
+    rfGasRfo13: [{ value: null as number | null, disabled: true }],
+    rfEnergiaRfo5: [{ value: null as number | null, disabled: true }],
+    rfTempoRftdt: [{ value: null as number | null, disabled: true }],
+    rfSubstratoRfo10: [{ value: null as number | null, disabled: true }],
     estrategia_o15: ['a'] 
   });
 
@@ -87,6 +89,25 @@ export class MotorMetrologicoComponent implements OnInit {
   ngOnInit() {
     this.carregarDados();
     this.checkRouterState();
+    this.checkDirectViewRoute();
+  }
+
+  private checkDirectViewRoute() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+       this.orcamentoService.buscarPorId(id).subscribe({
+          next: (res) => {
+             this.orcamentoCalculado.set(res);
+             this.rfqSelecionado = res;
+             // Ensure names resolve correctly
+             this.orcamentoForm.patchValue({
+                orcamentoId: res.id,
+                arameId: res.materialDesejadoId || ''
+             });
+          },
+          error: () => this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Orçamento não encontrado' })
+       });
+    }
   }
 
   private checkRouterState() {
@@ -118,7 +139,14 @@ export class MotorMetrologicoComponent implements OnInit {
   onRfqChange(event: Event) {
     const id = (event.target as HTMLSelectElement).value;
     this.rfqSelecionado = this.pendingRfqs.find(r => r.id === id) || null;
-    if (this.rfqSelecionado) this.orcamentoForm.patchValue({ orcamentoId: id, requerProjetoCAD: !this.rfqSelecionado.arquivoUrl });
+    if (this.rfqSelecionado) {
+       this.orcamentoForm.patchValue({ 
+          orcamentoId: id, 
+          requerProjetoCAD: !this.rfqSelecionado.arquivoUrl,
+          arameId: this.rfqSelecionado.materialDesejadoId || '',
+          requerTratamentoTermico: !!this.rfqSelecionado.tratamentoTermico
+       });
+    }
   }
 
   onFileUpload(event: Event): void {
@@ -160,13 +188,14 @@ export class MotorMetrologicoComponent implements OnInit {
     // BUG F5: Tipagem segura de acordo com o DTO Java
     const payload: OrcamentoCalculoRequestDTO = {
       ...formValue,
+      numeroCamadas: formValue.nCamadas ?? undefined, // Mapper from nCamadas front to numeroCamadas java
       arameId: formValue.arameId,
       gasId: formValue.gasId,
       gasSuplementarId: formValue.gasSuplementarId || undefined,
       rfGeral: formValue.rfGeral,
-      custoDiretoUsinagemAC8: formValue.custoDiretoUsinagemAC8,
-      custoDiretoTratamentoAC9: formValue.custoDiretoTratamentoAC9
-    };
+      custoDiretoUsinagemAC8: formValue.custoDiretoUsinagemAC8 ?? undefined,
+      custoDiretoTratamentoAC9: formValue.custoDiretoTratamentoAC9 ?? undefined
+    } as OrcamentoCalculoRequestDTO;
 
     this.orcamentoService.processarCalculo(id, payload).subscribe({
       next: (res) => {
@@ -179,6 +208,18 @@ export class MotorMetrologicoComponent implements OnInit {
         this.erroApi.set(err.error?.message || 'Erro no motor de cálculo');
       }
     });
+  }
+
+  getArameName(): string {
+    const id = this.orcamentoForm.get('arameId')?.value || this.orcamentoCalculado()?.materialDesejadoId;
+    const a = this.arames.find(x => x.id === id);
+    return a ? a.ligaMetalica : 'LIGA METÁLICA (RFQ)';
+  }
+
+  getGasName(): string {
+    const id = this.orcamentoForm.get('gasId')?.value;
+    const g = this.gases.find(x => x.id === id);
+    return g ? g.nome : 'MISTURA PADRÃO INOVALAYER';
   }
 
   downloadPDF() { window.print(); }

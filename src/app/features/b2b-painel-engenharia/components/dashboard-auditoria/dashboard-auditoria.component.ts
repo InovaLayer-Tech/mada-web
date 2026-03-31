@@ -1,9 +1,11 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { OrcamentoResponseDTO, Fase3ACDTO } from '../../../../core/models/orcamento.model';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-auditoria',
@@ -17,18 +19,29 @@ import { BaseChartDirective } from 'ng2-charts';
 })
 export class DashboardAuditoriaComponent implements OnInit {
   private orcamentoService = inject(OrcamentoService);
+  private router = inject(Router);
   
   orcamentos = signal<OrcamentoResponseDTO[]>([]);
   totalInvestimento = signal(0);
   massaTotalAcumulada = signal(0);
   tempoTotalProcesso = signal(0);
+  
+  filtroStatus = signal<string>('TODOS');
+  orcamentosFiltrados = computed(() => {
+    const lista = this.orcamentos();
+    const filtro = this.filtroStatus();
+    if (filtro === 'TODOS') return lista;
+    return lista.filter(o => o.status === filtro);
+  });
 
   public doughnutChartLabels: string[] = ['IC1: Arame', 'IC2: Gás', 'IC3: Máquina/MO', 'IC4: Substrato', 'AC: Serviços'];
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: this.doughnutChartLabels,
-    datasets: [{ data: [0, 0, 0, 0, 0] }]
+    datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }]
   };
   public doughnutChartType: ChartType = 'doughnut';
+
+  orcamentoSelecionado = signal<OrcamentoResponseDTO | null>(null);
 
   ngOnInit() {
     this.orcamentoService.listarTodos().subscribe((lista: OrcamentoResponseDTO[]) => {
@@ -45,18 +58,19 @@ export class DashboardAuditoriaComponent implements OnInit {
     this.totalInvestimento.set(total);
     this.massaTotalAcumulada.set(massa);
     this.tempoTotalProcesso.set(tempo);
+  }
 
-    // Atualiza gráfico com as parcelas reais do último orçamento calculado
-    const ultimo = lista.find(o => o.status === 'CALCULADO');
-    if (ultimo && ultimo.fase1IC) {
-      const somaAC = ultimo.fase3AC ? ultimo.fase3AC.reduce((a: number, c: Fase3ACDTO) => a + (c.custoTotalAC || 0), 0) : 0;
-      this.doughnutChartData.datasets[0].data = [
-        ultimo.fase1IC.ic1Arame || 0,
-        ultimo.fase1IC.ic2Gas || 0,
-        ultimo.fase1IC.ic3Equipamento || 0,
-        ultimo.fase1IC.ic4Substrato || 0,
-        somaAC
-      ];
-    }
+  abrirDetalhes(o: OrcamentoResponseDTO) {
+    this.router.navigate(['/b2b/resumo', o.id]);
+  }
+
+  aprovar(id: string, event?: Event) {
+    if (event) event.stopPropagation();
+    this.orcamentoService.aprovar(id).subscribe(() => {
+      this.orcamentoService.listarTodos().subscribe(lista => {
+        this.orcamentos.set(lista);
+        this.calcularKpis(lista);
+      });
+    });
   }
 }

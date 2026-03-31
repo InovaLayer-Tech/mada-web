@@ -61,7 +61,7 @@ import { LanguageService } from '../../../core/services/language.service';
 
       <!-- Main Content -->
       <main class="flex-1 overflow-y-auto relative bg-slate-50">
-        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between px-10">
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 flex items-center justify-between px-10">
           <div class="flex items-center gap-2">
             <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">InovaLayer3D {{ 'SIDEBAR.CUSTOMER_PORTAL' | translate }}</span>
           </div>

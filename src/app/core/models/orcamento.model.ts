@@ -36,7 +36,8 @@ export interface OrcamentoCalculoRequestDTO {
   gasSuplementarId?: string;
   
   // Variáveis Cinéticas e de Processo (Classe S e P)
-  nCamadas: number;
+  nCamadas: number; // Front usa nCamadas
+  numeroCamadas?: number; // Backend usa numeroCamadas
   tempoArcoTotalS1: number;
   tempoMortoTotalS2: number;
   tempoMortoIntercamadaP11: number;
@@ -112,6 +113,7 @@ export interface OrcamentoResponseDTO {
   arquivoUrl: string;
   detalhesInspecao: string;
   materialDesejadoId: string;
+  tratamentoTermico?: boolean;
   
   // --- Agrupamentos Metodológicos (Nest) ---
   fase1IC?: Fase1ICDTO | null;

@@ -114,6 +114,25 @@
               </button>
             </div>
 
+            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm mb-10 text-xs text-slate-700">
+              <h4 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-4 border-b pb-2 border-slate-200">Detalhes da Requisição (Classe C)</h4>
+              <div class="grid grid-cols-2 gap-y-3 gap-x-4">
+                <div><b class="text-slate-900">Aplicação:</b> {{ selectedProposta?.aplicacaoPeca || '--' }}</div>
+                <div><b class="text-slate-900">Tolerância:</b> {{ selectedProposta?.tolerancia || '--' }}</div>
+                <div><b class="text-slate-900">Dimensões:</b> {{ selectedProposta?.dimensaoX }}x{{ selectedProposta?.dimensaoY }}x{{ selectedProposta?.dimensaoZ }} mm</div>
+                <div><b class="text-slate-900">Mecânica:</b> {{ selectedProposta?.solicitacaoMecanica || '--' }}</div>
+                <div><b class="text-slate-900">Ambiental:</b> {{ selectedProposta?.solicitacaoAmbiental || '--' }}</div>
+                <div><b class="text-slate-900">Acabamento:</b> {{ selectedProposta?.acabamento || '--' }}</div>
+                <div><b class="text-slate-900">Inspeção:</b> {{ selectedProposta?.detalhesInspecao || '--' }}</div>
+                <div><b class="text-slate-900">Trat. Térmico:</b> {{ selectedProposta?.tratamentoTermico ? 'Sim' : 'Não' }}</div>
+                <div><b class="text-slate-900">Arquivo (.zip):</b> {{ selectedProposta?.arquivoUrl || '--' }}</div>
+                <div><b class="text-slate-900">Entrega:</b> {{ selectedProposta?.tempoEntregaC9 || '--' }}</div>
+                <div class="col-span-2"><b class="text-slate-900">Impacto Fin. (C10):</b> {{ selectedProposta?.economiaPerdaLucroC10 | currency:'BRL' }}</div>
+              </div>
+              <div class="mt-4"><b class="text-slate-900 block mb-1">Critérios de Aceitação:</b> <span class="text-slate-500">{{ selectedProposta?.criteriosAceitacao || '--' }}</span></div>
+              <div class="mt-2"><b class="text-slate-900 block mb-1">Normas Técnicas:</b> <span class="text-slate-500">{{ selectedProposta?.normasTecnicas || '--' }}</span></div>
+            </div>
+
             <div class="grid grid-cols-1 gap-6 mb-12">
                 <div class="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 flex items-center justify-between shadow-2xl relative overflow-hidden">
                   <div class="absolute -right-4 -top-4 opacity-10">

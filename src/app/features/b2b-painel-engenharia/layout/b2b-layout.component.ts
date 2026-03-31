@@ -13,27 +13,30 @@ import { LanguageService } from '../../../core/services/language.service';
     <div class="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-600">
       <!-- Sidebar B2B (Back-Office LIGHT CORPORATE) -->
       <aside [class.w-72]="!isCollapsed()" [class.w-24]="isCollapsed()" 
-             [style.--nav-justify]="isCollapsed() ? 'center' : 'flex-start'"
-             class="bg-white border-r border-slate-200 flex flex-col shadow-sm z-20 relative overflow-hidden transition-all duration-300 ease-in-out">
+             class="bg-white border-r border-slate-200 flex flex-col shadow-sm z-20 relative transition-all duration-300 ease-in-out">
         
         <div class="p-4 relative z-10 flex flex-col h-full">
           <!-- Logo e Toggle -->
-          <div class="flex items-center gap-3 mb-10 px-2">
-            <div class="relative shrink-0">
+          <div class="flex items-center gap-3 mb-10 px-2 relative h-12">
+            <div class="relative shrink-0 flex items-center justify-center">
+              <!-- Animated Image -->
               <img src="assets/images/inovalayer-circulada.png" alt="IL" 
                    [class.h-12]="!isCollapsed()" [class.h-10]="isCollapsed()"
-                   class="w-auto transition-all duration-300">
-              <div *ngIf="!isCollapsed()" class="absolute -right-2 -top-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                   class="w-auto object-contain transition-all duration-300">
+              <div *ngIf="!isCollapsed()" class="absolute -right-2 top-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
             </div>
-            <div *ngIf="!isCollapsed()" class="flex flex-col overflow-hidden animate-fade-in">
-              <span class="text-[14px] font-black text-slate-900 leading-none">INOVALAYER</span>
-              <span class="text-[10px] font-bold text-blue-600 tracking-widest mt-0.5">MADA OS</span>
+            
+            <div *ngIf="!isCollapsed()" class="flex flex-col overflow-hidden animate-fade-in whitespace-nowrap ml-1 shrink-0">
+              <span class="text-[14px] font-black text-slate-900 leading-none">MADA CORE</span>
+              <span class="text-[10px] font-bold text-blue-600 tracking-widest mt-0.5">BACK-OFFICE</span>
             </div>
-            <button (click)="toggleSidebar()" 
-                    class="ml-auto p-2 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-blue-600">
-               <i [class]="isCollapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'" class="text-sm"></i>
-            </button>
           </div>
+          
+          <!-- Absolute Toggle Button (Moved down to clear the header) -->
+          <button (click)="toggleSidebar()" 
+                  class="absolute -right-4 top-32 w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-md hover:bg-slate-50 transition-all text-slate-400 hover:text-blue-600 z-[9999]">
+             <i [class]="isCollapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'" class="text-sm"></i>
+          </button>
 
           <!-- Menu de Navegação -->
           <nav class="flex flex-col gap-2 flex-1 overflow-y-auto pr-1 custom-scrollbar">
@@ -44,6 +47,7 @@ import { LanguageService } from '../../../core/services/language.service';
 
             <a [routerLink]="['/b2b/pedidos']" routerLinkActive="active-link"
                [title]="isCollapsed() ? 'Fila de Pedidos' : ''"
+               [ngClass]="{'justify-center': isCollapsed(), 'justify-start': !isCollapsed()}"
                class="nav-item w-full group">
               <i class="pi pi-list text-xl shrink-0 group-hover:scale-110 transition-all"></i>
               <span *ngIf="!isCollapsed()" class="nav-text">Fila de Pedidos</span>
@@ -51,6 +55,7 @@ import { LanguageService } from '../../../core/services/language.service';
             
             <a [routerLink]="['/b2b/motor']" routerLinkActive="active-link"
                [title]="isCollapsed() ? 'Motor Metrológico' : ''"
+               [ngClass]="{'justify-center': isCollapsed(), 'justify-start': !isCollapsed()}"
                class="nav-item w-full group">
               <i class="pi pi-cog text-xl shrink-0 group-hover:rotate-45 transition-all"></i>
               <span *ngIf="!isCollapsed()" class="nav-text">Motor Metrológico</span>
@@ -58,6 +63,7 @@ import { LanguageService } from '../../../core/services/language.service';
 
             <a [routerLink]="['/b2b/auditoria']" routerLinkActive="active-link"
                [title]="isCollapsed() ? 'Dashboard Auditoria' : ''"
+               [ngClass]="{'justify-center': isCollapsed(), 'justify-start': !isCollapsed()}"
                class="nav-item w-full group">
               <i class="pi pi-shield text-xl shrink-0 group-hover:scale-110 transition-all"></i>
               <span *ngIf="!isCollapsed()" class="nav-text">Dashboard Auditoria</span>
@@ -71,15 +77,10 @@ import { LanguageService } from '../../../core/services/language.service';
                <div *ngIf="isCollapsed()" class="h-px bg-slate-100 mx-4"></div>
             </div>
 
-            <a [routerLink]="['/b2b/metodologia']" routerLinkActive="active-link"
-               [title]="isCollapsed() ? 'Glossário MADA' : ''"
-               class="nav-item w-full group">
-              <i class="pi pi-book text-xl shrink-0 group-hover:scale-110 transition-all"></i>
-              <span *ngIf="!isCollapsed()" class="nav-text">Glossário MADA</span>
-            </a>
 
             <a [routerLink]="['/b2b/catalogo']" routerLinkActive="active-link"
                [title]="isCollapsed() ? 'Catálogo de Insumos' : ''"
+               [ngClass]="{'justify-center': isCollapsed(), 'justify-start': !isCollapsed()}"
                class="nav-item w-full group">
               <i class="pi pi-database text-xl shrink-0 group-hover:scale-110 transition-all"></i>
               <span *ngIf="!isCollapsed()" class="nav-text">Catálogo Insumos</span>
@@ -87,6 +88,7 @@ import { LanguageService } from '../../../core/services/language.service';
 
             <a [routerLink]="['/b2b/taxas']" routerLinkActive="active-link"
                [title]="isCollapsed() ? 'Configurações de Taxas' : ''"
+               [ngClass]="{'justify-center': isCollapsed(), 'justify-start': !isCollapsed()}"
                class="nav-item w-full group">
               <i class="pi pi-percentage text-xl shrink-0 group-hover:scale-110 transition-all"></i>
               <span *ngIf="!isCollapsed()" class="nav-text">Taxas e Regras</span>
@@ -120,7 +122,7 @@ import { LanguageService } from '../../../core/services/language.service';
       <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto relative bg-slate-50 flex flex-col">
         <!-- Top Bar Header Clean -->
-        <header class="h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between px-12 shrink-0">
+        <header class="h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-50 flex items-center justify-between px-12 shrink-0">
           <div class="flex flex-col">
             <h1 class="text-3xl font-bold tracking-tight text-slate-900 font-sans italic">MADA <span class="text-blue-600 not-italic">BACK-OFFICE</span></h1>
             <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-mono mt-1">
@@ -161,7 +163,6 @@ import { LanguageService } from '../../../core/services/language.service';
     .nav-item {
       display: flex;
       align-items: center;
-      justify-content: var(--nav-justify, flex-start);
       gap: 1rem;
       padding: 0.875rem 1rem;
       border-radius: 1.25rem;
@@ -205,7 +206,7 @@ export class B2bLayoutComponent {
   public authService = inject(AuthService);
   protected languageService = inject(LanguageService);
   
-  isCollapsed = signal(true);
+  isCollapsed = signal(false);
 
   toggleSidebar() {
     this.isCollapsed.set(!this.isCollapsed());

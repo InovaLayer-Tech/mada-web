@@ -15,7 +15,7 @@
             FATOR DE RISCO (RF) GLOBAL: {{ orcamentoForm.get('rfGeral')?.value | number:'1.1-1' }}
         </div>
     </div>
-  </div>  <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-32">
+  </div>  <form [formGroup]="orcamentoForm" (ngSubmit)="onSubmit()" *ngIf="!orcamentoCalculado()" class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-32">
     
     <!-- LADO ESQUERDO: ENTRADAS DE ENGENHARIA -->
     <div class="lg:col-span-12 space-y-8">
@@ -65,16 +65,14 @@
           <div class="p-8 bg-blue-50/30 rounded-[1.5rem] border-2 border-blue-50 md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <label class="block text-[11px] font-black text-blue-600 uppercase mb-2 tracking-widest">VAZÃO GÁS PRINCIPAL (P2)</label>
-              <div class="relative">
-                <input type="number" step="0.001" formControlName="vazaoGasP2" class="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-4 text-xl font-bold text-blue-700 focus:border-blue-400 outline-none">
-                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-blue-300">m³/min</span>
+              <div class="relative w-full">
+                <p-inputNumber formControlName="vazaoGasP2" suffix=" m³/min" mode="decimal" [minFractionDigits]="3" [maxFractionDigits]="3" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-4 text-xl font-bold text-blue-700 focus:border-blue-400 outline-none"></p-inputNumber>
               </div>
             </div>
             <div>
               <label class="block text-[11px] font-black text-blue-600 uppercase mb-2 tracking-widest">VAZÃO GÁS SUPLEMENTAR (P3)</label>
-              <div class="relative">
-                <input type="number" step="0.001" formControlName="vazaoGasSuplementarP3" class="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-4 text-xl font-bold text-blue-700 focus:border-blue-400 outline-none">
-                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-blue-300">m³/min</span>
+              <div class="relative w-full">
+                <p-inputNumber formControlName="vazaoGasSuplementarP3" suffix=" m³/min" mode="decimal" [minFractionDigits]="3" [maxFractionDigits]="3" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-4 text-xl font-bold text-blue-700 focus:border-blue-400 outline-none"></p-inputNumber>
               </div>
             </div>
             <div>
@@ -88,6 +86,84 @@
               </select>
             </div>
           </div>
+        </div>
+
+        <!-- RFQ PREVIEW: DADOS DO CLIENTE (CLASSE C) -->
+        <div *ngIf="rfqSelecionado" class="mt-8 bg-slate-50 border border-slate-200 rounded-2xl p-6 animate-fade-in">
+           <div class="flex items-center gap-2 mb-4">
+              <i class="pi pi-file text-blue-500"></i>
+              <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest">DADOS DO PROJETO VINCULADO (CLASSE C)</h3>
+           </div>
+           <div class="grid grid-cols-2 md:grid-cols-6 gap-y-6 gap-x-6">
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">EMPRESA (C0)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.nomeEmpresa || '--' }}</span>
+              </div>
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">APLICAÇÃO (C2)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.aplicacaoPeca || '--' }}</span>
+              </div>
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">TOLERÂNCIA (C5)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.tolerancia || 'Padrão' }}</span>
+              </div>
+              
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">MECÂNICA (C3)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.solicitacaoMecanica || '--' }}</span>
+              </div>
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">AMBIENTAL (C4)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.solicitacaoAmbiental || '--' }}</span>
+              </div>
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">ACABAMENTO (C6)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.acabamento || '--' }}</span>
+              </div>
+              
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">INSPEÇÕES (C13)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.detalhesInspecao || '--' }}</span>
+              </div>
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">ARQUIVO 3D (C12)</span>
+                 <span class="text-sm font-bold text-blue-600">{{ rfqSelecionado.arquivoUrl || '--' }}</span>
+              </div>
+              <div class="md:col-span-2">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">PRAZO (C9)</span>
+                 <span class="text-sm font-bold text-slate-800">{{ rfqSelecionado.tempoEntregaC9 || '--' }}</span>
+              </div>
+
+              <div class="md:col-span-3">
+                 <span class="block text-[10px] font-black text-emerald-600/80 uppercase tracking-widest">IMPACTO FI. / INOPERÂNCIA (C10)</span>
+                 <span class="text-lg font-black text-emerald-700 font-industrial-mono">{{ rfqSelecionado.economiaPerdaLucroC10 | currency:'BRL' || 'R$ 0,00' }}</span>
+              </div>
+              <div class="md:col-span-3">
+                 <span class="block text-[10px] font-black text-red-600/80 uppercase tracking-widest">TRATAMENTO TÉRMICO REQUISITADO</span>
+                 <span class="text-lg font-black" [ngClass]="rfqSelecionado.tratamentoTermico ? 'text-red-600' : 'text-slate-400'">{{ rfqSelecionado.tratamentoTermico ? 'SIM (AC9 Adicionado)' : 'NÃO SOLICITADO' }}</span>
+              </div>
+
+              <div class="md:col-span-6 bg-slate-100 p-4 rounded-xl">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">CRITÉRIOS DE ACEITAÇÃO (C7)</span>
+                 <span class="text-sm font-medium text-slate-700 italic">{{ rfqSelecionado.criteriosAceitacao || 'Nenhum critério específico detalhado.' }}</span>
+              </div>
+              <div class="md:col-span-6 bg-slate-100 p-4 rounded-xl">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">NORMAS TÉCNICAS (C8)</span>
+                 <span class="text-sm font-medium text-slate-700 italic">{{ rfqSelecionado.normasTecnicas || 'Nenhuma norma indicada.' }}</span>
+              </div>
+
+              <div class="md:col-span-3 border-t border-slate-200 pt-4">
+                 <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">DIMENSÕES (C11)</span>
+                 <span class="text-lg font-bold text-slate-800 lowercase">{{ rfqSelecionado.dimensaoX }}x{{ rfqSelecionado.dimensaoY }}x{{ rfqSelecionado.dimensaoZ }} mm</span>
+              </div>
+              <div class="md:col-span-3 flex justify-between items-center bg-white p-3 border border-slate-200 rounded-xl">
+                 <div class="flex flex-col">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">QUANTIDADE LOTE (C1)</span>
+                    <span class="text-lg font-black text-blue-600">{{ rfqSelecionado.quantidade }} UNIDADES</span>
+                 </div>
+                 <i class="pi pi-box text-2xl text-slate-200"></i>
+              </div>
+           </div>
         </div>
       </div>
 
@@ -104,29 +180,32 @@
             </label>
          </div>
 
-         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+         <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
             <div class="space-y-2">
               <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Nº CAMADAS <small class="text-blue-500 font-mono">(n)</small></label>
-              <input type="number" formControlName="nCamadas" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900 outline-none">
+              <p-inputNumber formControlName="nCamadas" suffix=" univ" styleClass="w-full" inputStyleClass="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900 outline-none"></p-inputNumber>
             </div>
             <div class="space-y-2">
               <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">TEMPO ARCO <small class="text-blue-500 font-mono">(S1)</small></label>
-              <input type="number" formControlName="tempoArcoTotalS1" class="w-full bg-blue-50/50 border-2 border-blue-100 rounded-2xl px-6 py-5 text-xl font-bold text-blue-700 font-mono">
+              <p-inputNumber formControlName="tempoArcoTotalS1" suffix=" min" mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="3" styleClass="w-full" inputStyleClass="w-full bg-blue-50/50 border-2 border-blue-100 rounded-2xl px-6 py-5 text-xl font-bold text-blue-700 font-mono"></p-inputNumber>
             </div>
             <div class="space-y-2">
-              <label class="block text-xs font-black text-slate-400 uppercase tracking-widest text-blue-600">MORTO INTERCAMB. <small class="text-slate-400 font-mono">(P11)</small></label>
-              <input type="number" formControlName="tempoMortoIntercamadaP11" class="w-full bg-blue-50 border-2 border-blue-100 rounded-2xl px-6 py-5 text-xl font-bold text-blue-800 outline-none">
+              <label class="block text-xs font-black text-slate-400 uppercase tracking-widest text-red-600">MORTO INIC. <small class="text-slate-400 font-mono">(S2)</small></label>
+              <p-inputNumber formControlName="tempoMortoTotalS2" suffix=" min" mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="3" styleClass="w-full" inputStyleClass="w-full bg-red-50 border-2 border-red-100 rounded-2xl px-6 py-5 text-xl font-bold text-red-800 outline-none"></p-inputNumber>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs font-black text-slate-400 uppercase tracking-widest text-indigo-600">MORTO INTERCAMB. <small class="text-slate-400 font-mono">(P11)</small></label>
+              <p-inputNumber formControlName="tempoMortoIntercamadaP11" suffix=" min" mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="3" styleClass="w-full" inputStyleClass="w-full bg-indigo-50 border-2 border-indigo-100 rounded-2xl px-6 py-5 text-xl font-bold text-indigo-800 outline-none"></p-inputNumber>
             </div>
             <div class="space-y-2">
               <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">VELOC. ARAME <small class="text-blue-500 font-mono">(P9)</small></label>
-              <input type="number" step="0.1" formControlName="velocidadeArameP9" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900">
+              <p-inputNumber formControlName="velocidadeArameP9" suffix=" m/min" mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="2" styleClass="w-full" inputStyleClass="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900"></p-inputNumber>
             </div>
             
-            <div class="space-y-2 md:col-span-4 bg-slate-50 rounded-2xl p-6 border-2 border-dashed border-slate-200">
+            <div class="space-y-2 md:col-span-5 bg-slate-50 rounded-2xl p-6 border-2 border-dashed border-slate-200">
               <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">VOLUME DEPOSITADO ESTIMADO <small class="text-blue-500 font-mono">(O2)</small></label>
-              <div class="relative">
-                <input type="number" formControlName="volumeDepositadoO2" class="w-full bg-white border-2 border-slate-100 rounded-xl px-6 py-4 text-2xl font-black text-slate-900 pr-20 outline-none">
-                <span class="absolute right-6 top-1/2 -translate-y-1/2 text-sm font-black text-slate-300">CM³</span>
+              <div class="relative w-full">
+                <p-inputNumber formControlName="volumeDepositadoO2" suffix=" cm³" mode="decimal" [minFractionDigits]="1" [maxFractionDigits]="2" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-slate-100 rounded-xl px-6 py-4 text-2xl font-black text-slate-900 outline-none"></p-inputNumber>
               </div>
             </div>
 
@@ -180,17 +259,20 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div class="space-y-2">
             <label class="block text-xs font-black text-slate-400 uppercase mb-2">TEMPO PREPARAÇÃO <small class="text-blue-500 font-mono">(O6)</small></label>
-            <input type="number" formControlName="tempoPreparacaoO6" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900">
+            <div class="relative w-full">
+              <p-inputNumber formControlName="tempoPreparacaoO6" suffix=" min" styleClass="w-full" inputStyleClass="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900"></p-inputNumber>
+            </div>
           </div>
           <div class="space-y-2">
             <label class="block text-xs font-black text-slate-400 uppercase mb-2">TEMPO DESMONT. <small class="text-blue-500 font-mono">(O7)</small></label>
-            <input type="number" formControlName="tempoDesmontagemO7" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900">
+            <div class="relative w-full">
+              <p-inputNumber formControlName="tempoDesmontagemO7" suffix=" min" styleClass="w-full" inputStyleClass="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-xl font-bold text-slate-900"></p-inputNumber>
+            </div>
           </div>
           <div class="space-y-2">
             <label class="block text-xs font-black text-orange-600 uppercase mb-2">CUSTO SUBSTRATO <small class="text-slate-400 font-mono">(O10)</small></label>
-            <div class="relative">
-                <input type="number" formControlName="custoSubstratoO10" class="w-full bg-orange-50 border-2 border-orange-100 rounded-2xl px-6 py-5 text-xl font-bold text-orange-900 outline-none">
-                <span class="absolute right-6 top-1/2 -translate-y-1/2 text-sm font-black text-orange-300">BRL</span>
+            <div class="relative w-full">
+                <p-inputNumber formControlName="custoSubstratoO10" mode="currency" currency="BRL" locale="pt-BR" styleClass="w-full" inputStyleClass="w-full bg-orange-50 border-2 border-orange-100 rounded-2xl px-6 py-5 text-xl font-bold text-orange-900 outline-none"></p-inputNumber>
             </div>
           </div>
         </div>
@@ -205,9 +287,8 @@
               </div>
               <input type="checkbox" formControlName="requerProjetoCAD" class="w-6 h-6 rounded-lg accent-blue-600 cursor-pointer">
             </div>
-            <div class="flex items-center gap-3" *ngIf="orcamentoForm.get('requerProjetoCAD')?.value">
-                <input type="number" formControlName="tempoProjetoWT4" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none">
-                <span class="text-xs font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">HORAS ENG.</span>
+            <div class="flex items-center gap-3 w-full" *ngIf="orcamentoForm.get('requerProjetoCAD')?.value">
+                <p-inputNumber formControlName="tempoProjetoWT4" suffix=" h" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none"></p-inputNumber>
             </div>
           </div>
 
@@ -220,9 +301,8 @@
               </div>
               <input type="checkbox" formControlName="requerParametrizacaoAC7" class="w-6 h-6 rounded-lg accent-indigo-600 cursor-pointer">
             </div>
-            <div class="flex items-center gap-3" *ngIf="orcamentoForm.get('requerParametrizacaoAC7')?.value">
-                <input type="number" formControlName="tempoParametrizacaoWT7" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none">
-                <span class="text-xs font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">HORAS SETUP</span>
+            <div class="flex items-center gap-3 w-full" *ngIf="orcamentoForm.get('requerParametrizacaoAC7')?.value">
+                <p-inputNumber formControlName="tempoParametrizacaoWT7" suffix=" h" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none"></p-inputNumber>
             </div>
           </div>
 
@@ -235,10 +315,9 @@
               </div>
               <input type="checkbox" formControlName="requerUsinagemFinal" class="w-6 h-6 rounded-lg accent-amber-600 cursor-pointer">
             </div>
-            <div class="flex items-center gap-3" *ngIf="orcamentoForm.get('requerUsinagemFinal')?.value">
+            <div class="flex items-center gap-3 w-full" *ngIf="orcamentoForm.get('requerUsinagemFinal')?.value">
                 <div class="relative w-full">
-                    <input type="number" formControlName="custoDiretoUsinagemAC8" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none pr-14">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300">BRL</span>
+                    <p-inputNumber formControlName="custoDiretoUsinagemAC8" mode="currency" currency="BRL" locale="pt-BR" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none"></p-inputNumber>
                 </div>
             </div>
           </div>
@@ -252,15 +331,37 @@
               </div>
               <input type="checkbox" formControlName="requerTratamentoTermico" class="w-6 h-6 rounded-lg accent-red-600 cursor-pointer">
             </div>
-            <div class="flex items-center gap-3" *ngIf="orcamentoForm.get('requerTratamentoTermico')?.value">
+            <div class="flex items-center gap-3 w-full" *ngIf="orcamentoForm.get('requerTratamentoTermico')?.value">
                 <div class="relative w-full">
-                    <input type="number" formControlName="custoDiretoTratamentoAC9" class="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none pr-14">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300">BRL</span>
+                    <p-inputNumber formControlName="custoDiretoTratamentoAC9" mode="currency" currency="BRL" locale="pt-BR" styleClass="w-full" inputStyleClass="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-4 text-xl font-bold text-slate-900 outline-none"></p-inputNumber>
                 </div>
             </div>
           </div>
         </div>
       </div>
+      
+      <!-- Estratégia de Fabricação -->
+      <div class="bg-white rounded-[2rem] shadow-xl border border-slate-200 p-10 transform transition-all hover:shadow-2xl">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-1.5 h-8 bg-purple-600 rounded-full"></div>
+          <h2 class="text-2xl font-black text-slate-800 uppercase tracking-widest">ESTRATÉGIA DE FABRICAÇÃO (O15)</h2>
+        </div>
+        
+        <div class="grid grid-cols-1">
+          <select formControlName="estrategia_o15"
+                  class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-lg font-bold text-slate-900 focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none transition-all cursor-pointer">
+              <option value="a">a - Peça Única</option>
+              <option value="b">b - Múltiplas Simuntâneas/Sequenciais</option>
+              <option value="c">c - Lote Único</option>
+              <option value="d">d - Lotes Sucessivos</option>
+          </select>
+          <p *ngIf="orcamentoForm.get('estrategia_o15')?.value !== 'a'" class="mt-4 text-xs font-bold text-amber-600 flex items-center gap-2">
+            <i class="pi pi-exclamation-triangle mt-px"></i>
+            Atenção: Atualmente o motor suporta apenas peças únicas (Estratégia a). Cálculos com outras estratégias ignoram regras de lote.
+          </p>
+        </div>
+      </div>
+      
     </div>
 
     <!-- BOTÃO DE CÁLCULO GIGANTE NO FINAL -->
@@ -283,19 +384,175 @@
     </div>
   </form>
 
-  <!-- Orçamento Calculado -->
-  <div *ngIf="orcamentoCalculado()" class="mt-8 animate-slide-up">
-     <div class="bg-indigo-900 rounded-3xl p-8 text-white relative overflow-hidden">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+  <!-- ORÇAMENTO CALCULADO: NOVO LAYOUT INSPIRADO NOS DESIGNS (SCREENSHOTS 2 E 3) -->
+  <div *ngIf="orcamentoCalculado()" class="mt-8 mb-20 animate-slide-up space-y-8">
+     
+     <!-- BLOCO 1 (SCREENSHOT 3): RESUMO METROLÓGICO FINAL (DARK CARD WITH METRICS) -->
+     <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
+        <!-- HEADER DARK RESULT -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center relative z-10 border-b border-white/10 pb-8 mb-8">
            <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-indigo-300">RESULTADO RECONCILIADO</span>
-              <h2 class="text-4xl font-bold mt-2 tracking-tight">FC: <span class="text-green-400">{{ orcamentoCalculado()?.precoFinalSugerido | currency:'BRL' }}</span></h2>
-              <p class="text-indigo-200 mt-2 text-sm max-w-md"> Memorial gerado para <b>{{ orcamentoForm.get('nCamadas')?.value }} camadas</b>. TC Base: {{ orcamentoCalculado()?.custoTotalFinal | currency:'BRL' }}.</p>
+              <h2 class="text-4xl lg:text-5xl font-black tracking-tight uppercase">RESUMO METROLÓGICO FINAL</h2>
+              <span class="text-blue-400 font-mono text-sm uppercase tracking-widest mt-2 block">SÍNTESE DE CUSTOS MADA (PEÇA ÚNICA)</span>
            </div>
-           <div class="flex gap-4">
-              <button (click)="downloadPDF()" class="bg-white/10 hover:bg-white/20 px-6 py-3 rounded-2xl font-bold text-sm">IMPRIMIR</button>
-              <button [routerLink]="['/b2b/auditoria']" class="bg-white text-indigo-900 px-6 py-3 rounded-2xl font-bold text-sm shadow-xl">IR PARA AUDITORIA</button>
+           <div class="flex flex-col items-end mt-4 md:mt-0">
+              <span class="text-slate-400 text-sm font-black uppercase tracking-widest">PREÇO FINAL SUGERIDO</span>
+              <span class="text-5xl lg:text-6xl font-black text-emerald-400 font-industrial-mono leading-none">{{ orcamentoCalculado()?.precoFinalSugerido | currency:'BRL' }}</span>
            </div>
+        </div>
+
+        <!-- INDICADORES 4 COLUNAS (SCREENSHOT 3) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10 mb-8">
+           <!-- FABRICAÇÃO -->
+           <div class="bg-slate-800/60 border border-slate-700/50 p-6 rounded-3xl">
+              <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">CUSTO DE FABRICAÇÃO</span>
+              <span class="text-2xl font-black block text-white font-industrial-mono">{{ orcamentoCalculado()?.custoTotalFinal | currency:'BRL' }}</span>
+           </div>
+           <!-- MARGEM -->
+           <div class="bg-slate-800/60 border border-slate-700/50 p-6 rounded-3xl">
+              <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">MARGEM APLICADA</span>
+              <span class="text-2xl font-black block text-blue-400">+{{ ((orcamentoCalculado()?.precoFinalSugerido! / orcamentoCalculado()?.custoTotalFinal!) - 1) * 100 | number:'1.2-2' }}%</span>
+           </div>
+           <!-- INSUMO 1 -->
+           <div class="bg-slate-800/60 border border-slate-700/50 p-6 rounded-3xl">
+              <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">MATERIAL CONSUMÍVEL</span>
+              <span class="text-[14px] font-bold block text-slate-200 leading-tight uppercase">{{ getArameName() }}</span>
+           </div>
+           <!-- INSUMO 2 -->
+           <div class="bg-slate-800/60 border border-slate-700/50 p-6 rounded-3xl">
+              <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">GÁS DE PROTEÇÃO</span>
+              <span class="text-[14px] font-bold block text-slate-200 leading-tight uppercase">{{ getGasName() }}</span>
+           </div>
+        </div>
+
+        <!-- BOTOES DE AÇÃO -->
+        <div class="flex flex-wrap gap-4 relative z-10 w-full lg:justify-start">
+           <button type="button" (click)="orcamentoCalculado.set(null)" 
+                   class="bg-slate-800/50 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-black tracking-widest text-[11px] uppercase transition-all flex items-center gap-3">
+              REFAZER CÁLCULO
+           </button>
+           <button [routerLink]="['/b2b/auditoria']" 
+                   class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl font-black tracking-widest text-[11px] uppercase shadow-lg shadow-blue-500/20 transition-all flex items-center gap-3">
+              IR DETALHAR AUDITORIA
+           </button>
+           <button (click)="downloadPDF()" 
+                   class="bg-[#10b981] hover:bg-[#059669] text-white px-8 py-4 rounded-xl font-black tracking-widest text-[11px] uppercase shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-3">
+              <i class="pi pi-file-pdf"></i> BAIXAR PDF
+           </button>
+        </div>
+        
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-blue-600/10 rounded-full blur-[80px]"></div>
+     </div>
+
+     <!-- BLOCO 2 (SCREENSHOT 2): ESTATÍSTICA E BREAKDOWN -->
+     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- DOUGHNUT CHART CARD (LEFT) -->
+        <div class="lg:col-span-5 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-10 flex flex-col items-center justify-center">
+            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-12 w-full text-center">COMPOSIÇÃO DE CUSTOS</h3>
+            
+            <div class="relative w-64 h-64 rounded-full mb-12 flex items-center justify-center shadow-inner"
+                 [style.background]="'conic-gradient(#10b981 ' + ((orcamentoCalculado()?.custoTotalAC! / orcamentoCalculado()?.custoTotalFinal!) * 100) + '%, #3b82f6 0 ' + (((orcamentoCalculado()?.custoTotalAC! + orcamentoCalculado()?.fase1IC?.ic1Arame! + orcamentoCalculado()?.fase1IC?.ic2Gas!) / orcamentoCalculado()?.custoTotalFinal!) * 100) + '%, #94a3b8 0 100%)'">
+                
+                <div class="w-48 h-48 bg-white rounded-full flex flex-col items-center justify-center shadow-lg absolute">
+                   <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">TOTAL</span>
+                   <span class="text-3xl font-black text-slate-900 font-industrial-mono">{{ orcamentoCalculado()?.custoTotalFinal | currency:'BRL' }}</span>
+                </div>
+            </div>
+
+            <div class="w-full space-y-4 px-6">
+               <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-slate-400 shrink-0"></div>
+                  <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">SETUP E SUBSTRATO BASE</span>
+               </div>
+               <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-blue-500 shrink-0"></div>
+                  <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">DEPOSIÇÃO E CORE WAAM</span>
+               </div>
+               <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></div>
+                  <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">AC (ADICIONAIS)</span>
+               </div>
+            </div>
+        </div>
+
+        <!-- ACCORDIONS (RIGHT) -->
+        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-8 lg:p-10 flex flex-col justify-center">
+            
+            <div class="w-full space-y-6">
+                <!-- ROW 1 (IC/SETUP) -->
+                <div class="border-2 border-slate-100 rounded-[2rem] p-3 text-sm">
+                   <div class="flex justify-between items-center px-4 py-3">
+                      <div class="flex items-center gap-4">
+                         <div class="w-[6px] h-6 bg-slate-400 rounded-full"></div>
+                         <span class="text-[13px] font-black text-slate-800 uppercase tracking-wide">IC - CUSTOS INDIRETOS</span>
+                      </div>
+                      <div class="flex items-center gap-3">
+                         <span class="font-industrial-mono font-bold text-slate-600 bg-slate-100 px-4 py-1.5 rounded-xl">{{ (orcamentoCalculado()?.fase1IC?.ic3Equipamento! + orcamentoCalculado()?.fase1IC?.ic4Substrato!) | currency:'BRL' }}</span>
+                         <i class="pi pi-angle-down text-slate-300"></i>
+                      </div>
+                   </div>
+                   <div class="bg-slate-50 border border-slate-100/50 rounded-2xl p-5 mt-2 space-y-4">
+                      <div class="flex justify-between items-center">
+                         <span class="text-slate-500 font-bold italic text-sm">Setup de Máquina e Preparação Industrial</span>
+                         <span class="font-black text-slate-900 font-industrial-mono">{{ orcamentoCalculado()?.fase1IC?.ic3Equipamento | currency:'BRL' }}</span>
+                      </div>
+                      <hr class="border-slate-200/50">
+                      <div class="flex justify-between items-center">
+                         <span class="text-slate-500 font-bold italic text-sm">Preparação de Substrato e Retífica</span>
+                         <span class="font-black text-slate-900 font-industrial-mono">{{ orcamentoCalculado()?.fase1IC?.ic4Substrato | currency:'BRL' }}</span>
+                      </div>
+                   </div>
+                </div>
+
+                <!-- ROW 2 (DC/CORE) -->
+                <div class="border-2 border-slate-100 rounded-[2rem] p-3 text-sm">
+                   <div class="flex justify-between items-center px-4 py-3">
+                      <div class="flex items-center gap-4">
+                         <div class="w-[6px] h-6 bg-blue-600 rounded-full"></div>
+                         <span class="text-[13px] font-black text-slate-800 uppercase tracking-wide">DC - CUSTOS DIRETOS (CORE)</span>
+                      </div>
+                      <div class="flex items-center gap-3">
+                         <span class="font-industrial-mono font-bold text-blue-700 bg-blue-50 px-4 py-1.5 border border-blue-100 rounded-xl">{{ (orcamentoCalculado()?.fase1IC?.ic1Arame! + orcamentoCalculado()?.fase1IC?.ic2Gas!) | currency:'BRL' }}</span>
+                         <i class="pi pi-angle-down text-blue-300"></i>
+                      </div>
+                   </div>
+                   <div class="bg-blue-50/30 border border-blue-50 rounded-2xl p-5 mt-2 space-y-4">
+                      <div class="flex justify-between items-center">
+                         <span class="text-slate-500 font-bold italic text-sm">Consumo de Arame Metálico</span>
+                         <span class="font-black text-slate-900 font-industrial-mono">{{ orcamentoCalculado()?.fase1IC?.ic1Arame | currency:'BRL' }}</span>
+                      </div>
+                      <hr class="border-blue-100">
+                      <div class="flex justify-between items-center">
+                         <span class="text-slate-500 font-bold italic text-sm">Consumo de Gás (Principal & Sup.)</span>
+                         <span class="font-black text-slate-900 font-industrial-mono">{{ orcamentoCalculado()?.fase1IC?.ic2Gas | currency:'BRL' }}</span>
+                      </div>
+                   </div>
+                </div>
+
+                <!-- ROW 3 (AC) -->
+                <div class="border-2 border-emerald-50 rounded-[2rem] p-3 text-sm bg-emerald-50/20" *ngIf="orcamentoCalculado()?.fase3AC?.length">
+                   <div class="flex justify-between items-center px-4 py-3">
+                      <div class="flex items-center gap-4">
+                         <div class="w-[6px] h-6 bg-emerald-500 rounded-full"></div>
+                         <span class="text-[13px] font-black text-emerald-900 uppercase tracking-wide">AC - ADICIONAIS</span>
+                      </div>
+                      <div class="flex items-center gap-3">
+                         <span class="font-industrial-mono font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-4 py-1.5 rounded-xl">{{ orcamentoCalculado()?.custoTotalAC | currency:'BRL' }}</span>
+                         <i class="pi pi-angle-down text-emerald-400"></i>
+                      </div>
+                   </div>
+                   <div class="bg-white/80 border border-emerald-100 rounded-2xl p-5 mt-2 space-y-4">
+                      <div *ngFor="let ac of orcamentoCalculado()?.fase3AC; let last = last" class="w-full">
+                          <div class="flex justify-between items-center">
+                             <span class="text-slate-600 font-bold italic text-sm">{{ ac.descricaoServico }}</span>
+                             <span class="font-black text-slate-900 font-industrial-mono">{{ ac.custoTotalAC | currency:'BRL' }}</span>
+                          </div>
+                          <hr *ngIf="!last" class="border-emerald-50 my-3">
+                      </div>
+                   </div>
+                </div>
+            </div>
         </div>
      </div>
   </div>

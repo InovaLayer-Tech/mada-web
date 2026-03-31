@@ -30,3 +30,24 @@ body {
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: -0.025em;
 }
+
+/* FIX: Remove bordas pretas (black bar) globais residuais injetadas pelo PrimeNG no wrapper */
+:root {
+  color-scheme: light !important;
+  --p-inputtext-color: #0f172a !important;
+  --text-color: #0f172a !important;
+}
+
+.p-inputnumber {
+  border: none !important;
+  outline: none !important;
+}
+
+.p-inputtext {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+}
+.p-inputnumber-button {
+  display: none !important;
+}
