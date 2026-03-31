@@ -31,6 +31,10 @@ export class OrcamentoService {
     return this.http.patch<OrcamentoResponseDTO>(`${this.apiUrl}/${id}/aprovar`, {});
   }
 
+  devolverParaCliente(id: string, motivo: string): Observable<OrcamentoResponseDTO> {
+    return this.http.patch<OrcamentoResponseDTO>(`${this.apiUrl}/${id}/devolver`, { motivo });
+  }
+
   excluir(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

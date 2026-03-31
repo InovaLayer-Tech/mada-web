@@ -2,8 +2,9 @@ import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { tap, catchError, of } from 'rxjs';
+import { tap, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { LogService } from './log.service';
 
 export interface AuthResponse {
   token: string;
@@ -20,20 +21,21 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private log = inject(LogService);
   private apiUrl = `${environment.apiUrl}/auth`;
 
   // Estado reativo do usuário
   currentUser = signal<AuthResponse | null>(this.getUserFromStorage());
 
   login(credentials: any) {
-    console.log('DEBUG [AuthService] Iniciando tentativa de login para:', credentials.email);
+    this.log.info('AuthService', 'Tentativa de login | email=' + credentials.email);
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        console.log('DEBUG [AuthService] Login realizado com sucesso:', response.email);
+        this.log.info('AuthService', 'Login bem-sucedido | email=' + response.email + ' | role=' + response.role);
         this.saveUser(response);
       }),
       catchError(error => {
-        console.error('DEBUG [AuthService] Erro na tentativa de login:', error);
+        this.log.error('AuthService', 'Falha no login | email=' + credentials.email, error);
         throw error;
       })
     );

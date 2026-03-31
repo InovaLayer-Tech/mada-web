@@ -15,8 +15,7 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* * Reset e configurações globais de base (Chassi da Aplicação)
- */
+/* Reset e configurações globais */
 html,
 body {
   height: 100%;
@@ -31,23 +30,53 @@ body {
   letter-spacing: -0.025em;
 }
 
-/* FIX: Remove bordas pretas (black bar) globais residuais injetadas pelo PrimeNG no wrapper */
+/* =============================================================
+ * FIX: Inputs com fundo preto/invisível causado pelo PrimeNG
+ *
+ * PROBLEMA: O tema Aura do PrimeNG herda color-scheme do SO.
+ * Em dark mode, injeta --p-inputtext-background: #1e293b
+ * sobrescrevendo as classes Tailwind passadas em inputStyleClass.
+ *
+ * SOLUÇÃO:
+ * 1. darkModeSelector: 'none' no app.config.ts (já aplicado) — força modo claro
+ * 2. Aqui: garantir vars PrimeNG apontam para cores claras
+ *    SEM transparência (transparent some o input completamente).
+ * ============================================================= */
 :root {
-  color-scheme: light !important;
-  --p-inputtext-color: #0f172a !important;
-  --text-color: #0f172a !important;
+  color-scheme: light;
+  --p-inputtext-color: #1e293b;
+  --p-inputtext-background: #ffffff;
+  --p-inputtext-border-color: #e2e8f0;
+  --p-inputtext-hover-border-color: #94a3b8;
+  --p-inputtext-focus-border-color: #3b82f6;
+  --p-inputtext-focus-shadow: none;
+  --text-color: #1e293b;
+  --surface-ground: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-border: #e2e8f0;
 }
 
+/* Wrapper do p-inputNumber: sem borda/sombra extra no container */
 .p-inputnumber {
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
+/* p-inputtext: apenas remove shadow */
 .p-inputtext {
-  background-color: transparent !important;
   box-shadow: none !important;
-  color: #0f172a !important;
 }
+
+/* Inputs dentro do motor: garantir que inputStyleClass vença */
+.p-inputnumber > .p-inputtext {
+  width: 100%;
+  background: inherit;
+  color: inherit;
+}
+
+/* Oculta os botões de incremento/decremento do p-inputNumber */
 .p-inputnumber-button {
   display: none !important;
 }

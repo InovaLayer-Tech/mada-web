@@ -1,4 +1,4 @@
-<div class="dashboard-container p-4">
+<div class="dashboard-container p-4 max-w-full">
   <h1 class="text-2xl font-bold mb-6 text-indigo-900">Painel de Auditoria MADA (Industrialization Phase)</h1>
 
   <!-- KPIs Globais -->
@@ -20,10 +20,10 @@
   <div class="grid grid-cols-1 gap-8">
     <!-- Lista Detalhada para Auditoria -->
     <div class="bg-white p-6 rounded-xl shadow-md overflow-hidden">
-      <div class="flex justify-between items-center mb-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 class="text-lg font-bold text-slate-800">Detalhamento por Projeto (Breakdown IC/AC)</h2>
         
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
            <button class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all"
                    [class]="filtroStatus() === 'TODOS' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'"
                    (click)="filtroStatus.set('TODOS')">TODOS</button>
@@ -36,6 +36,9 @@
            <button class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all"
                    [class]="filtroStatus() === 'APROVADO' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'"
                    (click)="filtroStatus.set('APROVADO')">APROVADOS</button>
+           <button class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all"
+                   [class]="filtroStatus() === 'AGUARDANDO_CLIENTE' ? 'bg-amber-600 text-white border-amber-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'"
+                   (click)="filtroStatus.set('AGUARDANDO_CLIENTE')">DEVOLVIDOS</button>
         </div>
       </div>
       
@@ -44,54 +47,77 @@
           <thead>
             <tr class="bg-slate-50 border-b">
               <th class="p-3">Projeto</th>
+              <th class="p-3">Status</th>
               <th class="p-3">IC1 (Arame)</th>
               <th class="p-3">IC2 (Gás)</th>
               <th class="p-3">IC3 (Máquina/MO)</th>
               <th class="p-3">IC4 (Substrato)</th>
               <th class="p-3">Serviços (AC)</th>
               <th class="p-3 text-right">TOTAL (TC)</th>
-              <th class="p-3 text-center">AÇÕES</th>
+              <th class="p-3 text-center min-w-[200px]">AÇÕES</th>
             </tr>
           </thead>
           <tbody>
             @for (o of orcamentosFiltrados(); track o.id) {
-              <tr class="border-b hover:bg-slate-100 transition-colors cursor-pointer"
-                  [class.bg-indigo-50]="orcamentoSelecionado()?.id === o.id"
-                  (click)="abrirDetalhes(o)">
-                <td class="p-3 font-semibold">{{ o.nomeProjeto }}</td>
+              <tr class="border-b hover:bg-slate-50 transition-colors"
+                  [class.bg-indigo-50]="orcamentoSelecionado()?.id === o.id">
+                <td class="p-3 font-semibold cursor-pointer" (click)="abrirDetalhes(o)">{{ o.nomeProjeto }}</td>
+                <td class="p-3">
+                  <span class="text-[10px] font-black px-2 py-1 rounded-full"
+                        [ngClass]="{
+                          'bg-yellow-100 text-yellow-700': o.status === 'PENDENTE',
+                          'bg-blue-100 text-blue-700': o.status === 'CALCULADO',
+                          'bg-emerald-100 text-emerald-700': o.status === 'APROVADO',
+                          'bg-purple-100 text-purple-700': o.status === 'EM_EXECUCAO' || o.status === 'FINALIZADO',
+                          'bg-amber-100 text-amber-700': o.status === 'AGUARDANDO_CLIENTE',
+                          'bg-slate-100 text-slate-400': o.status === 'REJEITADO' || o.status === 'INCOMPLETE_RFQ'
+                        }">{{ o.status }}</span>
+                </td>
                 @if (o.fase1IC) {
                   <td class="p-3 text-slate-600">{{ o.fase1IC.ic1Arame | currency:'BRL' }}</td>
                   <td class="p-3 text-slate-600">{{ o.fase1IC.ic2Gas | currency:'BRL' }}</td>
                   <td class="p-3 text-slate-600">{{ o.fase1IC.ic3Equipamento | currency:'BRL' }}</td>
                   <td class="p-3 text-slate-600">{{ o.fase1IC.ic4Substrato | currency:'BRL' }}</td>
                 } @else {
-                  <td class="p-3 text-slate-400 italic text-center" colspan="4">Pendente de Processamento (Stage II)</td>
+                  <td class="p-3 text-slate-400 italic text-center" colspan="4">Pendente (Stage II)</td>
                 }
                 <td class="p-3 text-emerald-600">
                   @if (o.fase3AC && o.fase3AC.length > 0) {
                      {{ o.fase3AC.length }} svcs
                   } @else {
-                    - 
+                    -
                   }
                 </td>
                 <td class="p-3 text-right font-bold text-slate-900">{{ o.custoTotalFinal | currency:'BRL' }}</td>
-                <td class="p-3 text-center">
-                  <div class="flex items-center justify-center gap-2">
-                    @if (o.status !== 'ANALISE_PENDENTE') {
-                       <button (click)="abrirDetalhes(o); $event.stopPropagation()" class="bg-blue-100/50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black transition-all shadow-sm border border-blue-200">
-                         <i class="pi pi-chart-pie mr-1"></i> RESUMO
-                       </button>
-                    }
-                    @if (o.status === 'CALCULADO') {
-                       <button (click)="aprovar(o.id, $event)" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[10px] uppercase font-black transition-all shadow-sm">
+                <td class="p-3">
+                  <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <!-- Botão RESUMO: sempre visível -->
+                    <button (click)="abrirDetalhes(o); $event.stopPropagation()"
+                            class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black transition-all border border-blue-200">
+                      <i class="pi pi-chart-pie mr-1"></i> RESUMO
+                    </button>
+
+                    <!-- Botão APROVAR: apenas para CALCULADO -->
+                    @if (o.status === 'CALCULADO' || o.status === 'PENDENTE') {
+                       <button (click)="aprovar(o.id, $event)"
+                               class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[10px] uppercase font-black transition-all shadow-sm">
                          <i class="pi pi-check mr-1"></i> APROVAR
                        </button>
-                    } @else if (o.status === 'APROVADO') {
-                       <span class="text-emerald-600 font-bold text-[10px] flex items-center justify-center gap-1 border border-emerald-200 bg-emerald-50 px-2 py-1.5 rounded-lg uppercase">
-                         <i class="pi pi-verified"></i> LOTE OK
+                    }
+
+                    <!-- Badge APROVADO -->
+                    @if (o.status === 'APROVADO') {
+                       <span class="text-emerald-600 font-bold text-[10px] flex items-center gap-1 border border-emerald-200 bg-emerald-50 px-2 py-1.5 rounded-lg uppercase">
+                         <i class="pi pi-verified"></i> APROVADO
                        </span>
-                    } @else if (o.status === 'ANALISE_PENDENTE') {
-                       <span class="text-slate-400 text-xs">-</span>
+                    }
+
+                    <!-- Botão DEVOLVER: disponível para PENDENTE e CALCULADO -->
+                    @if (o.status === 'PENDENTE' || o.status === 'CALCULADO') {
+                       <button (click)="abrirModalDevolucao(o, $event)"
+                               class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black transition-all border border-amber-200">
+                         <i class="pi pi-undo mr-1"></i> DEVOLVER
+                       </button>
                     }
                   </div>
                 </td>
@@ -103,3 +129,52 @@
     </div>
   </div>
 </div>
+
+<!-- MODAL DE DEVOLUÇÃO -->
+@if (modalDevolucaoAberto()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in"
+       (click)="fecharModalDevolucao()">
+    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg p-10 animate-in slide-in-from-bottom-4"
+         (click)="$event.stopPropagation()">
+
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center">
+          <i class="pi pi-undo text-2xl text-amber-600"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Devolver ao Cliente</h2>
+          <p class="text-sm text-slate-500 mt-1">Projeto: <strong>{{ orcamentoDevolucao()?.nomeProjeto }}</strong></p>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-3">
+          Motivo da Devolução <span class="text-red-500">*</span>
+        </label>
+        <textarea
+          [(ngModel)]="motivoDevolucao"
+          rows="5"
+          placeholder="Descreva detalhadamente o que está faltando ou incorreto no RFQ para que o cliente possa corrigir..."
+          class="w-full bg-slate-50 text-slate-900 px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:border-amber-400 transition-all font-medium resize-none text-sm"
+        ></textarea>
+        @if (motivoDevolucao.length > 0 && motivoDevolucao.length < 10) {
+          <p class="text-red-500 text-xs mt-2 font-bold">Mínimo de 10 caracteres necessários.</p>
+        }
+        <p class="text-slate-400 text-xs mt-2">{{ motivoDevolucao.length }}/1000 caracteres</p>
+      </div>
+
+      <div class="flex gap-4 justify-end">
+        <button (click)="fecharModalDevolucao()"
+                class="px-8 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-black text-sm transition-all uppercase tracking-widest">
+          Cancelar
+        </button>
+        <button (click)="confirmarDevolucao()"
+                [disabled]="motivoDevolucao.length < 10 || isDevolving()"
+                class="px-8 py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-black text-sm transition-all uppercase tracking-widest shadow-lg shadow-amber-500/20 flex items-center gap-2">
+          @if (isDevolving()) { <i class="pi pi-spin pi-spinner"></i> }
+          Confirmar Devolução
+        </button>
+      </div>
+    </div>
+  </div>
+}

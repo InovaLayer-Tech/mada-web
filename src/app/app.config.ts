@@ -48,7 +48,13 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     providePrimeNG({
       theme: {
-        preset: Aura
+        preset: Aura,
+        options: {
+          // Desativa completamente o dark mode do PrimeNG.
+          // Sem isso, o tema Aura ativa dark mode quando o SO estiver em dark,
+          // causando inputs com fundo preto e texto invisível.
+          darkModeSelector: 'none'
+        }
       }
     })
   ],

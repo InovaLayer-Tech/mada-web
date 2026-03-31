@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ArameMetalicoService } from '../../../../core/services/arame-metalico.service';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
+import { LogService } from '../../../../core/services/log.service';
 
 @Component({
   selector: 'app-solicitacao-rfq',
@@ -18,6 +19,7 @@ export class SolicitacaoRfqComponent implements OnInit {
   private router = inject(Router);
   private arameService = inject(ArameMetalicoService);
   private orcamentoService = inject(OrcamentoService);
+  private log = inject(LogService);
 
   arames: ArameMetalicoResponseDTO[] = [];
   isSending = signal(false);
@@ -167,8 +169,7 @@ export class SolicitacaoRfqComponent implements OnInit {
       
       // Simulação de preenchimento do path (em prod seria o retorno do S3/Blob Storage)
       this.rfqForm.patchValue({ arquivoUrl: `uploads/3d/${file.name}` });
-      
-      console.log('Arquivo ZIP selecionado e validado:', file.name);
+      this.log.info('SolicitacaoRfq', `Arquivo ZIP selecionado | nome=${file.name}`);
     }
   }
 }

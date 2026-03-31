@@ -1,16 +1,18 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
-import { OrcamentoResponseDTO, Fase3ACDTO } from '../../../../core/models/orcamento.model';
-import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
-
+import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { LogService } from '../../../../core/services/log.service';
 
 @Component({
   selector: 'app-dashboard-auditoria',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, FormsModule, ToastModule],
+  providers: [MessageService],
   templateUrl: './dashboard-auditoria.component.html',
   styles: [`
     .kpi-card { border-radius: 12px; transition: transform 0.2s; }
@@ -20,6 +22,8 @@ import { Router } from '@angular/router';
 export class DashboardAuditoriaComponent implements OnInit {
   private orcamentoService = inject(OrcamentoService);
   private router = inject(Router);
+  private messageService = inject(MessageService);
+  private log = inject(LogService);
   
   orcamentos = signal<OrcamentoResponseDTO[]>([]);
   totalInvestimento = signal(0);
@@ -34,19 +38,26 @@ export class DashboardAuditoriaComponent implements OnInit {
     return lista.filter(o => o.status === filtro);
   });
 
-  public doughnutChartLabels: string[] = ['IC1: Arame', 'IC2: Gás', 'IC3: Máquina/MO', 'IC4: Substrato', 'AC: Serviços'];
-  public doughnutChartData: ChartData<'doughnut'> = {
-    labels: this.doughnutChartLabels,
-    datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }]
-  };
-  public doughnutChartType: ChartType = 'doughnut';
-
   orcamentoSelecionado = signal<OrcamentoResponseDTO | null>(null);
 
+  // Estado do Modal de Devolução
+  modalDevolucaoAberto = signal(false);
+  orcamentoDevolucao = signal<OrcamentoResponseDTO | null>(null);
+  motivoDevolucao = '';
+  isDevolving = signal(false);
+
   ngOnInit() {
-    this.orcamentoService.listarTodos().subscribe((lista: OrcamentoResponseDTO[]) => {
-      this.orcamentos.set(lista);
-      this.calcularKpis(lista);
+    this.carregarOrcamentos();
+  }
+
+  private carregarOrcamentos() {
+    this.orcamentoService.listarTodos().subscribe({
+      next: (lista: OrcamentoResponseDTO[]) => {
+        this.orcamentos.set(lista);
+        this.calcularKpis(lista);
+        this.log.info('DashboardAuditoria', `${lista.length} orçamentos carregados`);
+      },
+      error: (err) => this.log.error('DashboardAuditoria', 'Erro ao carregar orçamentos', err)
     });
   }
 
@@ -61,16 +72,58 @@ export class DashboardAuditoriaComponent implements OnInit {
   }
 
   abrirDetalhes(o: OrcamentoResponseDTO) {
+    this.log.info('DashboardAuditoria', `Abrindo detalhes | orcamentoId=${o.id}`);
     this.router.navigate(['/b2b/resumo', o.id]);
   }
 
   aprovar(id: string, event?: Event) {
     if (event) event.stopPropagation();
-    this.orcamentoService.aprovar(id).subscribe(() => {
-      this.orcamentoService.listarTodos().subscribe(lista => {
-        this.orcamentos.set(lista);
-        this.calcularKpis(lista);
-      });
+    this.log.info('DashboardAuditoria', `Aprovando orçamento | id=${id}`);
+    this.orcamentoService.aprovar(id).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Aprovado', detail: 'Orçamento aprovado com sucesso.' });
+        this.carregarOrcamentos();
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao aprovar o orçamento.' });
+        this.log.error('DashboardAuditoria', 'Erro ao aprovar', err);
+      }
+    });
+  }
+
+  abrirModalDevolucao(o: OrcamentoResponseDTO, event?: Event) {
+    if (event) event.stopPropagation();
+    this.orcamentoDevolucao.set(o);
+    this.motivoDevolucao = '';
+    this.modalDevolucaoAberto.set(true);
+  }
+
+  fecharModalDevolucao() {
+    this.modalDevolucaoAberto.set(false);
+    this.orcamentoDevolucao.set(null);
+    this.motivoDevolucao = '';
+  }
+
+  confirmarDevolucao() {
+    const o = this.orcamentoDevolucao();
+    if (!o || this.motivoDevolucao.length < 10) return;
+
+    this.isDevolving.set(true);
+    this.log.info('DashboardAuditoria', `Devolvendo orçamento | id=${o.id}`);
+
+    this.orcamentoService.devolverParaCliente(o.id.toString(), this.motivoDevolucao).subscribe({
+      next: () => {
+        this.isDevolving.set(false);
+        this.messageService.add({ severity: 'warn', summary: 'Devolvido', detail: 'Orçamento devolvido ao cliente com motivo registrado.' });
+        this.fecharModalDevolucao();
+        this.carregarOrcamentos();
+      },
+      error: (err) => {
+        this.isDevolving.set(false);
+        const msg = err.error?.message || 'Erro ao devolver o orçamento.';
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: msg });
+        this.log.error('DashboardAuditoria', 'Erro ao devolver', err);
+      }
     });
   }
 }
