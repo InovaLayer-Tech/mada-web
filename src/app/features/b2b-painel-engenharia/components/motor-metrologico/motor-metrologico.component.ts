@@ -185,16 +185,19 @@ export class MotorMetrologicoComponent implements OnInit {
     const formValue = this.orcamentoForm.getRawValue();
     const id = formValue.orcamentoId;
 
-    // BUG F5: Tipagem segura e conversão de unidades (Minutos -> Horas para O6/O7)
+    // BUG F5/F6 Resolvidos: Tipagem segura e conversão de unidades
     const payload: OrcamentoCalculoRequestDTO = {
       ...formValue,
       numeroCamadas: formValue.nCamadas ?? undefined,
-      arameId: formValue.arameId,
-      gasId: formValue.gasId,
+      arameId: formValue.arameId as string,
+      gasId: formValue.gasId as string,
       gasSuplementarId: formValue.gasSuplementarId || undefined,
-      // O6 e O7: Front-end (minutos) -> Back-end (horas)
-      tempoPreparacaoO6: formValue.tempoPreparacaoO6 ? (formValue.tempoPreparacaoO6 / 60) : 0,
-      tempoDesmontagemO7: formValue.tempoDesmontagemO7 ? (formValue.tempoDesmontagemO7 / 60) : 0,
+      
+      // CONVERSÕES DIMENSIONAIS OBRIGATÓRIAS (Front -> Back)
+      tempoPreparacaoO6: formValue.tempoPreparacaoO6 ? (formValue.tempoPreparacaoO6 / 60) : 0, // Minutos para Horas
+      tempoDesmontagemO7: formValue.tempoDesmontagemO7 ? (formValue.tempoDesmontagemO7 / 60) : 0, // Minutos para Horas
+      volumeDepositadoO2: formValue.volumeDepositadoO2 ? (formValue.volumeDepositadoO2 / 1000000) : undefined, // cm³ para m³
+      
       rfGeral: formValue.rfGeral,
       custoDiretoUsinagemAC8: formValue.custoDiretoUsinagemAC8 ?? undefined,
       custoDiretoTratamentoAC9: formValue.custoDiretoTratamentoAC9 ?? undefined
