@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { OrcamentoRequestDTO, OrcamentoResponseDTO, OrcamentoCalculoRequestDTO } from '../models/orcamento.model';
+import { OrcamentoResponseDTO, OrcamentoCalculoRequestDTO } from '../models/orcamento.model';
+import { OrcamentoRequestDTO } from '../models/orcamento-request.dto';
 
 @Injectable({
   providedIn: 'root'

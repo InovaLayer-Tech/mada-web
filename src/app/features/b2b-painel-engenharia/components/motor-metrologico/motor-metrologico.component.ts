@@ -185,13 +185,16 @@ export class MotorMetrologicoComponent implements OnInit {
     const formValue = this.orcamentoForm.getRawValue();
     const id = formValue.orcamentoId;
 
-    // BUG F5: Tipagem segura de acordo com o DTO Java
+    // BUG F5: Tipagem segura e conversão de unidades (Minutos -> Horas para O6/O7)
     const payload: OrcamentoCalculoRequestDTO = {
       ...formValue,
-      numeroCamadas: formValue.nCamadas ?? undefined, // Mapper from nCamadas front to numeroCamadas java
+      numeroCamadas: formValue.nCamadas ?? undefined,
       arameId: formValue.arameId,
       gasId: formValue.gasId,
       gasSuplementarId: formValue.gasSuplementarId || undefined,
+      // O6 e O7: Front-end (minutos) -> Back-end (horas)
+      tempoPreparacaoO6: formValue.tempoPreparacaoO6 ? (formValue.tempoPreparacaoO6 / 60) : 0,
+      tempoDesmontagemO7: formValue.tempoDesmontagemO7 ? (formValue.tempoDesmontagemO7 / 60) : 0,
       rfGeral: formValue.rfGeral,
       custoDiretoUsinagemAC8: formValue.custoDiretoUsinagemAC8 ?? undefined,
       custoDiretoTratamentoAC9: formValue.custoDiretoTratamentoAC9 ?? undefined
