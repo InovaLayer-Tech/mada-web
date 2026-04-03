@@ -1,56 +1,57 @@
-<section class="max-w-7xl mx-auto p-4 lg:p-8 animate-fade-in relative z-10">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<section class="max-w-7xl mx-auto p-4 lg:p-12 animate-fade-in relative z-10 font-outfit">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+      <h1 class="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3 uppercase">
         <i class="pi pi-box text-blue-600"></i>
         {{ 'B2B.CATALOGO.TITLE' | translate }}
       </h1>
-      <p class="text-slate-500 mt-1 font-mono text-sm uppercase tracking-wider">
+      <p class="text-slate-400 mt-1 font-industrial-mono text-[10px] font-black uppercase tracking-[0.2em] opacity-70">
         {{ 'B2B.CATALOGO.SUBTITLE' | translate }}
       </p>
     </div>
-    <button (click)="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold text-sm tracking-wide transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
-      <i class="pi pi-plus"></i>
+    <button (click)="abrirModal()" class="bg-slate-900 hover:bg-black text-white px-8 py-4 rounded-2xl font-black text-xs tracking-[0.1em] transition-all shadow-xl shadow-slate-900/20 flex items-center gap-3 uppercase active:scale-95">
+      <i class="pi pi-plus text-[10px]"></i>
       {{ 'B2B.CATALOGO.NEW_BTN' | translate }}
     </button>
   </div>
 
   <!-- TABELA DE ARAMES (Classe O9 / P) -->
-  <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-      <h3 class="text-sm font-bold text-slate-600 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.WIRES_SECTION' | translate }}</h3>
+  <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden mb-12">
+    <div class="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+      <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.WIRES_SECTION' | translate }}</h3>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
-        <thead class="bg-slate-50 border-b border-slate-200">
-          <tr>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.SPEC' | translate }}</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.COST_KG' | translate }}</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">P8 - DIAM(m)</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">P5 - DENS(kg/m³)</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.STATUS' | translate }}</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.ACTIONS' | translate }}</th>
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.SPEC' | translate }}</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.COST_KG' | translate }}</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">P8 DIAM(M)</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">P5 DENS(KG/M³)</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.STATUS' | translate }}</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono text-center">{{ 'B2B.CATALOGO.TABLE.ACTIONS' | translate }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 italic font-mono">
-          <tr *ngFor="let a of arames" class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4">
-              <span class="block text-sm font-bold text-slate-800 not-italic">{{ a.ligaMetalica }}</span>
-              <span class="block text-[10px] text-slate-400 uppercase tracking-tighter">{{ a.codigoProduto }}</span>
+        <tbody class="divide-y divide-slate-50">
+          <tr *ngFor="let a of arames" class="group hover:bg-slate-50/50 transition-all cursor-pointer">
+            <td class="px-10 py-6">
+              <span class="block text-sm font-black text-slate-900 uppercase tracking-tight">{{ a.ligaMetalica }}</span>
+              <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 font-industrial-mono">PRD-ID: {{ a.codigoProduto }}</span>
             </td>
-            <td class="px-6 py-4 text-sm font-bold text-slate-600">{{ a.precoUnitarioBase | currency:'BRL' }}</td>
-            <td class="px-6 py-4 text-xs">{{ a.diametroM }}</td>
-            <td class="px-6 py-4 text-xs">{{ a.densidadeKgM3 }}</td>
-            <td class="px-6 py-4">
-              <span [class]="a.ativo ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest not-italic">
+            <td class="px-10 py-6 text-sm font-black text-slate-700 font-industrial-mono">{{ a.precoUnitarioBase | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td class="px-10 py-6 text-xs font-black text-slate-500 font-industrial-mono opacity-60">{{ a.diametroM | number:'1.4-4' }}</td>
+            <td class="px-10 py-6 text-xs font-black text-slate-500 font-industrial-mono opacity-60">{{ a.densidadeKgM3 | number:'1.0-0' }}</td>
+            <td class="px-10 py-6">
+              <span [class]="a.ativo ? 'bg-emerald-100/50 text-emerald-700 border-emerald-100' : 'bg-slate-100/50 text-slate-400 border-slate-200'" 
+                    class="px-4 py-1.5 rounded-lg text-[9px] font-black border uppercase tracking-widest">
                 {{ (a.ativo ? 'B2B.CATALOGO.TABLE.ACTIVE' : 'B2B.CATALOGO.TABLE.INACTIVE') | translate }}
               </span>
             </td>
-            <td class="px-6 py-4 not-italic">
-              <div class="flex gap-2">
-                <button (click)="editarInsumo(a, 'arame')" class="p-2 text-slate-400 hover:text-blue-600 transition-colors"><i class="pi pi-pencil"></i></button>
-                <button (click)="toggleStatus(a.id, 'arame')" class="p-2 text-slate-400 hover:text-amber-600 transition-colors"><i class="pi pi-sync"></i></button>
-                <button (click)="excluirInsumo(a.id, 'arame')" class="p-2 text-slate-400 hover:text-red-600 transition-colors"><i class="pi pi-trash"></i></button>
+            <td class="px-10 py-6">
+              <div class="flex justify-center gap-3">
+                <button (click)="editarInsumo(a, 'arame')" class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-blue-600 hover:border-blue-100 rounded-xl transition-all shadow-sm"><i class="pi pi-pencil"></i></button>
+                <button (click)="toggleStatus(a.id, 'arame')" class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-amber-600 hover:border-amber-100 rounded-xl transition-all shadow-sm"><i class="pi pi-sync"></i></button>
+                <button (click)="excluirInsumo(a.id, 'arame')" class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 rounded-xl transition-all shadow-sm"><i class="pi pi-trash"></i></button>
               </div>
             </td>
           </tr>
@@ -60,37 +61,38 @@
   </div>
 
   <!-- TABELA DE GASES (Classe O13) -->
-  <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-      <h3 class="text-sm font-bold text-slate-600 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.GASES_SECTION' | translate }}</h3>
+  <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+      <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.GASES_SECTION' | translate }}</h3>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
-        <thead class="bg-slate-50 border-b border-slate-200">
-          <tr>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.SPEC' | translate }}</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.COST_M3' | translate }}</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.STATUS' | translate }}</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ 'B2B.CATALOGO.TABLE.ACTIONS' | translate }}</th>
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.SPEC' | translate }}</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.COST_M3' | translate }}</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono">{{ 'B2B.CATALOGO.TABLE.STATUS' | translate }}</th>
+            <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest font-industrial-mono text-center">{{ 'B2B.CATALOGO.TABLE.ACTIONS' | translate }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 italic font-mono">
-          <tr *ngFor="let g of gases" class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4">
-              <span class="block text-sm font-bold text-slate-800 not-italic">{{ g.tipoGas }}</span>
-              <span class="block text-[10px] text-slate-400 uppercase tracking-tighter">{{ g.codigoProduto }}</span>
+        <tbody class="divide-y divide-slate-50">
+          <tr *ngFor="let g of gases" class="group hover:bg-slate-50/50 transition-all cursor-pointer">
+            <td class="px-10 py-6">
+              <span class="block text-sm font-black text-slate-900 uppercase tracking-tight">{{ g.tipoGas }}</span>
+              <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 font-industrial-mono">GAS-ID: {{ g.codigoProduto }}</span>
             </td>
-            <td class="px-6 py-4 text-sm font-bold text-slate-600">{{ g.precoUnitarioBase | currency:'BRL' }}</td>
-            <td class="px-6 py-4">
-              <span [class]="g.ativo ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest not-italic">
+            <td class="px-10 py-6 text-sm font-black text-emerald-700 font-industrial-mono">{{ g.precoUnitarioBase | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td class="px-10 py-6">
+              <span [class]="g.ativo ? 'bg-emerald-100/50 text-emerald-700 border-emerald-100' : 'bg-slate-100/50 text-slate-400 border-slate-200'" 
+                    class="px-4 py-1.5 rounded-lg text-[9px] font-black border uppercase tracking-widest">
                 {{ (g.ativo ? 'B2B.CATALOGO.TABLE.ACTIVE' : 'B2B.CATALOGO.TABLE.INACTIVE') | translate }}
               </span>
             </td>
-            <td class="px-6 py-4 not-italic">
-              <div class="flex gap-2">
-                <button (click)="editarInsumo(g, 'gas')" class="p-2 text-slate-400 hover:text-blue-600 transition-colors"><i class="pi pi-pencil"></i></button>
-                <button (click)="toggleStatus(g.id, 'gas')" class="p-2 text-slate-400 hover:text-amber-600 transition-colors"><i class="pi pi-sync"></i></button>
-                <button (click)="excluirInsumo(g.id, 'gas')" class="p-2 text-slate-400 hover:text-red-600 transition-colors"><i class="pi pi-trash"></i></button>
+            <td class="px-10 py-6">
+              <div class="flex justify-center gap-3">
+                <button (click)="editarInsumo(g, 'gas')" class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-blue-600 hover:border-blue-100 rounded-xl transition-all shadow-sm"><i class="pi pi-pencil"></i></button>
+                <button (click)="toggleStatus(g.id, 'gas')" class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-amber-600 hover:border-amber-100 rounded-xl transition-all shadow-sm"><i class="pi pi-sync"></i></button>
+                <button (click)="excluirInsumo(g.id, 'gas')" class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 rounded-xl transition-all shadow-sm"><i class="pi pi-trash"></i></button>
               </div>
             </td>
           </tr>
@@ -99,77 +101,119 @@
     </div>
   </div>
 
-  <!-- Modal / Drawer de Cadastro (Simplificado p/ Blindagem MADA) -->
-  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-end animate-fade-in">
-    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" (click)="fecharModal()"></div>
-    <div class="bg-white w-full max-w-lg h-full shadow-2xl relative z-10 flex flex-col animate-slide-left p-8 overflow-y-auto">
-      <div class="flex justify-between items-center mb-8">
-        <div>
-          <h2 class="text-2xl font-bold text-slate-900 tracking-tight">{{ editingId ? 'EDITAR INSUMO' : 'NOVO INSUMO' }}</h2>
-          <p class="text-sm text-slate-500 mt-1 uppercase font-mono tracking-widest">{{ tipoInsumo === 'arame' ? 'Classe O9 / P' : 'Classe O13' }}</p>
-        </div>
-        <button (click)="fecharModal()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 transition-all"><i class="pi pi-times"></i></button>
+  <p-dialog [(visible)]="showModal" 
+            [modal]="true" 
+            [draggable]="false" 
+            [resizable]="false"
+            [showHeader]="false"
+            [closable]="false"
+            styleClass="mada-dialog max-w-2xl w-[95%] md:w-full"
+            contentStyleClass="p-0 overflow-y-auto max-h-[85vh]"
+            position="center"
+            (onHide)="fecharModal()">
+    
+    <!-- Header MADA -->
+    <div class="px-10 pt-10 pb-8 flex justify-between items-start bg-white rounded-t-[2rem]">
+      <div class="flex flex-col">
+        <h2 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">{{ editingId ? 'EDITAR' : 'NOVO REGISTRO' }}</h2>
+        <span class="text-[10px] font-black text-blue-600 tracking-[0.3em] mt-3 block uppercase">PARÂMETROS DE ENGENHARIA</span>
       </div>
-
-      <div class="flex bg-slate-100 p-1 rounded-xl mb-8">
-        <button (click)="setTipo('arame')" [class]="tipoInsumo === 'arame' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'" class="flex-1 py-3 text-xs font-bold uppercase transition-all rounded-lg">ARAME METÁLICO</button>
-        <button (click)="setTipo('gas')" [class]="tipoInsumo === 'gas' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'" class="flex-1 py-3 text-xs font-bold uppercase transition-all rounded-lg">GÁS PROTEÇÃO</button>
-      </div>
-
-      <form [formGroup]="insumoForm" (ngSubmit)="salvarInsumo()" class="space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="col-span-2">
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">DESCRIÇÃO COMERCIAL</label>
-            <input type="text" formControlName="nome" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="Ex: AWS ER 420 (Rolo 15kg)">
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">CÓDIGO PRODUTO</label>
-            <input type="text" formControlName="codigoProduto" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">FORNECEDOR</label>
-            <input type="text" formControlName="fornecedor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-          </div>
-        </div>
-
-        <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-6">
-           <div>
-              <label class="block text-xs font-bold text-blue-600 uppercase mb-2">
-                {{ tipoInsumo === 'arame' ? 'O9 - CUSTO MÉDIO (R$/kg)' : 'O13 - CUSTO MÉDIO (R$/m³)' }}
-              </label>
-              <input type="number" step="0.01" formControlName="precoUnitarioBase" class="w-full bg-white border border-blue-200 rounded-xl px-4 py-3 text-sm font-bold text-blue-900 outline-none">
-           </div>
-
-           <!-- CAMPOS ESPECÍFICOS DE ARAME (P e O) -->
-           <div *ngIf="tipoInsumo === 'arame'" class="grid grid-cols-2 gap-4 animate-slide-up">
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">P8 - DIÂMETRO (m)</label>
-                <input type="number" step="0.0001" formControlName="diametroM" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none">
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">P5 - DENSIDADE (kg/m³)</label>
-                <input type="number" formControlName="densidadeKgM3" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none">
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">P6 - EFICIÊNCIA (%)</label>
-                <input type="number" formControlName="eficienciaP6" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none">
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">O1 - MASSA ROLO (kg)</label>
-                <input type="number" formControlName="massaBobinaO1" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none">
-              </div>
-           </div>
-
-           <div *ngIf="tipoInsumo === 'gas'" class="animate-slide-up">
-              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">DESCRIÇÃO DA MISTURA</label>
-              <input type="text" formControlName="tipoGas" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none" placeholder="Ex: Argônio 98% / CO2 2%">
-           </div>
-        </div>
-
-        <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white py-4 rounded-2xl font-bold text-sm tracking-widest uppercase transition-all shadow-xl shadow-slate-200">
-          SALVAR ALTERAÇÕES MADA
-        </button>
-      </form>
+      <button (click)="fecharModal()" class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all border border-slate-100 shadow-sm">
+        <i class="pi pi-times text-xl"></i>
+      </button>
     </div>
-  </div>
+
+    <p-tabs [value]="tipoInsumo === 'arame' ? '0' : '1'" (valueChange)="activeIndexChange($event)">
+      <p-tablist class="px-6 border-b border-slate-100 bg-white">
+          <p-tab value="0">ARAME / LIGA</p-tab>
+          <p-tab value="1">GÁS / MISTURA</p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <!-- ABA ARAME -->
+        <p-tabpanel value="0">
+          <form [formGroup]="insumoForm" (ngSubmit)="salvarInsumo()" class="p-8 space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+              <div class="col-span-2">
+                <label class="label-clean">LIGA METÁLICA (DESCRIÇÃO)*</label>
+                <input type="text" formControlName="ligaMetalica" class="input-modern w-full" placeholder="Ex: AWS ER 420 (MADA Core)">
+              </div>
+              
+              <div class="col-span-1">
+                <label class="label-clean">CÓDIGO PRODUTO</label>
+                <input type="text" formControlName="codigoProduto" class="input-modern w-full">
+              </div>
+              <div class="col-span-1">
+                <label class="label-clean">FORNECEDOR</label>
+                <input type="text" formControlName="fornecedor" class="input-modern w-full">
+              </div>
+
+              <div class="col-span-2 p-8 card-soft bg-blue-50/20 border-blue-100/50 space-y-6">
+                <div>
+                  <label class="label-clean text-blue-600">O9 - CUSTO MÉDIO (R$/kg)*</label>
+                  <p-inputNumber formControlName="precoUnitarioBase" mode="currency" currency="BRL" locale="pt-BR" styleClass="w-full" inputStyleClass="input-modern w-full text-blue-700"></p-inputNumber>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                  <div>
+                    <label class="label-clean opacity-60">P8 - DIÂMETRO (m)</label>
+                    <p-inputNumber formControlName="diametroM" mode="decimal" [minFractionDigits]="4" [maxFractionDigits]="4" styleClass="w-full" inputStyleClass="input-modern w-full"></p-inputNumber>
+                  </div>
+                  <div>
+                    <label class="label-clean opacity-60">P5 - DENSIDADE (kg/m³)</label>
+                    <p-inputNumber formControlName="densidadeKgM3" mode="decimal" styleClass="w-full" inputStyleClass="input-modern w-full"></p-inputNumber>
+                  </div>
+                  <div>
+                    <label class="label-clean opacity-60">P6 - EFICIÊNCIA (%)</label>
+                    <p-inputNumber formControlName="eficienciaP6" suffix=" %" styleClass="w-full" inputStyleClass="input-modern w-full"></p-inputNumber>
+                  </div>
+                  <div>
+                    <label class="label-clean opacity-60">O1 - MASSA ROLO (kg)</label>
+                    <p-inputNumber formControlName="massaBobinaO1" suffix=" kg" styleClass="w-full" inputStyleClass="input-modern w-full"></p-inputNumber>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+              <button type="button" (click)="fecharModal()" class="flex-1 py-4 rounded-xl border border-slate-200 text-slate-400 font-bold uppercase text-xs hover:bg-slate-50 transition-all">CANCELAR</button>
+              <button type="submit" class="flex-[2] py-4 rounded-xl bg-blue-600 text-white font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all">SALVAR PARÂMETROS ARAME</button>
+            </div>
+          </form>
+        </p-tabpanel>
+
+        <!-- ABA GÁS -->
+        <p-tabpanel value="1">
+          <form [formGroup]="insumoForm" (ngSubmit)="salvarInsumo()" class="p-8 space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+              <div class="col-span-2">
+                <label class="label-clean">TIPO DE GÁS / MISTURA*</label>
+                <input type="text" formControlName="tipoGas" class="input-modern w-full" placeholder="Ex: Argônio 98% / CO2 2%">
+              </div>
+              
+              <div class="col-span-1">
+                <label class="label-clean">CÓDIGO PRODUTO</label>
+                <input type="text" formControlName="codigoProduto" class="input-modern w-full">
+              </div>
+              <div class="col-span-1">
+                <label class="label-clean">FORNECEDOR</label>
+                <input type="text" formControlName="fornecedor" class="input-modern w-full">
+              </div>
+
+              <div class="col-span-2 p-8 card-soft bg-emerald-50/20 border-emerald-100/50 space-y-6">
+                <div>
+                  <label class="label-clean text-emerald-600">O13 - CUSTO MÉDIO (R$/m³)*</label>
+                  <p-inputNumber formControlName="precoUnitarioBase" mode="currency" currency="BRL" locale="pt-BR" styleClass="w-full" inputStyleClass="input-modern w-full text-emerald-700"></p-inputNumber>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+              <button type="button" (click)="fecharModal()" class="flex-1 py-4 rounded-xl border border-slate-200 text-slate-400 font-bold uppercase text-xs hover:bg-slate-50 transition-all">CANCELAR</button>
+              <button type="submit" class="flex-[2] py-4 rounded-xl bg-emerald-600 text-white font-black uppercase text-xs tracking-widest shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all">SALVAR PARÂMETROS GÁS</button>
+            </div>
+          </form>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </p-dialog>
 </section>

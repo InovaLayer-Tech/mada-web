@@ -1,4 +1,4 @@
-<div class="h-full w-full font-sans pb-12 overflow-y-auto bg-slate-50 text-slate-700">
+<div class="h-full w-full font-outfit pb-12 overflow-y-auto bg-slate-50 text-slate-700 animate-in fade-in duration-700">
   <main class="max-w-7xl mx-auto mt-12 px-8">
     <!-- Header Section -->
     <div class="mb-12 border-b border-slate-200 pb-10 flex justify-between items-end">
@@ -10,15 +10,15 @@
       <div class="flex gap-4">
         <div class="px-6 py-4 bg-white border border-slate-200 rounded-3xl shadow-sm text-center min-w-[140px]">
           <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Geral</span>
-          <span class="text-2xl font-black text-slate-700 font-mono">{{ kpisAuditoria().totalGeral }}</span>
+          <span class="text-2xl font-black text-slate-700 font-industrial-mono">{{ kpisAuditoria().totalGeral }}</span>
         </div>
         <div class="px-6 py-4 bg-white border border-slate-200 rounded-3xl shadow-sm text-center min-w-[140px]">
           <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Aprovados</span>
-          <span class="text-2xl font-black text-emerald-600 font-mono">{{ kpisAuditoria().totalAprovados }}</span>
+          <span class="text-2xl font-black text-emerald-600 font-industrial-mono">{{ kpisAuditoria().totalAprovados }}</span>
         </div>
         <div class="px-6 py-4 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl text-center min-w-[180px]">
           <span class="text-[9px] font-black text-blue-300 uppercase tracking-widest block mb-1">Ticket Médio</span>
-          <span class="text-xl font-black text-white font-mono">{{ kpisAuditoria().mediaValor | currency:'BRL' }}</span>
+          <span class="text-xl font-black text-white font-industrial-mono">{{ kpisAuditoria().mediaValor | currency:'BRL':'symbol':'1.2-2' }}</span>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
           <span class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono">{{ 'B2B.FILA.K_NEW' | translate }}</span>
         </div>
         <div class="flex items-baseline gap-3">
-          <span class="text-5xl font-black text-slate-900 tracking-tighter">{{ novosHoje() }}</span>
+          <span class="text-5xl font-black text-slate-900 tracking-tighter font-industrial-mono">{{ novosHoje() }}</span>
           <span class="text-xs font-black text-emerald-500 uppercase tracking-widest font-industrial-mono">{{ 'B2B.FILA.VS_YESTERDAY' | translate }}</span>
         </div>
       </div>
@@ -42,7 +42,7 @@
           <span class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono">{{ 'B2B.FILA.K_LEAD' | translate }}</span>
         </div>
         <div class="flex items-baseline gap-3">
-          <span class="text-5xl font-black text-slate-900 tracking-tighter">{{ leadTimeMedio() }}</span>
+          <span class="text-5xl font-black text-slate-900 tracking-tighter font-industrial-mono">{{ leadTimeMedio() }}</span>
           <span class="text-xs font-black text-blue-500 uppercase tracking-widest font-industrial-mono">{{ 'B2B.FILA.GOAL' | translate }}</span>
         </div>
       </div>
@@ -53,7 +53,7 @@
           <span class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono">{{ 'B2B.FILA.K_CONV' | translate }}</span>
         </div>
         <div class="flex items-baseline gap-3">
-          <span class="text-5xl font-black text-slate-900 tracking-tighter">{{ taxaConversao() }}</span>
+          <span class="text-5xl font-black text-slate-900 tracking-tighter font-industrial-mono">{{ taxaConversao() }}</span>
           <span class="text-xs font-black text-slate-500 uppercase tracking-widest font-industrial-mono">INDUSTRIAL WAAM</span>
         </div>
       </div>
@@ -64,13 +64,13 @@
           <span class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono">{{ 'B2B.FILA.K_WAIT' | translate }}</span>
         </div>
         <div class="flex items-baseline gap-3">
-          <span class="text-5xl font-black text-slate-900 tracking-tighter">{{ totalPendentes() }}</span>
+          <span class="text-5xl font-black text-slate-900 tracking-tighter font-industrial-mono">{{ totalPendentes() }}</span>
           <span class="text-xs font-black text-slate-500 uppercase tracking-widest font-industrial-mono">{{ 'B2B.FILA.WAITING_AUDIT' | translate }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Kanban/Grid Layout Light -->
+    <!-- Kanban/Grid Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <!-- Coluna: Novas Solicitações -->
@@ -78,9 +78,9 @@
         <div class="flex items-center justify-between px-2">
           <div class="flex items-center gap-3">
              <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse shadow-[0_0_8px_rgba(37,99,235,0.4)]"></div>
-             <h2 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] font-mono">{{ 'B2B.FILA.NEW_ENTRIES' | translate }}</h2>
+             <h2 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] font-industrial-mono">{{ 'B2B.FILA.NEW_ENTRIES' | translate }}</h2>
           </div>
-          <span class="text-[9px] bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-200 font-black font-mono">{{ rfqs().length }} {{ 'B2B.FILA.ITEMS' | translate }}</span>
+          <span class="text-[9px] bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-200 font-black font-industrial-mono">{{ rfqs().length }} {{ 'B2B.FILA.ITEMS' | translate }}</span>
         </div>
 
         <div class="overflow-x-auto w-full pb-6">
@@ -91,11 +91,11 @@
                 
                 <div class="flex justify-between items-start mb-6 relative z-10">
                   <div>
-                    <span class="text-[9px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 uppercase tracking-widest font-mono">ID: {{ rfq.id.substring(0,8) }}</span>
+                    <span class="text-[9px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 uppercase tracking-widest font-industrial-mono">ID: {{ rfq.id.substring(0,8) }}</span>
                     <h3 class="text-xl font-black text-slate-900 mt-3 tracking-tighter uppercase">{{ rfq.nomeEmpresa || 'CLIENTE' }}</h3>
                   </div>
                   <div class="flex flex-col items-end">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter font-mono">{{ rfq.status }}</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter font-industrial-mono">{{ rfq.status }}</span>
                     <span class="text-[9px] font-black uppercase mt-1 tracking-widest"
                           [ngClass]="rfq.status === 'PENDENTE' ? 'text-amber-500' : 'text-emerald-500'">
                       {{ (rfq.status === 'PENDENTE' ? 'B2B.FILA.PENDING' : 'B2B.MOTOR.STATUS_READY') | translate }}
@@ -105,14 +105,14 @@
 
                 <div class="grid grid-cols-2 gap-4 mb-8 relative z-10">
                   <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1 font-mono">Cliente: {{ rfq.nomeEmpresa || rfq.id.substring(0,8).toUpperCase() }}</p>
+                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1 font-industrial-mono">C-TAG: {{ rfq.id.substring(0,8).toUpperCase() }}</p>
                     <p class="text-2xl font-black text-slate-900 tracking-tighter uppercase">{{ rfq.nomeProjeto }}</p>
                   </div>
                   <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 font-mono">Massa Estimada</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 font-industrial-mono">Massa Estimada</p>
                     <div class="flex items-center gap-2">
                       <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
-                      <p class="text-xs font-black text-slate-700 uppercase">{{ rfq.massaEstimadaKg || '--' }} kg</p>
+                      <p class="text-xs font-black text-slate-700 uppercase font-industrial-mono">{{ rfq.massaEstimadaKg || '--' }} kg</p>
                     </div>
                   </div>
                 </div>
@@ -134,42 +134,42 @@
         </div>
       </div>
 
-      <!-- Sidebar: Resumo da Fila Light -->
+      <!-- Sidebar: Resumo da Fila -->
       <div class="space-y-8">
-        <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-4 text-right font-mono">{{ 'B2B.FILA.ANALYTICS' | translate }}</h2>
+        <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-4 text-right font-industrial-mono">{{ 'B2B.FILA.ANALYTICS' | translate }}</h2>
         
         <div class="bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm relative overflow-hidden group">
           <div class="absolute -top-20 -right-20 w-48 h-48 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
           
           <div class="relative z-10">
-            <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-10 font-mono flex items-center gap-3">
+            <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-10 font-industrial-mono flex items-center gap-3">
               <span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span>
               {{ 'B2B.FILA.PANEL' | translate }}
             </h4>
             
             <div class="space-y-8">
               <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group/kpi hover:border-blue-200 transition-all bg-white shadow-sm">
-                <p class="text-4xl font-black text-slate-900 leading-none mb-2 font-mono tracking-tighter">{{ totalPendentes() }}</p>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-mono group-hover/kpi:text-blue-600 transition-colors">{{ 'B2B.FILA.PENDING' | translate }}</p>
+                <p class="text-4xl font-black text-slate-900 leading-none mb-2 font-industrial-mono tracking-tighter">{{ totalPendentes() }}</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono group-hover/kpi:text-blue-600 transition-colors">{{ 'B2B.FILA.PENDING' | translate }}</p>
               </div>
               
               <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 group/kpi hover:border-emerald-200 transition-all bg-white shadow-sm">
-                <p class="text-4xl font-black text-slate-900 leading-none mb-2 font-mono tracking-tighter">{{ pipelineEstimado() }}</p>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-mono group-hover/kpi:text-emerald-600 transition-colors">{{ 'B2B.FILA.PIPELINE' | translate }}</p>
+                <p class="text-4xl font-black text-slate-900 leading-none mb-2 font-industrial-mono tracking-tighter">{{ pipelineEstimado() | currency:'BRL':'symbol':'1.2-2' }}</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] font-industrial-mono group-hover/kpi:text-emerald-600 transition-colors">{{ 'B2B.FILA.PIPELINE' | translate }}</p>
               </div>
               
               <div class="pt-8 border-t border-slate-100">
                 <div class="flex justify-between items-center mb-3">
-                   <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-mono flex items-center gap-2">
+                   <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest font-industrial-mono flex items-center gap-2">
                      <i class="pi pi-user text-blue-600"></i>
                      {{ authService.currentUser()?.nomeCompleto || authService.currentUser()?.email || 'ADMIN' }}
                    </span>
-                   <span class="text-[10px] font-black text-blue-600 font-mono px-2 py-0.5 bg-blue-50 rounded border border-blue-200 uppercase">85% {{ 'B2B.FILA.LOAD' | translate }}</span>
+                   <span class="text-[10px] font-black text-blue-600 font-industrial-mono px-2 py-0.5 bg-blue-50 rounded border border-blue-200 uppercase">85% {{ 'B2B.FILA.LOAD' | translate }}</span>
                 </div>
                 <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div class="w-[85%] h-full bg-slate-900 rounded-full"></div>
                 </div>
-                <p class="text-[9px] font-black text-slate-400 uppercase mt-4 tracking-widest font-mono text-center">{{ 'B2B.FILA.OPERATIONAL_CAPACITY' | translate }}</p>
+                <p class="text-[9px] font-black text-slate-400 uppercase mt-4 tracking-widest font-industrial-mono text-center">{{ 'B2B.FILA.OPERATIONAL_CAPACITY' | translate }}</p>
               </div>
             </div>
           </div>

@@ -12,7 +12,9 @@ import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/
 import { Observable, lastValueFrom } from 'rxjs';
 import { APP_INITIALIZER } from '@angular/core';
 import { routes } from './app.routes';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 
@@ -34,7 +36,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
-    importProvidersFrom(TranslateModule.forRoot()),
+    importProvidersFrom(TranslateModule.forRoot(), ToastModule, ConfirmDialogModule),
     provideTranslateHttpLoader({
       prefix: '/assets/i18n/',
       suffix: '.json'
@@ -46,6 +48,7 @@ export const appConfig: ApplicationConfig = {
       multi: true
     },
     MessageService,
+    ConfirmationService,
     providePrimeNG({
       theme: {
         preset: Aura,

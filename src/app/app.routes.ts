@@ -13,7 +13,9 @@ import { PerfilComponent } from './features/b2b-painel-engenharia/components/per
 import { PerfilClienteComponent } from './features/b2c-portal-cliente/components/perfil/perfil-cliente.component';
 import { ConfiguracoesGlobaisComponent } from './features/b2b-painel-engenharia/components/configuracoes-globais/configuracoes-globais.component';
 import { CadastroClienteComponent } from './features/b2c-portal-cliente/components/cadastro-cliente/cadastro-cliente.component';
+import { DetalhePropostaComponent } from './features/b2c-portal-cliente/components/detalhe-proposta/detalhe-proposta.component';
 
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   // Rotas Públicas (Sem Sidebar)
@@ -25,10 +27,12 @@ export const routes: Routes = [
   { 
     path: 'cliente', 
     component: B2cLayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: 'rfq', component: SolicitacaoRfqComponent },
       { path: 'dashboard', component: DashboardClienteComponent },
       { path: 'perfil', component: PerfilClienteComponent },
+      { path: 'proposta/:id', component: DetalhePropostaComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
@@ -37,6 +41,7 @@ export const routes: Routes = [
   { 
     path: 'b2b', 
     component: B2bLayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: 'pedidos', component: FilaSolicitacoesComponent },
       { path: 'motor', component: MotorMetrologicoComponent },

@@ -20,13 +20,25 @@ html,
 body {
   height: 100%;
   margin: 0;
-  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-family: 'Outfit', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: #f8fafc;
+  color: #1e293b;
+}
+
+/* Forçar fonte em spans, as, buttons e inputs que as vezes herdam errado */
+span, a, button, input, select, textarea, p, h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif !important;
 }
 
 /* Utilitários Tipográficos Industriais */
+.font-outfit {
+  font-family: 'Outfit', sans-serif !important;
+}
+
 .font-industrial-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', monospace !important;
   letter-spacing: -0.025em;
 }
 
@@ -77,6 +89,119 @@ body {
 }
 
 /* Oculta os botões de incremento/decremento do p-inputNumber */
-.p-inputnumber-button {
-  display: none !important;
+/* =============================================================
+ * DESIGN SYSTEM MADA 2.0 - INDUSTRIAL SOFT UI / STRIPE INSPIRED
+ * ============================================================= */
+
+.card-soft {
+  background: white;
+  border-radius: 1.25rem; /* ~20px */
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-soft:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  transform: translateY(-4px);
+}
+
+.label-clean {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b; /* slate-500 */
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.input-modern {
+  border-radius: 0.75rem !important; /* 12px */
+  border: 1px solid #e2e8f0 !important;
+  background-color: #f8fafc !important;
+  padding: 1rem 1.25rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  transition: all 0.2s ease !important;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.01) !important;
+}
+
+.input-modern:hover {
+  border-color: #cbd5e1 !important;
+  background-color: #ffffff !important;
+}
+
+.input-modern:focus {
+  border-color: #3b82f6 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+  outline: none !important;
+}
+
+.input-disabled-modern {
+  opacity: 0.6;
+  background-color: #f1f5f9 !important;
+  cursor: not-allowed;
+  border-style: dashed !important;
+}
+
+.p-inputnumber-input-modern {
+  width: 100%;
+}
+
+/* =============================================================
+ * DEFINITIVE PRIME N-G 21 OVERRIDES - MADA BLUE THEME
+ * ============================================================= */
+
+:root {
+  /* Global Primary Colors (Killing the Green) */
+  --p-primary-50: #eff6ff;
+  --p-primary-100: #dbeafe;
+  --p-primary-200: #bfdbfe;
+  --p-primary-300: #93c5fd;
+  --p-primary-400: #60a5fa;
+  --p-primary-500: #3b82f6; /* MADA BLUE */
+  --p-primary-600: #2563eb;
+  --p-primary-700: #1d4ed8;
+  --p-primary-800: #1e40af;
+  --p-primary-900: #1e3a8a;
+  --p-primary-950: #172554;
+
+  /* Tab Specific Vars */
+  --p-tabs-tab-active-color: #3b82f6 !important;
+  --p-tabs-tab-active-border-color: #3b82f6 !important;
+  --p-tabs-active-bar-background: #3b82f6 !important;
+  --p-tabs-tab-color: #94a3b8;
+  --p-tabs-tab-hover-color: #3b82f6;
+  --p-tabs-tab-border-color: #f1f5f9;
+}
+
+.mada-dialog {
+  background: white !important;
+  border-radius: 2rem !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.mada-dialog .p-dialog-content {
+  padding: 0 !important;
+}
+
+.p-tablist {
+  border-bottom: 2px solid #f1f5f9 !important;
+}
+
+.p-tab {
+  padding: 1.5rem 2.5rem !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #94a3b8 !important;
+}
+
+.p-tab[aria-selected="true"] {
+    color: #3b82f6 !important;
 }

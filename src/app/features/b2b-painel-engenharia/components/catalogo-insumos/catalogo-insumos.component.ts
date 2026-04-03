@@ -6,22 +6,38 @@ import { ArameMetalicoService } from '../../../../core/services/arame-metalico.s
 import { GasProtecaoService } from '../../../../core/services/gas-protecao.service';
 import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
 import { GasProtecaoResponseDTO } from '../../../../core/models/gas-protecao.model';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { TabsModule } from 'primeng/tabs';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-catalogo-insumos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    TranslateModule, 
+    ConfirmDialogModule, 
+    ToastModule,
+    DialogModule,
+    TabsModule,
+    InputNumberModule
+  ],
   templateUrl: './catalogo-insumos.component.html'
 })
 export class CatalogoInsumosComponent implements OnInit {
   private fb = inject(FormBuilder);
   private arameService = inject(ArameMetalicoService);
   private gasService = inject(GasProtecaoService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
   
   showModal = false;
   tipoInsumo: 'arame' | 'gas' = 'arame';
   editingId: string | null = null;
-
   arames: ArameMetalicoResponseDTO[] = [];
   gases: GasProtecaoResponseDTO[] = [];
 
@@ -38,15 +54,12 @@ export class CatalogoInsumosComponent implements OnInit {
     nome: ['', Validators.required],
     codigoProduto: ['', Validators.required],
     fornecedor: ['', Validators.required],
-    precoUnitarioBase: [0, [Validators.required, Validators.min(0.01)]], // O9 ou O13
-    
-    // CAMPOS MADA RECONCILIADOS
-    diametroM: [0.0012, [Validators.min(0.0001)]],      // P8
-    densidadeKgM3: [7750, [Validators.min(1000)]],     // P5
-    eficienciaP6: [90, [Validators.min(10), Validators.max(100)]], // P6
-    massaBobinaO1: [15, [Validators.min(1)]],         // O1
-    perdaBobinaO8: [0.03, [Validators.min(0), Validators.max(1)]], // O8 (decimal)
-    
+    precoUnitarioBase: [0, [Validators.required, Validators.min(0.01)]],
+    diametroM: [0.0012, [Validators.min(0.0001)]],
+    densidadeKgM3: [7750, [Validators.min(1000)]],
+    eficienciaP6: [90, [Validators.min(10), Validators.max(100)]],
+    massaBobinaO1: [15, [Validators.min(1)]],
+    perdaBobinaO8: [0.03, [Validators.min(0), Validators.max(1)]],
     ativo: [true],
     tipoGas: [''],
     ligaMetalica: ['']
@@ -81,6 +94,12 @@ export class CatalogoInsumosComponent implements OnInit {
     this.tipoInsumo = tipo;
   }
 
+  activeIndexChange(event: any) {
+    if (this.editingId) return;
+    this.tipoInsumo = event === '0' || event === 0 ? 'arame' : 'gas';
+    this.abrirModal();
+  }
+
   editarInsumo(item: any, tipo: 'arame' | 'gas') {
     this.editingId = item.id;
     this.tipoInsumo = tipo;
@@ -90,14 +109,29 @@ export class CatalogoInsumosComponent implements OnInit {
 
   toggleStatus(id: string, tipo: 'arame' | 'gas') {
     const service: any = tipo === 'arame' ? this.arameService : this.gasService;
-    service.alterarStatus(id).subscribe(() => this.carregarDados());
+    service.alterarStatus(id).subscribe(() => {
+        this.carregarDados();
+        this.messageService.add({ severity: 'info', summary: 'Status Alterado', detail: 'Insumo atualizado com sucesso.' });
+    });
   }
 
   excluirInsumo(id: string, tipo: 'arame' | 'gas') {
-    if (confirm('Deseja realmente excluir este insumo?')) {
-      const service: any = tipo === 'arame' ? this.arameService : this.gasService;
-      service.excluir(id).subscribe(() => this.carregarDados());
-    }
+    this.confirmationService.confirm({
+      message: 'Deseja realmente excluir este insumo? Esta ação é irreversível.',
+      header: 'Confirmação de Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, Excluir',
+      rejectLabel: 'Cancelar',
+      rejectButtonStyleClass: 'p-button-text',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        const service: any = tipo === 'arame' ? this.arameService : this.gasService;
+        service.excluir(id).subscribe(() => {
+            this.carregarDados();
+            this.messageService.add({ severity: 'success', summary: 'Excluído', detail: 'Insumo removido do catálogo.' });
+        });
+      }
+    });
   }
 
   salvarInsumo() {
@@ -113,11 +147,13 @@ export class CatalogoInsumosComponent implements OnInit {
       service.atualizar(this.editingId, dados).subscribe(() => {
         this.carregarDados();
         this.fecharModal();
+        this.messageService.add({ severity: 'success', summary: 'Atualizado', detail: 'Insumo atualizado com sucesso!' });
       });
     } else {
       service.salvar(dados).subscribe(() => {
         this.carregarDados();
         this.fecharModal();
+        this.messageService.add({ severity: 'success', summary: 'Salvo', detail: 'Novo insumo adicionado ao catálogo!' });
       });
     }
   }

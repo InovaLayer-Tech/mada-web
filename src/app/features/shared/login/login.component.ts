@@ -11,7 +11,7 @@ import { LanguageService } from '../../../core/services/language.service';
   standalone: true,
   imports: [CommonModule, TranslateModule, ReactiveFormsModule, RouterLink],
   template: `
-    <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
+    <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-outfit">
       <!-- Navbar Topo Fixa -->
       <div class="fixed left-12 right-12 top-12 flex justify-between items-center z-50">
         <!-- Botão Voltar -->
@@ -43,34 +43,34 @@ import { LanguageService } from '../../../core/services/language.service';
           <div class="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-600/20">
             <img src="assets/images/inovalayer-semfundo.png" alt="InovaLayer3D" class="w-12 h-auto brightness-0 invert">
           </div>
-          <h1 class="text-3xl font-black text-slate-900 tracking-tighter mb-2">{{ 'NAV.LOGIN' | translate }}</h1>
-          <p class="text-slate-400 font-bold text-xs uppercase tracking-widest leading-relaxed">InovaLayer3D - Acesso Seguro</p>
+          <h1 class="text-3xl font-black text-slate-900 tracking-tighter mb-2">{{ 'AUTH.LOGIN_TITLE' | translate }}</h1>
+          <p class="text-slate-400 font-bold text-xs uppercase tracking-widest leading-relaxed">{{ 'AUTH.LOGIN_SUBTITLE' | translate }}</p>
         </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Endereço de E-mail</label>
-            <input type="email" formControlName="email" placeholder="nome@empresa.com"
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">{{ 'AUTH.EMAIL_LABEL' | translate }}</label>
+            <input type="email" formControlName="email" [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
                    class="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[1.8rem] text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
           </div>
 
           <div class="space-y-2">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Senha de Acesso</label>
-            <input type="password" formControlName="senha" placeholder="••••••••"
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">{{ 'AUTH.PASSWORD_LABEL' | translate }}</label>
+            <input type="password" formControlName="senha" [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
                    class="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[1.8rem] text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
           </div>
 
           @if (errorMessage()) {
-            <p class="text-rose-600 text-[11px] font-black uppercase tracking-widest pl-2 animate-bounce">{{ errorMessage() }}</p>
+            <p class="text-rose-600 text-[11px] font-black uppercase tracking-widest pl-2 animate-bounce">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
           }
 
           <div class="pt-4 space-y-4">
             <button type="submit" [disabled]="isLoading()" 
                     class="w-full py-6 bg-slate-900 hover:bg-blue-600 text-white rounded-[1.8rem] font-black uppercase tracking-widest text-[11px] transition-all shadow-xl shadow-slate-900/10 border-b-4 border-slate-800 hover:border-blue-700 disabled:opacity-50">
-              {{ isLoading() ? 'Autenticando...' : 'Acessar Sistema' }}
+              {{ isLoading() ? ('AUTH.SIGNIN_LOADING' | translate) : ('AUTH.SIGNIN_BTN' | translate) }}
             </button>
             <a routerLink="/cadastro" class="block w-full py-6 bg-white hover:bg-slate-50 text-slate-700 rounded-[1.8rem] font-black uppercase tracking-widest text-[11px] transition-all text-center border-2 border-slate-100 hover:border-blue-200">
-              Criar Nova Conta Corporativa
+              {{ 'AUTH.SIGNUP_LINK' | translate }}
             </a>
           </div>
         </form>

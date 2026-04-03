@@ -8,6 +8,8 @@ import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { ArameMetalicoResponseDTO } from '../../../../core/models/arame-metalico.model';
 import { LogService } from '../../../../core/services/log.service';
 import { OrcamentoRequestDTO } from '../../../../core/models/orcamento-request.dto';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 interface RFQFormModel {
   nomeProjeto: FormControl<string>;
@@ -27,14 +29,14 @@ interface RFQFormModel {
   tratamentoTermico: FormControl<boolean>;
   arquivoUrl: FormControl<string>;
   normasTecnicas: FormControl<string>;
-  tempoEntregaC9: FormControl<string>;
+  tempoEntregaC9Dias: FormControl<string>;
   economiaPerdaLucroC10: FormControl<number>;
 }
 
 @Component({
   selector: 'app-solicitacao-rfq',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastModule],
   templateUrl: './solicitacao-rfq.component.html'
 })
 export class SolicitacaoRfqComponent implements OnInit {
@@ -43,31 +45,24 @@ export class SolicitacaoRfqComponent implements OnInit {
   private arameService = inject(ArameMetalicoService);
   private orcamentoService = inject(OrcamentoService);
   private log = inject(LogService);
+  private messageService = inject(MessageService);
 
   arames: ArameMetalicoResponseDTO[] = [];
   isSending = signal(false);
   currentStep = signal(1);
   totalSteps = 3;
   
-  /**
-   * Formulário com tipagem estrita via NonNullableFormBuilder.
-   * Garante que os valores nunca sejam null indefinidamente (exceto dimensões conforme regra atual).
-   */
   rfqForm: FormGroup<RFQFormModel> = this.fb.group({
     nomeProjeto: ['', [Validators.required]],
     nomeEmpresa: [''], 
     aplicacaoPeca: ['', [Validators.required]],
     solicitacaoMecanica: ['', [Validators.required]],
     solicitacaoAmbiental: [''],
-    
-    // Step 2: Envelope Físico (MM)
     dimensaoX: [null as number | null, [Validators.required, Validators.min(1)]],
     dimensaoY: [null as number | null, [Validators.required, Validators.min(1)]],
     dimensaoZ: [null as number | null, [Validators.required, Validators.min(1)]],
     quantidade: [1, [Validators.required, Validators.min(1)]],
     materialDesejadoId: ['', [Validators.required]],
-    
-    // Step 3: Requisitos Técnicos
     tolerancia: [''],
     acabamento: [''],
     criteriosAceitacao: [''],
@@ -75,7 +70,7 @@ export class SolicitacaoRfqComponent implements OnInit {
     tratamentoTermico: [false],
     arquivoUrl: [''],
     normasTecnicas: [''],
-    tempoEntregaC9: [''],
+    tempoEntregaC9Dias: [''],
     economiaPerdaLucroC10: [0]
   });
 
@@ -107,10 +102,6 @@ export class SolicitacaoRfqComponent implements OnInit {
     }
   }
 
-  /**
-   * Envio da solicitação com mapeamento rígido para OrcamentoRequestDTO.
-   * Garante Single Source of Truth e conformidade com o Back-end.
-   */
   enviarSolicitacao() {
     if (this.rfqForm.invalid) {
       this.log.warn('SolicitacaoRfq', 'Tentativa de envio de formulário inválido');
@@ -118,10 +109,8 @@ export class SolicitacaoRfqComponent implements OnInit {
     }
 
     this.isSending.set(true);
-    
     const formValue = this.rfqForm.getRawValue();
 
-    // Mapeamento explícito para o DTO de contrato
     const payload: OrcamentoRequestDTO = {
       nomeProjeto: formValue.nomeProjeto,
       nomeEmpresa: formValue.nomeEmpresa,
@@ -140,22 +129,29 @@ export class SolicitacaoRfqComponent implements OnInit {
       tratamentoTermico: formValue.tratamentoTermico,
       arquivoUrl: formValue.arquivoUrl,
       normasTecnicas: formValue.normasTecnicas,
-      tempoEntregaC9Dias: formValue.tempoEntregaC9,
+      tempoEntregaC9Dias: formValue.tempoEntregaC9Dias,
       economiaPerdaLucroC10: formValue.economiaPerdaLucroC10,
-      // Injeção estática da estratégia industrial para conformidade com o motor de cálculo
       estrategiaO15: 'SINGLE'
     };
     
     this.orcamentoService.criar(payload).subscribe({
       next: (response) => {
         this.log.info('SolicitacaoRfq', `RFQ criado com sucesso: ${response.id}`);
-        alert('Solicitação RFQ enviada com sucesso! Nossa engenharia analisará o fatiamento e retornará em breve.');
+        this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Sucesso', 
+            detail: 'Solicitação RFQ enviada com sucesso! Nossa engenharia analisará o fatiamento.' 
+        });
         this.isSending.set(false);
         this.router.navigate(['/cliente/dashboard']);
       },
       error: (err) => {
         this.log.error('SolicitacaoRfq', 'Falha crítica ao enviar RFQ', err);
-        alert('Erro ao enviar solicitação. Por favor, tente novamente.');
+        this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Erro', 
+            detail: 'Erro ao enviar solicitação. Por favor, tente novamente.' 
+        });
         this.isSending.set(false);
       }
     });
@@ -167,9 +163,6 @@ export class SolicitacaoRfqComponent implements OnInit {
       const file = input.files[0];
       this.selectedFile.set(file);
       this.selectedFileName.set(file.name);
-      
-      // Simulação de upload para arquivoUrl
-      // Em produção, aqui iria a lógica de upload para o S3/GCP
       this.rfqForm.patchValue({ arquivoUrl: `uploads/3d/${file.name}` });
       this.log.info('SolicitacaoRfq', `Arquivo selecionado: ${file.name}`);
     }

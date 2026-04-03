@@ -42,6 +42,7 @@ export class MotorMetrologicoComponent implements OnInit {
   erroApi = signal<string | null>(null);
   uploadedFileName = signal<string | null>(null);
   orcamentoCalculado = signal<OrcamentoResponseDTO | null>(null);
+  tempoTotalSlicer = signal<number | null>(null);
 
   orcamentoForm = this.fb.group({
     orcamentoId: ['', Validators.required],
@@ -99,7 +100,6 @@ export class MotorMetrologicoComponent implements OnInit {
           next: (res) => {
              this.orcamentoCalculado.set(res);
              this.rfqSelecionado = res;
-             // Ensure names resolve correctly
              this.orcamentoForm.patchValue({
                 orcamentoId: res.id,
                 arameId: res.materialDesejadoId || ''
@@ -159,18 +159,46 @@ export class MotorMetrologicoComponent implements OnInit {
       try {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
-        // BUG F6: Correção de unidade na importação do Slicer
-        if (data && (data.TEMPO_ATIVO_TOTAL !== undefined || data.S1 !== undefined)) {
-          // Se TEMPO_ATIVO_TOTAL > 1000, assumimos que está em SEGUNDOS e dividimos por 60
-          const valorS1Raw = data.TEMPO_ATIVO_TOTAL || data.S1;
-          const valorS1 = valorS1Raw > 5000 ? (valorS1Raw / 60) : valorS1Raw;
-          this.orcamentoForm.patchValue({ tempoArcoTotalS1: Number(valorS1.toFixed(2)) });
+        
+        if (data) {
+          const patchObj: any = {};
+          let infoMsg = '';
+
+          if (data.TEMPO_ATIVO_TOTAL !== undefined) {
+             patchObj.tempoArcoTotalS1 = Number((data.TEMPO_ATIVO_TOTAL / 60).toFixed(2));
+             infoMsg += `S1: ${patchObj.tempoArcoTotalS1}min; `;
+          } else if (data.S1 !== undefined) {
+             patchObj.tempoArcoTotalS1 = data.S1;
+          }
+
+          if (data.TEMPO_MORTO_TOTAL !== undefined) {
+             patchObj.tempoMortoTotalS2 = Number((data.TEMPO_MORTO_TOTAL / 60).toFixed(2));
+             infoMsg += `S2: ${patchObj.tempoMortoTotalS2}min; `;
+          }
+
+          if (data.CAMADAS && Array.isArray(data.CAMADAS)) {
+             patchObj.nCamadas = data.CAMADAS.length;
+             infoMsg += `N-Camadas: ${patchObj.nCamadas}; `;
+          }
+
+          if (data.TEMPO_TOTAL !== undefined) {
+             this.tempoTotalSlicer.set(Number((data.TEMPO_TOTAL / 60).toFixed(2)));
+          }
+
+          this.orcamentoForm.patchValue(patchObj);
           this.uploadedFileName.set(file.name);
-          this.messageService.add({ severity: 'success', summary: 'Dados Importados', detail: 'S1 reconciliado via Slicer' });
+          
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Slicer Importado com Sucesso', 
+            detail: infoMsg || 'Dados reconciliados via Slicer JSON.' 
+          });
         }
       } catch (error) {
-        this.messageService.add({ severity: 'error', summary: 'Erro JSON', detail: 'Slicer incompatible' });
-      } finally { element.value = ''; }
+        this.messageService.add({ severity: 'error', summary: 'Erro na Importação', detail: 'O arquivo JSON do Slicer é inválido.' });
+      } finally { 
+        element.value = ''; 
+      }
     };
     reader.readAsText(file);
   }
@@ -185,19 +213,15 @@ export class MotorMetrologicoComponent implements OnInit {
     const formValue = this.orcamentoForm.getRawValue();
     const id = formValue.orcamentoId;
 
-    // BUG F5/F6 Resolvidos: Tipagem segura e conversão de unidades
     const payload: OrcamentoCalculoRequestDTO = {
       ...formValue,
       numeroCamadas: formValue.nCamadas ?? undefined,
       arameId: formValue.arameId as string,
       gasId: formValue.gasId as string,
       gasSuplementarId: formValue.gasSuplementarId || undefined,
-      
-      // CONVERSÕES DIMENSIONAIS OBRIGATÓRIAS (Front -> Back)
-      tempoPreparacaoO6: formValue.tempoPreparacaoO6 ? (formValue.tempoPreparacaoO6 / 60) : 0, // Minutos para Horas
-      tempoDesmontagemO7: formValue.tempoDesmontagemO7 ? (formValue.tempoDesmontagemO7 / 60) : 0, // Minutos para Horas
-      volumeDepositadoO2: formValue.volumeDepositadoO2 ? (formValue.volumeDepositadoO2 / 1000000) : undefined, // cm³ para m³
-      
+      tempoPreparacaoO6: formValue.tempoPreparacaoO6 ? (formValue.tempoPreparacaoO6 / 60) : 0, 
+      tempoDesmontagemO7: formValue.tempoDesmontagemO7 ? (formValue.tempoDesmontagemO7 / 60) : 0, 
+      volumeDepositadoO2: formValue.volumeDepositadoO2 ? (formValue.volumeDepositadoO2 / 1000000) : undefined, 
       rfGeral: formValue.rfGeral,
       custoDiretoUsinagemAC8: formValue.custoDiretoUsinagemAC8 ?? undefined,
       custoDiretoTratamentoAC9: formValue.custoDiretoTratamentoAC9 ?? undefined

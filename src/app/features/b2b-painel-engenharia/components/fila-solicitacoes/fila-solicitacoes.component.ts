@@ -1,31 +1,35 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, inject, computed, signal, OnDestroy } from '@angular/core';
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrcamentoService } from '../../../../core/services/orcamento.service';
 import { OrcamentoResponseDTO } from '../../../../core/models/orcamento.model';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-fila-solicitacoes',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ConfirmDialogModule, ToastModule],
   templateUrl: './fila-solicitacoes.component.html'
 })
-export class FilaSolicitacoesComponent implements OnInit {
+export class FilaSolicitacoesComponent implements OnInit, OnDestroy {
   private orcamentoService = inject(OrcamentoService);
   private router = inject(Router);
   protected authService = inject(AuthService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+  
   private pollingId: any;
   rfqs = signal<OrcamentoResponseDTO[]>([]);
   todosOrcamentos = signal<OrcamentoResponseDTO[]>([]);
   
-  // KPIs do Dashboard Auditoria também aqui
   kpisAuditoria = computed(() => {
     const todos = this.todosOrcamentos();
     const aprovados = todos.filter(o => o.status === 'APROVADO');
     const totalValor = aprovados.reduce((acc, curr) => acc + curr.precoFinalSugerido, 0);
-    
     return {
       totalGeral: todos.length,
       totalAprovados: aprovados.length,
@@ -33,18 +37,17 @@ export class FilaSolicitacoesComponent implements OnInit {
     };
   });
 
-  // KPIs dinâmicos baseados no estado atual
   totalPendentes = computed(() => this.rfqs().filter(r => r.status === 'PENDENTE').length);
   
   pipelineEstimado = computed(() => {
-    const total = this.rfqs()
+    return this.rfqs()
       .filter(r => r.status === 'CALCULADO' || r.status === 'APROVADO')
       .reduce((acc, rfq) => acc + (rfq.precoFinalSugerido || 0), 0);
-    return total > 1000 ? `R$ ${(total/1000).toFixed(0)}k` : `R$ ${total.toFixed(0)}`;
   });
 
   novosHoje = computed(() => {
-    return this.rfqs().length > 0 ? (this.rfqs().length < 10 ? `0${this.rfqs().length}` : `${this.rfqs().length}`) : '00';
+    const count = this.rfqs().length;
+    return count > 0 ? (count < 10 ? `0${count}` : `${count}`) : '00';
   });
 
   leadTimeMedio = computed(() => {
@@ -55,15 +58,15 @@ export class FilaSolicitacoesComponent implements OnInit {
   });
 
   taxaConversao = computed(() => {
-    if (this.rfqs().length === 0) return '0%';
-    const aprovados = this.rfqs().filter(r => r.status === 'APROVADO').length;
-    const taxa = (aprovados / this.rfqs().length) * 100;
+    const todos = this.todosOrcamentos();
+    if (todos.length === 0) return '0%';
+    const aprovados = todos.filter(r => r.status === 'APROVADO').length;
+    const taxa = (aprovados / todos.length) * 100;
     return `${taxa.toFixed(0)}%`; 
   });
 
   ngOnInit() {
     this.carregarDados();
-    // Atualiza automaticamente a cada 30 segundos
     this.pollingId = setInterval(() => this.carregarDados(), 30000);
   }
 
@@ -74,7 +77,6 @@ export class FilaSolicitacoesComponent implements OnInit {
   carregarDados() {
     this.orcamentoService.listarTodos().subscribe((data: OrcamentoResponseDTO[]) => {
       this.todosOrcamentos.set(data);
-      // Filtramos para a fila apenas o que é acionável: PENDENTE (novo) e CALCULADO (aguarda revisão)
       const filaAtiva = data.filter(o => o.status === 'PENDENTE' || o.status === 'CALCULADO');
       this.rfqs.set(filaAtiva);
     });
@@ -85,16 +87,24 @@ export class FilaSolicitacoesComponent implements OnInit {
   }
 
   excluirOrcamento(id: string) {
-    if (confirm('Deseja realmente excluir esta solicitação? Esta ação é irreversível.')) {
-      this.orcamentoService.excluir(id).subscribe({
-        next: () => {
-          this.carregarDados();
-        },
-        error: (err) => {
-          console.error('Erro ao excluir orçamento:', err);
-          alert('Erro ao excluir. Verifique se tem permissão.');
-        }
-      });
-    }
+    this.confirmationService.confirm({
+      message: 'Deseja realmente excluir esta solicitação? Esta ação é irreversível.',
+      header: 'Excluir Solicitação',
+      icon: 'pi pi-trash',
+      acceptLabel: 'Confirmar Exclusão',
+      rejectLabel: 'Manter Solicitação',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.orcamentoService.excluir(id).subscribe({
+          next: () => {
+            this.carregarDados();
+            this.messageService.add({ severity: 'success', summary: 'Excluído', detail: 'Solicitação removida da base de dados.' });
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao excluir orçamento.' });
+          }
+        });
+      }
+    });
   }
 }
